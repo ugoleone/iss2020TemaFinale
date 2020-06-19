@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<!-- <script type="text/javascript" src="../css/issStyle.js"></script> -->
+
+
+<head>
+
+    <title>Analisi Preliminare</title>
+</head>
+
+<body>
+
+    <div class="content">
+        <div id="top">
+            <h1>LABORATORIO DI SISTEMI SOFTWARE <font size="5"></font>
+            </h1>
+        </div>
+
+        <div class="body">
+            <h2>Introduction - Tea-room COVID-19</h2>
+            Remember our motto:<br />
+            <k>there is no code without a project, no project
+                without problem analysis and no problem without requirements
+            </k>.
+            <br /><br />
+
+            Il <em>manager</em> di una sala da the (<em>tearoom</em>) vorrebbe regolare l'accesso al servizio impiegando
+            un DDR robot
+            (<em>waiter</em>).
+            <br /><br />
+            La <em>tearoom</em> è una stanza rettangolare che include:
+
+            <ul>
+                <li>una porta di entrata (<em>entrancedoor</em>) per entrare nella stanza ed una di uscita
+                    (<em>exitdoor</em>) per uscire;</li>
+                <li>un numero <tt>N (N=2)</tt> di tavoli (<em>teatable</em>);</li>
+                <li>una <em>servicearea</em> che include a sua volta un <em>servicedesk</em> al quale lavora un
+                    <em>barman</em>;</li>
+                <li>una <em>hall</em> provvista di un <em>presencedetector</em>, ad esempio un dispositivo (come un
+                    sonar) che può rilevare
+                    la presenza di una persona (o di qualche altra entità) davanti a se.</li>
+            </ul>
+
+            Il <em>waiter</em> può muoversi liberamente lungo i bordi della stanza, poichè lungo il perimetro non ci
+            sono ostacoli.
+
+            <center><img src="img/tearoom20.png" alt="tearoom20.png" width="75%" height="32%" /></center>
+
+            <h3>User stories</h3>
+            Come <em>cliente</em>:
+            <ul>
+                <li>Intendo segnalare (<em>notify</em>) il mio interesse nell' accedere (<em>entering</em>) ad una sala
+                    da tè sicura(<em>safe tearoom</em>), sedermi (<em>sitting</em>) a un tavolo libero, ordinare
+                    (<em>ordering</em>)
+                    del tè, consumarlo (<em>consuming</em>) (entro un certo tempo massimo <em>maxstaytime</em>) pagando
+                    (<em>paying</em>) il servizio
+                    con la mia carta di credito ed infine lasciare (<em>leaving</em>) la sala.</li>
+                <li>Per <em>safe tearoom</em>, intendo una sala da tè con tavoli da tè puliti ed appositamente
+                    distanziati; nella stanza sono presenti clienti aventi
+                    temperatura corporea inferiore a <tt>37.5</tt> gradi centigradi.</li>
+                <li>Posso segnare il mio interesse interagendo con il campanello smart (<em>smartbell</em>) posizionato vicino
+                    all'ingresso (<em>entrancedoor</em>)
+                    che misurerà automaticamente la mia temperatura corporea e manderà una richiesta al cameriere
+                    (<em>waiter</em>), assegnandomi un identificativo univoco (<em>clientidentifier</em>).
+                </li>
+                <li>Se la mia temperatura corporea è idonea, ma la mia richiesta non può essere soddisfatta
+                    immediatamente (visto che la stanza è piena), sarò informato (<em>informed</em>) dal <em>waiter</em>
+                    su qual è il massimo tempo di attesa.</li>
+            </ul>
+
+
+
+            Come <em>manager</em>:
+            <ul>
+                <li>Intendo poter visualizzare lo stato corrente (<em>current state</em>) della <em>tearoom</em> usando
+                    un browser connesso ad un server web
+                    associato all'applicazione.
+                </li>
+            </ul>
+
+
+            <h2>Requirements</h2>
+            Il <em>waiter</em> deve eseguire le seguenti attività:
+            <ul>
+                <li>accettare (<em>accept</em>) la richiesta di un cliente di entrare nella tearoom se è presente almeno
+                    un tavolo (teatable) nello stato <em>tableclean</em>, i.e.
+                    il tavolo è libero ed è stato propriamente pulito; </li>
+                <li>informare (<em>inform</em>) il cliente del tempo massimo di attesa se non è presente nessun tavolo
+                    in stato <em>tableclean</em>;</li>
+                <li>raggiungere (<em>reach</em>) l'entrata (<em>entrance door</em>) e accompagnare (<em>convoy</em>) il
+                    cliente al tavolo selezionato;</li>
+                <li>prendere (<em>take</em>) l'ordine del cliente e trasmetterlo (utilizzando un dispositivo wifi) al
+                    <em>barman</em>; </li>
+                <li>servire (<em>serve</em>) il cliente quando il <em>barman</em> informa che il drink richiesto è
+                    pronto;</li>
+                <li>riscuotere (<em>collect</em>) il pagamento</li>
+                <li>accompagnare (<em>convoy</em>) il cliente alla <em>exit door</em> quando ha finito la consumazione o
+                    quando il <em>maxstaytime</em> è scaduto;</li>
+                <li>pulire (<em>clean</em>) il tavolo appena liberato dal cliente;</li>
+                <li>stazionare (<em>rest</em>) nella <em>home</em> quando non c'è niente da fare.</li>
+            </ul>
+
+            Dal momento che la sala può contenere al massimo <tt>N</tt> clienti alla volta, il <em>waiter</em> deve
+            ridurre il più possibile i tempi di attesa
+            delle richieste di ogni singolo cliente.
+
+            <h3>Optional Requirements: solo un cliente nella hall</h3>
+            Il <em>waiter</em> deve aprire la <em>exitdoor</em> solo quando la hall è libera, i.e. non deve aprire la
+            porta se la hall è già occupata da un cliente in attesa di entrare dalla <em>entrancedoor</em>.
+
+
+            <h2>Requirement analysis</h2>
+            <div class="remark">
+                <ol>
+                    <li>Il software è un sistema distribuito composto dalle seguenti entità:
+                        <ul>
+                            <li><bc>waiter</bc></li>
+                            <li><bc>teatable1</bc></li>
+                            <li><bc>teatable2</bc></li>
+                            <li><bc>smartbell</bc></li>
+                            <li><bc>presencedetector</bc></li>
+                            <li><bc>barbam</bc></li>
+                            <li><bc>manager</bc></li>
+                            <li><bc>client</bc></li>
+                        </ul>
+                    </li>
+                    <li>All'inizio il <bc>waiter</bc> si trova nel punto <em>home</em> e ci ritorna quando non ha più task da svolgere</li>
+                    <li>All'inizio i <bc>teatable</bc> sono <em>clean</em> e dopo che un <bc>client</bc> lo lascia il <bc>waiter</bc> deve tornare a pulirlo nuovamente</li>
+                    <li>Lo <bc>smartbell</bc> deve presentare un'interfaccia con cui il <bc>client</bc> deve poter richiedere di poter entrare (<em>notify</em>) nella <em>tearoom</em></li>
+                    <li>Lo <bc>smartbell</bc> deve poter misurare la temperatura corporea al <bc>client</bc> e verificare che sia al disotto dei <tt>37.5</tt> gradi centigradi</li>
+                    <li>Ad ogni <bc>client</bc> che passa il test della temperatura viene assegnato un identificativo univoco (<em>clientidentifier</em>) dallo <bc>smartbell</bc></li>
+                    <li>Lo <bc>smartbell</bc> deve poter mandare un messaggio di richiesta al <bc>waiter</bc></li>
+                    <li>Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> fa sapere al <bc>client</bc> se può entrare (<em>accept</em>) oppure deve aspettare (<em>inform</em> che vi sia un tavolo pulito)</li>
+                    <li>Il <bc>waiter</bc> tiene conto di quanto tempo un <bc>client</bc> sia stato al tavolo affinchè non ci resti più di <em>maxstaytime</em></li>
+                    <li>Qualora non ci siano tavoli puliti disponibili (<em>cleaned</em>) il <bc>waiter</bc> deve poter stimare il massimo tempo di attesa per averne uno</li>
+                    <li>Il <bc>waiter</bc> deve poter raggiungere l'entrata (<em>reach</em>) e accompagnare (<em>convoy</em>) il <bc>client</bc> al <bc>table</bc></li>
+                    <li>Il <bc>waiter</bc> deve poter prendere l'ordine dal cliente e trasmetterlo al <bc>barman</bc></li>
+                    <li>Il <bc>barman</bc> deve poter notificare al <bc>waiter</bc> che il drink è pronto</li>
+                    <li>Il <bc>waiter</bc> deve poter andare dal <bc>barman</bc> a ritirare il drink e portarlo al <em>table</em> del <bc>client</bc></li>
+                    <li>Il <bc>waiter</bc> deve far pagare (<em>collect</em>) il <bc>client</bc> quando ha finito di consumare oppure è scaduto il <em>maxstaytime</em></li>
+                    <li>Il <bc>client</bc> deve poter richiamare il (<em>waiter</em>) per avvertirlo che ha finito di consumare</li>
+                    <li>Il <bc>waiter</bc> deve poter accompagnare (<em>convoy</em>) il cliente alla <em>exitdoor</em></li>
+                    <li>All'interno della <em>tearoom</em> posso esserci al massimo <tt>N</tt> clienti contemporaneamente (<tt>N</tt>=numero tavoli=2)</li>
+                </ol>
+            </div>
+
+            <h2>Problem analysis</h2>
+            <div class="remark">
+                <ks>GOAL</ks>:
+                <i>i)</i>define the <k>logical architecture</k> of the system (hopefully as an executable model)
+                <i>ii) measure the <k>abstraction gap</k> and </i>give a <k>quantitative measure of the effort/resources
+                </k>
+                necessary to build the system
+                <i>iii)</i> refine the set of <k>functional TestPlan</k>,
+                <i>iv)</i>define a (first) <k>product backlog</k>.<br /><br />
+
+                <ks>WARNING</ks>: expressions like <i>'we have chosen to ...'</i>, <i>'I decided ...'</i>, etc. are <k>
+                    forbidden</k> here. <br />
+                Rather, this section should include sentences like
+                <b><i>'this (aspect of the) problem implies that ...'</i></b> or <i><b>'the usage of this (legacy)
+                        component
+                        requires that ...'</i></b>, etc.
+                <br />
+            </div>
+
+            <h2>Test plans</h2>
+            <div class="remark">
+                <ks>GOAL</ks>: give a formal description (for example, by using <ks>JUnit</ks>) of the <k>functional
+                    TestPlans</k>, with reference to the <k>logical architecture</k> of the system .
+            </div>
+
+            <h2>Project</h2>
+            <div class="remark">
+                <ks>GOAL</ks>: define the concrete architecture of the system and the behavior of each component .
+            </div>
+
+            <h2>Testing</h2>
+            <div class="remark">
+                <ks>GOAL</ks>: complete the <k>functional TestPlans</k> according to the project code and execute them.
+            </div>
+
+            <h2>Deployment</h2>
+
+            <div class="remark">
+                <ks>GOAL</ks>: prepare a software application to run and operate in a specific environment.
+                It involves installation, configuration, testing and making changes to optimize the performance of the
+                software.
+                It can either be carried out manually or (hopefully) through automated systems.
+            </div>
+
+
+
+            <h2>Maintenance</h2>
+            <div class="remark">
+                <ks>GOAL</ks>: modify the software product after delivery to correct faults,
+                to improve performance or other attributes.
+                A common perception of maintenance is that it merely involves fixing defects.
+                However, one study indicated that over 80% of maintenance effort is used for non-corrective actions.
+            </div>
+
+
+            <table style="width:100%" border="1">
+                <tr>
+                    <td style="width:50%">
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
+
+            <br /><br />
+        </div>
+
+        <div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
+            By Ugo Leone Cavalcanti email: ugoleone.cavalcanti@studio.unibo.it
+            <img src="./img/ugo2.jpg" alt="mbot" width="15%" height="15%">
+        </div>
+        <div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
+            By Amir Al Sadi email: amir.alsadi@studio.unibo.it
+            <img src="./img/amir.jpg" alt="mbot" width="15%" height="15%">
+        </div>
+        <div style="background-color:rgba(86, 56, 253, 0.9); width:60%;text-align:left;color:white">
+            By Nicolo' Romandini email: nicolo.romandini@studio.unibo.it
+            <img src="./img/nik.jpeg" alt="mbot" width="15%" height="15%">
+        </div>
+    </div>
+</body>
+
+</html>
