@@ -121,48 +121,46 @@
                             <li><bc>teatable2</bc></li>
                             <li><bc>smartbell</bc></li>
                             <li><bc>presencedetector</bc></li>
-                            <li><bc>barbam</bc></li>
+                            <li><bc>barman</bc></li>
                             <li><bc>manager</bc></li>
                             <li><bc>client</bc></li>
                         </ul>
                     </li>
+                    <li>Il <bc>waiter</bc> deve potersi muovere autonomamente tra i punti <em>home</em>, <em>servicedesk</em>, <em>table1</em>, <em>table2</em>, <em>entrancedoor</em>, <em>exitdoor</em> </li>
                     <li>All'inizio il <bc>waiter</bc> si trova nel punto <em>home</em> e ci ritorna quando non ha più task da svolgere</li>
-                    <li>All'inizio i <bc>teatable</bc> sono <em>clean</em> e dopo che un <bc>client</bc> lo lascia il <bc>waiter</bc> deve tornare a pulirlo nuovamente</li>
+                    <li>All'inizio i <bc>teatable</bc> sono <em>clean</em> e dopo che un <bc>client</bc> ne lascia uno, il <bc>waiter</bc> deve tornare a pulirlo nuovamente</li>
                     <li>Lo <bc>smartbell</bc> deve presentare un'interfaccia con cui il <bc>client</bc> deve poter richiedere di poter entrare (<em>notify</em>) nella <em>tearoom</em></li>
                     <li>Lo <bc>smartbell</bc> deve poter misurare la temperatura corporea al <bc>client</bc> e verificare che sia al disotto dei <tt>37.5</tt> gradi centigradi</li>
                     <li>Ad ogni <bc>client</bc> che passa il test della temperatura viene assegnato un identificativo univoco (<em>clientidentifier</em>) dallo <bc>smartbell</bc></li>
                     <li>Lo <bc>smartbell</bc> deve poter mandare un messaggio di richiesta al <bc>waiter</bc></li>
-                    <li>Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> fa sapere al <bc>client</bc> se può entrare (<em>accept</em>) oppure deve aspettare (<em>inform</em> che vi sia un tavolo pulito)</li>
+                    <li>Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> fa sapere al <bc>client</bc> se può entrare (<em>accept</em>) oppure se deve aspettare (<em>inform</em> che vi sia un tavolo pulito)</li>
                     <li>Il <bc>waiter</bc> tiene conto di quanto tempo un <bc>client</bc> sia stato al tavolo affinchè non ci resti più di <em>maxstaytime</em></li>
                     <li>Qualora non ci siano tavoli puliti disponibili (<em>cleaned</em>) il <bc>waiter</bc> deve poter stimare il massimo tempo di attesa per averne uno</li>
                     <li>Il <bc>waiter</bc> deve poter raggiungere l'entrata (<em>reach</em>) e accompagnare (<em>convoy</em>) il <bc>client</bc> al <bc>table</bc></li>
-                    <li>Il <bc>waiter</bc> deve poter prendere l'ordine dal cliente e trasmetterlo al <bc>barman</bc></li>
+                    <li>Il <bc>waiter</bc> deve poter prendere (<em>take</em>) l'ordine dal cliente e trasmetterlo al <bc>barman</bc></li>
                     <li>Il <bc>barman</bc> deve poter notificare al <bc>waiter</bc> che il drink è pronto</li>
-                    <li>Il <bc>waiter</bc> deve poter andare dal <bc>barman</bc> a ritirare il drink e portarlo al <em>table</em> del <bc>client</bc></li>
+                    <li>Il <bc>waiter</bc> deve poter andare dal <bc>barman</bc> a ritirare il drink e portarlo al <em>table</em> del <bc>client</bc> (<em>serve</em>)</li>
                     <li>Il <bc>waiter</bc> deve far pagare (<em>collect</em>) il <bc>client</bc> quando ha finito di consumare oppure è scaduto il <em>maxstaytime</em></li>
                     <li>Il <bc>client</bc> deve poter richiamare il (<em>waiter</em>) per avvertirlo che ha finito di consumare</li>
                     <li>Il <bc>waiter</bc> deve poter accompagnare (<em>convoy</em>) il cliente alla <em>exitdoor</em></li>
                     <li>All'interno della <em>tearoom</em> posso esserci al massimo <tt>N</tt> clienti contemporaneamente (<tt>N</tt>=numero tavoli=2)</li>
+                    <li>Bisogna rendere disponibile un'interfaccia web da cui il <bc>manager</bc> deve poter controllare lo stato corrente della <em>tearoom</em>: deve essere infatti possibile in ogni momento conoscere lo stato corrente della stanza</li>
                 </ol>
             </div>
 
             <h2>Problem analysis</h2>
             <div class="remark">
-                <ks>GOAL</ks>:
-                <i>i)</i>define the <k>logical architecture</k> of the system (hopefully as an executable model)
-                <i>ii) measure the <k>abstraction gap</k> and </i>give a <k>quantitative measure of the effort/resources
-                </k>
-                necessary to build the system
-                <i>iii)</i> refine the set of <k>functional TestPlan</k>,
-                <i>iv)</i>define a (first) <k>product backlog</k>.<br /><br />
-
-                <ks>WARNING</ks>: expressions like <i>'we have chosen to ...'</i>, <i>'I decided ...'</i>, etc. are <k>
-                    forbidden</k> here. <br />
-                Rather, this section should include sentences like
-                <b><i>'this (aspect of the) problem implies that ...'</i></b> or <i><b>'the usage of this (legacy)
-                        component
-                        requires that ...'</i></b>, etc.
-                <br />
+               <ol>
+                   <li>Data la natura distribuita del problema risulta particolarmente conveniente utilizzare l'infrastruttura QAK, già disponibile nella nostra software house, poichè si presta molto bene ad essere usata in questo tipo di situazioni. Inoltre permette una rapida prototipazione.</li>
+                   <li>Essendo che le entità elencate nei requisiti devono svolgere le loro attitià in parallelo interagendo tra loro scambiandosi messaggi e agendo in conseguenza dei messaggi ricevuti, risulta opportuno modellarle come <a href="http://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qakactor/userDocs/LabQakIntro2020.html">QActor</a> </li>
+                   <li>Per potersi muovere tra i vari punti della stanza il <bc>waiter</bc> deve conoscerne la conformazione e la posizione di se stesso e degli altri punti: ciò implica che questa informazione gli debba essere fornita all'inizio o il <bc>waiter</bc> debba poterla ricavare tramite opportuni sensori</li>
+                   <li>Dovendosi muovere autonomamente emerge che il <bc>waiter</bc> debba essere in grado di pianificare ed eseguire il percorso tra i vari punti della stanza evitanto anche di andare a sbattere, evitare le collisioni comporta l'uso di un sonar</li>
+                   <li>Dai requisiti emerge che un <bc>table</bc> possa trovarsi nei seguenti stati: "libero e <em>clean</em>", "libero e ancora da sanificare", "occupato da un <bc>client</bc>"</li>
+                   <li>Lo <bc>smartbell</bc> per poter misurare la temperatura deve essere equipaggiato con un sensore</li>
+                   <li>Il <bc>waiter</bc> deve poter conoscere lo stato dei <bc>table</bc></li>
+                   <li>Per far rispettare il <em>maxstaytime</em> il <bc>waiter</bc> deve tener traccia del tempo trascorso da quanto un <bc>client</bc> si è seduto al <bc>table<bc></bc></li>
+                   <li>Dai requisiti segue che ci debba essere un qualcosa che tenga traccia in tempo reale dello stato della stanza (ad esempio, potrebbe essere direttamente uno degli attori o aggiungere un elemento apposito)</li>
+               </ol> 
             </div>
 
             <h2>Test plans</h2>
