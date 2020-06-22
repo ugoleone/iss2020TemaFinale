@@ -36,6 +36,7 @@ h1, h2, h3 {
     margin-right: 15px;
     margin-bottom: 0.5em;
     padding-top: 0.5em;
+    padding-left: 10px;
     border-bottom: 1px solid #242424;
 }
 
@@ -52,11 +53,13 @@ h2 {
 h3 {
 	background-color: #e6ccff;
     font-size: 80%;
+    width: 90%;
+    margin-left: 5.5%!important;
 }
 h4 {
     background-color: #99ffcc;
     font-size: 100%;
-	width: 750px;
+    width: 750px;
 }
 #i {
     color: #ff1010;
@@ -127,6 +130,7 @@ div.req{
     max-width: 900px;
     margin: auto;
     font-size: 18px;
+    text-align: justify;
   }
 
 div.remark{
@@ -136,6 +140,6 @@ div.remark{
     margin: 10px;
 }  
 table, th, td {
-  border: 1px solid black;
+  /*border: 1px solid black;*/
   border-collapse: collapse;
 }         

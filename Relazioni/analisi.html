@@ -163,6 +163,67 @@
                    <li>Dai requisiti segue che ci debba essere un qualcosa che tenga traccia in tempo reale dello stato della stanza (ad esempio, potrebbe essere direttamente uno degli attori o aggiungere un elemento apposito)</li>
                </ol> 
             </div>
+            <div>
+                <h3>Interazione ingresso client</h3>
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:60%">
+                            <center><img src="img/QActor/iss2020Analisi-client-smartbell-waiter.png" width="75%" height="32%"/></center>
+                        </td>
+                        <td>
+
+                            Il <bc>client</bc> tramite un messaggio <em>notify</em> comunica allo <bc>smartbell</bc> di voler entrare nella stanza.
+                            Lo <bc>smartbell</bc> misura la temperatura del <bc>client</bc>, la quale deve essere inferiore a <tt>37.5°C</tt>. 
+                            Lo <bc>smartbell</bc> risponde (<em>tempOk</em>) al <bc>client</bc> informandolo se la sua temperatura rispetti le disposizioni sanitarie,
+                            e quindi sia autorizzato a poter entrare.
+                        </br></br>
+                            Lo <bc>smartbell</bc> informa il <bc>waiter</bc> della presenza di un nuovo <bc>client</bc> inviando il <em>clientidentifier</em> appena generato.
+                            Il <bc>waiter</bc> risponde allo <bc>smartbell</bc> se il nuovo <bc>client</bc> possa o meno entrare in sala. Tale risposta viene propagata al <bc>client</bc>,
+                            il quale in caso affermativo aspetta il <bc>waiter</bc> per essere accompagnato ad un <bc>table</bc>, mentre in caso negativo si mette in attesa.
+                        </td>
+                    </tr>
+                </table>
+
+                <h3>Interazione ordinazione client</h3>
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:60%">
+                            <center><img src="img/QActor/iss2020Analisi-client-waiter-barman.png" width="75%" height="32%"/></center>
+                        </td>
+                        <td>
+                            Il <bc>waiter</bc> tramite un messaggio <em>take</em> chiede al <bc>client</bc> il suo ordine. Dopo aver raccolto la riposta (<em>order</em>) del <bc>client</bc>, 
+                            il <bc>waiter</bc> comunica al <bc>barman</bc> di preparare il drink richiesto. </br></br>
+                            Quando il <bc>barman</bc> ha finito di preparare il drink richiesto dal <bc>client</bc>, lo comunica al <bc>waiter</bc> tramite un <em>ready</em>.
+                            
+                        </td>
+                    </tr>
+                </table>
+                
+                <h3>Interazione richiesta uscita client</h3>
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:60%">
+                            <center><img src="img/QActor/iss2020Analisi-waiter-client_(fine-consumazione).png" width="75%" height="32%"/></center>
+                        </td>
+                        <td>
+                            Il <bc>client</bc> informa (<em>exitReq</em>) il <bc>waiter</bc> di aver terminato la consumazione e di voler procedere al pagamento.
+                        </td>
+                    </tr>
+                </table>
+
+                <h3>Interazione pagamento client</h3>
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:60%">
+                            <center><img src="img/QActor/iss2020Analisi-waiter-client(pagamento).png" width="75%" height="32%"/></center>
+                        </td>
+                        <td>
+                            Il <bc>waiter</bc> tramite una <em>collect</em> richiede il pagamento al <bc>client</bc>, il quale gli risponde (<em>payment</em>) con l'importo dovuto.</br>
+                            Questa interazione, può avvenire successivamente all'interazione <b>richiesta uscita client</b> oppure dopo il superamento di <em>maxstaytime</em>
+                        </td>
+                    </tr>
+                </table>
+            </div>
 
             <h2>Test plans</h2>
             <div class="remark">
