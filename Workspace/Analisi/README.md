@@ -1,1 +1,0 @@
-"Workspace per analisi"
