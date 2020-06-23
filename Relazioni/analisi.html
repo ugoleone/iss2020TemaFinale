@@ -174,10 +174,10 @@
 
                             Il <bc>client</bc> tramite un messaggio <em>notify</em> comunica allo <bc>smartbell</bc> di voler entrare nella stanza.
                             Lo <bc>smartbell</bc> misura la temperatura del <bc>client</bc>, la quale deve essere inferiore a <tt>37.5°C</tt>. 
-                            Lo <bc>smartbell</bc> risponde (<em>tempOk</em>) al <bc>client</bc> informandolo se la sua temperatura rispetti le disposizioni sanitarie,
+                            Lo <bc>smartbell</bc> risponde (<em>tempResult</em>) al <bc>client</bc> informandolo se la sua temperatura rispetti le disposizioni sanitarie,
                             e quindi sia autorizzato a poter entrare.
                         </br></br>
-                            Lo <bc>smartbell</bc> informa il <bc>waiter</bc> della presenza di un nuovo <bc>client</bc> inviando il <em>clientidentifier</em> appena generato.
+                            Lo <bc>smartbell</bc> informa il <bc>waiter</bc> della presenza di un nuovo <bc>client</bc> inviando il <em>clientidentifier</em> appena generato. Il <bc>waiter</bc> chiede ai <bc>table</bc> il loro stato. 
                             Il <bc>waiter</bc> risponde allo <bc>smartbell</bc> se il nuovo <bc>client</bc> possa o meno entrare in sala. Tale risposta viene propagata al <bc>client</bc>,
                             il quale in caso affermativo aspetta il <bc>waiter</bc> per essere accompagnato ad un <bc>table</bc>, mentre in caso negativo si mette in attesa.
                         </td>
