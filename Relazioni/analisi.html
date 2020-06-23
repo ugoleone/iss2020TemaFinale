@@ -191,6 +191,7 @@
                             <center><img src="img/QActor/iss2020Analisi-client-waiter-barman.png" width="75%" height="32%"/></center>
                         </td>
                         <td>
+							Il <bc>client</bc> tramite un messaggio <em>readyToOrder</em> informa il <bc>waiter</bc> che vuole ordinare.</br></br>
                             Il <bc>waiter</bc> tramite un messaggio <em>take</em> chiede al <bc>client</bc> il suo ordine. Dopo aver raccolto la riposta (<em>order</em>) del <bc>client</bc>, 
                             il <bc>waiter</bc> comunica al <bc>barman</bc> di preparare il drink richiesto (<em>orderReq</em>). </br></br>
                             Quando il <bc>barman</bc> ha finito di preparare il drink richiesto dal <bc>client</bc>, lo comunica al <bc>waiter</bc> tramite un <em>ready</em>.
