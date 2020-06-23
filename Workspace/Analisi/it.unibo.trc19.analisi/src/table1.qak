@@ -1,0 +1,18 @@
+System /*-trace*/ tearoom
+
+Request  tabStatus : tabStatus(X) 
+Reply    tabState : tabState(X)
+
+Context ctxtearoom ip [ host= "localhost"   port= 8038 ]  
+
+QActor table1 context ctxtearoom{
+	State s0 initial{ 
+		println("table1 is starting..") 
+		[#var state = "free and clean"#]
+	} 
+	Goto handleRequests
+	
+	State handleRequests{
+			replyTo tabStatus with tabState : tabState( state )	
+	}
+}
