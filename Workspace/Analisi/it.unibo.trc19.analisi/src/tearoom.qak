@@ -42,7 +42,10 @@ Context ctxtearoom ip [ host= "localhost"   port= 8038 ]
 
 QActor waiter context ctxtearoom{ 
 	
-	[# var tabFree = "" #]
+	[# 	
+		var tabFree = "" 
+		var tableToCheck = 1 
+	#]
 	
 	State s0 initial{ 
 		println("[WAITER] waiter is starting..I'm HOME!") 	
@@ -52,45 +55,35 @@ QActor waiter context ctxtearoom{
 	Goto reqHandler
 	
  	State reqHandler{
- 		println("[WAITER] I'm HOME, waiting for a request!")	
+ 		println("[WAITER] I'm HOME, waiting for a request!")
+ 		[# tableToCheck = 1 #]	
  	}
  	Transition t0 
- 		whenRequest checkAvail -> acceptance		
+ 		whenRequest checkAvail -> checkTableState		
  		whenMsg readyToOrder -> takingOrder 
  		whenMsg ready -> collectingDrink 
  		whenMsg exitReq -> exitClient 
  		whenMsg endTime -> payment
  	
- 	State acceptance{
- 		request table1 -m tabStatus : tabStatus(1)
+ 	State checkTableState{	
+ 		if [# tableToCheck == 1 #] {
+ 			request table1 -m tabStatus : tabStatus(1)
+ 		} else {
+ 			request table2 -m tabStatus : tabStatus(1)
+ 		}
 	}
 	Transition t0 whenReply tabState -> handleTabState
-	//Goto reqHandler
 	
 	State handleTabState {
 		onMsg( tabState : tabState( STATUS ) ){
 			[# tabFree = payloadArg(0) #]
-			if [# tabFree != "FreeClean"#]{
-				request table2 -m tabStatus : tabStatus(1)
-			}
-			else {
+			if [# tabFree == "FreeClean"#]{
 				replyTo checkAvail with waitingTime : waitingTime(0)
+			} else {
+				[# tableToCheck = 2 #]
 			}					 		 
  		}
-	}Goto reqHandler//Transition t0 whenReply tabState -> handleTabState1
-	
-	State handleTabState1 {
-		onMsg( tabState : tabState( STATUS ) ){
-					[# tabFree = payloadArg(0) #]
-					if [# tabFree != "FreeClean"#]{
-						replyTo checkAvail with waitingTime : waitingTime(2000)
-						//waitingTime fisso per semplicita
-					}
-					else {
-						replyTo checkAvail with waitingTime : waitingTime(0)
-					}
-				}
-	}Goto reqHandler
+	}Goto reqHandler if [# tabFree == "FreeClean" #] else checkTableState
 	
 	State collectingDrink{
 		println("[WAITER] I'm collecting the drink from the barman")
@@ -124,7 +117,7 @@ QActor waiter context ctxtearoom{
 	
 	State handlePayment {
 		onMsg(payment : payment( MONEY )){
-			[# println(payloadArg(0) + "ï¿½ collected! Have a nice day!") #]
+			[# println("[WAITER] " + payloadArg(0) + " EUR collected! Have a nice day!") #]
 		}
 	}
 	Goto reqHandler
