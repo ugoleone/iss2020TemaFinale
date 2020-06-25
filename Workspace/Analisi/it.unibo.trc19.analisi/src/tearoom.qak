@@ -242,6 +242,7 @@ QActor client context ctxtearoom {
 	
 	State exit {
 		println("[CLIENT] Client EXIT Byeeee!")
+		terminate 1
 	}
 	
 }
