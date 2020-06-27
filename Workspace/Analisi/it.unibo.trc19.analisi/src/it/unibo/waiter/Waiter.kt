@@ -16,11 +16,13 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		 var tabFree = ""  
+		 	
+				var tabFree = "" 
+				var tableToCheck = 1 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("waiter is starting..I'm HOME!")
+						println("[WAITER] waiter is starting..I'm HOME!")
 						delay(200) 
 						discardMessages = false
 					}
@@ -28,74 +30,87 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("reqHandler") { //this:State
 					action { //it:State
-						println("I'm HOME, waiting for a request!")
+						println("[WAITER] I'm HOME, waiting for a request!")
+						 tableToCheck = 1  
 					}
-					 transition(edgeName="t00",targetState="acceptance",cond=whenRequest("checkAvail"))
+					 transition(edgeName="t00",targetState="checkTableState",cond=whenRequest("checkAvail"))
 					transition(edgeName="t01",targetState="takingOrder",cond=whenDispatch("readyToOrder"))
 					transition(edgeName="t02",targetState="collectingDrink",cond=whenDispatch("ready"))
 					transition(edgeName="t03",targetState="exitClient",cond=whenDispatch("exitReq"))
 					transition(edgeName="t04",targetState="payment",cond=whenDispatch("endTime"))
 				}	 
-				state("acceptance") { //this:State
+				state("checkTableState") { //this:State
 					action { //it:State
-						request("tabStatus", "tabStatus(1)" ,"table1" )  
+						if(  tableToCheck == 1  
+						 ){request("tabStatus", "tabStatus(1)" ,"table1" )  
+						}
+						else
+						 {request("tabStatus", "tabStatus(1)" ,"table2" )  
+						 }
+					}
+					 transition(edgeName="t05",targetState="handleTabState",cond=whenReply("tabState"))
+				}	 
+				state("handleTabState") { //this:State
+					action { //it:State
 						if( checkMsgContent( Term.createTerm("tabState(X)"), Term.createTerm("tabState(STATUS)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 tabFree = payloadArg(0)  
-								if(  tabFree != "free and clean" 
-								 ){request("tabStatus", "tabStatus(1)" ,"table2" )  
-								if( checkMsgContent( Term.createTerm("tabState(X)"), Term.createTerm("tabState(STATUS)"), 
-								                        currentMsg.msgContent()) ) { //set msgArgList
-										 tabFree = payloadArg(0)  
-										if(  tabFree != "free and clean" 
-										 ){answer("checkAvail", "waitingTime", "waitingTime(2000)"   )  
-										}
-										else
-										 {answer("checkAvail", "waitingTime", "waitingTime(0)"   )  
-										 }
-								}
+								if(  tabFree == "FreeClean" 
+								 ){answer("checkAvail", "waitingTime", "waitingTime(0)"   )  
 								}
 								else
-								 {answer("checkAvail", "waitingTime", "waitingTime(0)"   )  
+								 { tableToCheck = 2  
 								 }
 						}
-						 tabFree = ""  
 					}
-					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
+					 transition( edgeName="goto",targetState="reqHandler", cond=doswitchGuarded({ tabFree == "FreeClean"  
+					}) )
+					transition( edgeName="goto",targetState="checkTableState", cond=doswitchGuarded({! ( tabFree == "FreeClean"  
+					) }) )
 				}	 
 				state("collectingDrink") { //this:State
 					action { //it:State
-						println("I'm collecting the drink from the barman")
+						println("[WAITER] I'm collecting the drink from the barman")
 						delay(200) 
-						println("I'm taking the drink to the client")
+						println("[WAITER] I'm taking the drink to the client")
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
 				}	 
 				state("takingOrder") { //this:State
 					action { //it:State
-						println("I'm collecting the order from the client")
+						println("[WAITER] I'm collecting the order from the client")
 						request("take", "take(1)" ,"client" )  
+					}
+					 transition(edgeName="t06",targetState="clientReady",cond=whenReply("order"))
+				}	 
+				state("clientReady") { //this:State
+					action { //it:State
 						if( checkMsgContent( Term.createTerm("order(X)"), Term.createTerm("order(ORDER)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								forward("orderReq", "orderReq(${payloadArg(0)})" ,"barman" ) 
 						}
-						println("I'm taking the drink to the client")
+						println("[WAITER] I'm taking the drink to the client")
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
 				}	 
 				state("exitClient") { //this:State
 					action { //it:State
-						println("Client requested to exit! Proceeding to the payment")
+						println("[WAITER] Client requested to exit! Proceeding to the payment")
 					}
 					 transition( edgeName="goto",targetState="payment", cond=doswitch() )
 				}	 
 				state("payment") { //this:State
 					action { //it:State
-						println("Collecting the money!")
+						println("[WAITER] Collecting the money!")
 						request("collect", "collect(1)" ,"client" )  
+					}
+					 transition(edgeName="t07",targetState="handlePayment",cond=whenReply("payment"))
+				}	 
+				state("handlePayment") { //this:State
+					action { //it:State
 						if( checkMsgContent( Term.createTerm("payment(X)"), Term.createTerm("payment(MONEY)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 println(payloadArg(0) + "� collected! Have a nice day!")  
+								 println("[WAITER] " + payloadArg(0) + " EUR collected! Have a nice day!")  
 						}
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )

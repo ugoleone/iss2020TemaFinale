@@ -25,20 +25,20 @@ class Barman ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("waitingForOrder") { //this:State
 					action { //it:State
-						println("Waiting for a new order...")
+						println("[BARMAN] Waiting for a new order...")
 					}
-					 transition(edgeName="t07",targetState="makeTea",cond=whenDispatch("orderReq"))
+					 transition(edgeName="t010",targetState="makeTea",cond=whenDispatch("orderReq"))
 				}	 
 				state("makeTea") { //this:State
 					action { //it:State
-						println("Making some delicious tea...")
+						println("[BARMAN] Making some delicious tea...")
 						delay(2000) 
 					}
 					 transition( edgeName="goto",targetState="teaReady", cond=doswitch() )
 				}	 
 				state("teaReady") { //this:State
 					action { //it:State
-						println("The tea is ready!")
+						println("[BARMAN] The tea is ready!")
 						forward("ready", "ready(tea)" ,"waiter" ) 
 					}
 					 transition( edgeName="goto",targetState="waitingForOrder", cond=doswitch() )

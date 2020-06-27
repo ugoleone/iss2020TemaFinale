@@ -28,13 +28,13 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				}	 
 				state("waitingForClient") { //this:State
 					action { //it:State
-						println("Waiting for a new client...")
+						println("[SMARTBELL] Waiting for a new client...")
 					}
-					 transition(edgeName="t013",targetState="checkTemp",cond=whenRequest("notify"))
+					 transition(edgeName="t016",targetState="checkTemp",cond=whenRequest("notify"))
 				}	 
 				state("checkTemp") { //this:State
 					action { //it:State
-						println("Checking your temperature...")
+						println("[SMARTBELL] Checking your temperature...")
 						 
 						 			val randomNumber = Math.random()
 						 			if  (randomNumber >= 0.7)
@@ -49,14 +49,14 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				}	 
 				state("badTemp") { //this:State
 					action { //it:State
-						println("You should go to the hospital! ")
+						println("[SMARTBELL] You should go to the hospital! ")
 						answer("notify", "tempResult", "tempResult(no)"   )  
 					}
 					 transition( edgeName="goto",targetState="waitingForClient", cond=doswitch() )
 				}	 
 				state("goodTemp") { //this:State
 					action { //it:State
-						println("Your temperature is ok ")
+						println("[SMARTBELL] Your temperature is ok ")
 						 clientID++  
 						answer("notify", "tempResult", "tempResult(yes)"   )  
 					}
@@ -64,21 +64,24 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				}	 
 				state("waiterInfo") { //this:State
 					action { //it:State
-						println("Checking table situation with the waiter... ")
+						println("[SMARTBELL] Checking table situation with the waiter... ")
 						request("checkAvail", "checkAvail(clientID)" ,"waiter" )  
 					}
-					 transition(edgeName="t114",targetState="informClient",cond=whenReply("waitingTime"))
+					 transition(edgeName="t117",targetState="informClient",cond=whenReply("waitingTime"))
 				}	 
 				state("informClient") { //this:State
 					action { //it:State
-						if(  payloadArg(0).toDouble() == 0.0 	 
-						 ){println("A waiter is coming... ")
-						forward("accept", "accept(Y)" ,"client" ) 
+						if( checkMsgContent( Term.createTerm("waitingTime(X)"), Term.createTerm("waitingTime(X)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								if(  payloadArg(0).toDouble() == 0.0 	 
+								 ){println("[SMARTBELL] A waiter is coming... ")
+								forward("accept", "accept(Y)" ,"client" ) 
+								}
+								else
+								 {println("[SMARTBELL] You have to wait... ")
+								 forward("inform", "inform(${payloadArg(0)})" ,"client" ) 
+								 }
 						}
-						else
-						 {println("You have to wait... ")
-						 forward("inform", "inform(payloadArg(0))" ,"client" ) 
-						 }
 					}
 					 transition( edgeName="goto",targetState="waitingForClient", cond=doswitch() )
 				}	 

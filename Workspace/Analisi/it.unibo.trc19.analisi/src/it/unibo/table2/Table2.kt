@@ -16,17 +16,17 @@ class Table2 ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		var state = "free and clean" 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("table2 is starting..")
-						var state = "free and clean" 
+						println("[TABLE2] table2 is starting..")
 					}
-					 transition( edgeName="goto",targetState="handleRequests", cond=doswitch() )
+					 transition(edgeName="t019",targetState="handleRequests",cond=whenRequest("tabStatus"))
 				}	 
 				state("handleRequests") { //this:State
 					action { //it:State
-						answer("tabStatus", "tabState", "tabState(state)"   )  
+						answer("tabStatus", "tabState", "tabState(FreeClean)"   )  
 					}
 				}	 
 			}

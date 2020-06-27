@@ -19,21 +19,21 @@ class Timer ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("timer is starting..")
+						println("[TIMER] timer is starting..")
 					}
 					 transition( edgeName="goto",targetState="waitingToStart", cond=doswitch() )
 				}	 
 				state("waitingToStart") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t05",targetState="watchDog",cond=whenDispatch("startTimer"))
+					 transition(edgeName="t08",targetState="watchDog",cond=whenDispatch("startTimer"))
 				}	 
 				state("watchDog") { //this:State
 					action { //it:State
 						stateTimer = TimerActor("timer_watchDog", 
 							scope, context!!, "local_tout_timer_watchDog", 1000.toLong() )
 					}
-					 transition(edgeName="t06",targetState="exitMsg",cond=whenTimeout("local_tout_timer_watchDog"))   
+					 transition(edgeName="t09",targetState="exitMsg",cond=whenTimeout("local_tout_timer_watchDog"))   
 				}	 
 				state("exitMsg") { //this:State
 					action { //it:State
