@@ -115,7 +115,7 @@
             <h2>Requirement analysis</h2>
             <div class="remark">
                 <ol>
-                    <li>Il software è un sistema distribuito composto dalle seguenti entità:
+                    <li>Dai requisiti emerge che si dovrà realizzare un sistema distribuito composto dalle seguenti entità:
                         <ul>
                             <li><bc>waiter</bc></li>
                             <li><bc>teatable1</bc></li>
@@ -127,23 +127,45 @@
                             <li><bc>client</bc></li>
                         </ul>
                     </li>
-                    <li>Il <bc>waiter</bc> deve potersi muovere autonomamente tra i punti <em>home</em>, <em>servicedesk</em>, <em>table1</em>, <em>table2</em>, <em>entrancedoor</em>, <em>exitdoor</em> </li>
-                    <li>All'inizio il <bc>waiter</bc> si trova nel punto <em>home</em> e ci ritorna quando non ha più task da svolgere</li>
-                    <li>All'inizio i <bc>teatable</bc> sono <em>clean</em> e dopo che un <bc>client</bc> ne lascia uno, il <bc>waiter</bc> deve tornare a pulirlo nuovamente</li>
-                    <li>Lo <bc>smartbell</bc> deve presentare un'interfaccia con cui il <bc>client</bc> deve poter richiedere di poter entrare (<em>notify</em>) nella <em>tearoom</em></li>
-                    <li>Lo <bc>smartbell</bc> deve poter misurare la temperatura corporea al <bc>client</bc> e verificare che sia al disotto dei <tt>37.5</tt> gradi centigradi</li>
-                    <li>Ad ogni <bc>client</bc> che passa il test della temperatura viene assegnato un identificativo univoco (<em>clientidentifier</em>) dallo <bc>smartbell</bc></li>
-                    <li>Lo <bc>smartbell</bc> deve poter mandare un messaggio di richiesta al <bc>waiter</bc></li>
-                    <li>Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> fa sapere al <bc>client</bc> se può entrare (<em>accept</em>) oppure se deve aspettare (<em>inform</em> che vi sia un tavolo pulito)</li>
-                    <li>Il <bc>waiter</bc> tiene conto di quanto tempo un <bc>client</bc> sia stato al tavolo affinchè non ci resti più di <em>maxstaytime</em></li>
-                    <li>Qualora non ci siano tavoli puliti disponibili (<em>cleaned</em>) il <bc>waiter</bc> deve poter stimare il massimo tempo di attesa per averne uno</li>
-                    <li>Il <bc>waiter</bc> deve poter raggiungere l'entrata (<em>reach</em>) e accompagnare (<em>convoy</em>) il <bc>client</bc> al <bc>table</bc></li>
-                    <li>Il <bc>waiter</bc> deve poter prendere (<em>take</em>) l'ordine dal cliente e trasmetterlo al <bc>barman</bc></li>
-                    <li>Il <bc>barman</bc> deve poter notificare al <bc>waiter</bc> che il drink è pronto</li>
-                    <li>Il <bc>waiter</bc> deve poter andare dal <bc>barman</bc> a ritirare il drink e portarlo al <em>table</em> del <bc>client</bc> (<em>serve</em>)</li>
-                    <li>Il <bc>waiter</bc> deve far pagare (<em>collect</em>) il <bc>client</bc> quando ha finito di consumare oppure è scaduto il <em>maxstaytime</em></li>
-                    <li>Il <bc>client</bc> deve poter richiamare il (<em>waiter</em>) per avvertirlo che ha finito di consumare</li>
-                    <li>Il <bc>waiter</bc> deve poter accompagnare (<em>convoy</em>) il cliente alla <em>exitdoor</em></li>
+                    <li> <strong>Movimenti del waiter:</strong>
+                        <ul>
+                            <li>L'entità <bc>waiter</bc> deve poter essere in grado di muoversi autonomamente tra i punti <em>home</em>, <em>servicedesk</em>, <em>table1</em>, <em>table2</em>, <em>entrancedoor</em>, <em>exitdoor</em> </li>
+                            <li>All'inizio il <bc>waiter</bc> si trova nel punto <em>home</em> e ci ritorna quando non ha più task da svolgere</li>
+                            <li>Il <bc>waiter</bc> deve poter raggiungere l'entrata (<em>reach</em>) e accompagnare (<em>convoy</em>) il <bc>client</bc> al <bc>table</bc></li>
+                            <li>Il <bc>waiter</bc> deve poter andare dal <bc>barman</bc> a ritirare il drink e portarlo al <em>table</em> del <bc>client</bc> (<em>serve</em>)</li>
+                            <li>Il <bc>waiter</bc> deve poter accompagnare (<em>convoy</em>) il cliente alla <em>exitdoor</em></li>
+                        </ul>
+                    </li>
+                    <li> <strong>Stati dei table:</strong>
+                        <ul>
+                            <li>I <bc>table</bc> sono delle entità che possono essere occupate da dei <bc>client</bc></li>
+                            <li>I <bc>table</bc> possono trovarsi in tre stati diversi:</li>
+                            <ul>
+                                <li>All'inizio i <bc>teatable</bc> sono <em>clean</em>. Quando sono in questo stato sono pronti per essere occupati da un <bc>client</bc></li>
+                                <li>Dopo che un <bc>client</bc> libera un <bc>teatable</bc>, il <bc>waiter</bc> deve tornare a pulirlo nuovamente affinchè sia di nuovo <em>clean</em></li>
+                            </ul>
+                        </ul>
+                    </li>
+                    <li> <strong>Funzionalità dello smartbell:</strong>
+                        <ul>
+                            <li>Lo <bc>smartbell</bc> deve presentare un'interfaccia con cui il <bc>client</bc> deve poter richiedere di poter entrare (<em>notify</em>) nella <em>tearoom</em></li>
+                            <li>Lo <bc>smartbell</bc> deve poter misurare la temperatura corporea al <bc>client</bc> e verificare che sia al disotto dei <tt>37.5</tt> gradi centigradi</li>
+                            <li>Lo <bc>smartbell</bc> deve poter mandare un messaggio di richiesta al <bc>waiter</bc> all'arrivo di un nuovo cliente</li>
+                            <li>Lo <bc>smartbell</bc> deve presentare al <bc>client</bc> l'esito di tale richiesta</li>
+                        </ul>
+                    </li>
+                    <li> <strong>Interazioni waiter-barman-client:</strong>
+                        <ul>
+                            <li>Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter far sapere al <bc>client</bc> se può entrare (<em>accept</em>) oppure se deve aspettare un certo tempo (<em>inform</em>) che vi sia un tavolo pulito)</li>
+                            <li>Il <bc>waiter</bc> deve poter tener conto di quanto tempo un <bc>client</bc> sia stato al tavolo affinchè non ci resti più di <em>maxstaytime</em></li>
+                            <li>Qualora non ci siano tavoli puliti disponibili (<em>cleaned</em>) il <bc>waiter</bc> deve poter stimare il massimo tempo di attesa per averne uno</li>
+                            <li>Il <bc>waiter</bc> deve poter prendere (<em>take</em>) l'ordine dal cliente e trasmetterlo al <bc>barman</bc></li>
+                            <li>Il <bc>barman</bc> deve poter notificare al <bc>waiter</bc> che il drink è pronto</li>
+                            <li>Il <bc>waiter</bc> deve far pagare (<em>collect</em>) il <bc>client</bc> quando ha finito di consumare oppure è scaduto il <em>maxstaytime</em></li>
+                            <li>Il <bc>client</bc> deve poter richiamare il (<em>waiter</em>) per avvertirlo che ha finito di consumare</li>
+                        </ul>
+                    </li>
+                    <li>Ad ogni <bc>client</bc> che passa il test della temperatura viene assegnato un identificativo univoco (<em>clientidentifier</em>) [dallo <bc>smartbell</bc>]</li>
                     <li>All'interno della <em>tearoom</em> posso esserci al massimo <tt>N</tt> clienti contemporaneamente (<tt>N</tt>=numero tavoli=2)</li>
                     <li>Bisogna rendere disponibile un'interfaccia web da cui il <bc>manager</bc> deve poter controllare lo stato corrente della <em>tearoom</em>: deve essere infatti possibile in ogni momento conoscere lo stato corrente della stanza</li>
                 </ol>
