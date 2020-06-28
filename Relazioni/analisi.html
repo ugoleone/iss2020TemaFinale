@@ -262,8 +262,14 @@
 
             <h2>Test plans</h2>
             <div class="remark">
-                <ks>GOAL</ks>: give a formal description (for example, by using <ks>JUnit</ks>) of the <k>functional
-                    TestPlans</k>, with reference to the <k>logical architecture</k> of the system .
+				Essendo ogni entità modellata come automa a stato finito, una strategia percorribile per fare testing potrebbe essere quella di determinare se i cambiamenti di stato siano avvenuti
+				come ci si aspetterebbe dopo ogni relativo messaggio.
+				</br>
+				A tal proposito è necessario identificare univocamente uno stato e poter verificare lo stato corrente di ogni entità.
+				</br></br>
+				Nel file <a href="../Workspace/Analisi/it.unibo.trc19.analisi/src/tearoom.qak">tearoom.qak</a> è stata data una definizione formale del modello, in cui si può vedere
+				la relazione fra stati e messaggi.</br>
+				<b>Il piano di testing deve essere progettato per verificare tutte queste condizioni.</b> 
             </div>
 
             <h2>Project</h2>
