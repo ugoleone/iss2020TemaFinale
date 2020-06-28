@@ -141,15 +141,14 @@ table, th, td {
 }     
  
 </style>
-<title>LecturesBO1920</title>
+<title>Requisiti_trc19_ISS2020</title>
 </head>
 <body>
     
 <div class="container wrapper">   
 
 <div id="top">
-    <h1 id="h3">Lectures Lab-ISS Bologna 2019-20</h1>
-    <p> <a href="https://www.unibo.it/it/didattica/insegnamenti/insegnamento/2019/385373" target="web">SITO WEB di Ateneo</a><br/></p>
+    <h1 id="h3">Tabella dei requisiti tema finale ISS 2020</h1>
 </div> 
     
  
@@ -176,27 +175,70 @@ All'inizio il <bc>waiter</bc> si trova nel punto <em>home</em> e ci ritorna quan
 
 <tr><td>2</td><td>WAITER</td> 
 <td>
-Il <bc>waiter</bc> deve poter raggiungere l'entrata (<em>reach</em>) e accompagnare (<em>convoy</em>) il <bc>client</bc> al <bc>table</bc>
-<td></td>
+Il <bc>waiter</bc> deve poter raggiungere l'entrata
+<td><em>reach</em></td>
 </tr>
 
 <tr><td>3</td><td>WAITER</td> 
 <td>
-Il <bc>waiter</bc> deve poter andare dal <bc>barman</bc> a ritirare il drink e portarlo al <em>table</em> del <bc>client</bc> (<em>serve</em>)
-<td></td>
+Il <bc>waiter</bc> deve poter andare dal <bc>barman</bc> a ritirare il drink e portarlo al <bc>table</bc> del <bc>client</bc>
+<td><em>serve</em></td>
 </tr>
 
 <tr><td>4</td><td>WAITER</td> 
 <td>
-Il <bc>waiter</bc> deve poter accompagnare (<em>convoy</em>) il cliente alla <em>exitdoor</em>
-<td></td>
+Il <bc>waiter</bc> deve poter accompagnare il cliente alla <em>exitdoor</em> e dall'entrata al <bc>table</bc>
+<td><em>convoy</em></td>
 </tr>
 
 <tr><td>5</td><td>WAITER</td> 
 <td>
-Il <bc>waiter</bc> deve poter accompagnare (<em>convoy</em>) il cliente alla <em>exitdoor</em>
-<td></td>
+Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter far sapere al <bc>client</bc> se può entrare
+<td><em>accept</em></td>
 </tr>
+
+<tr><td>5bis</td><td>WAITER</td> 
+<td>
+Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter far sapere al <bc>client</bc> se deve aspettare un certo tempo prima che vi sia un tavolo pulito.
+<td><em>inform</em></td>
+</tr>
+
+<tr><td>6</td><td>WAITER</td> 
+<td>
+Il <bc>waiter</bc> deve poter tener conto di quanto tempo un <bc>client</bc> sia stato al tavolo affinchè non ci resti più di <em>maxstaytime</em>
+<td><em>maxstaytime</em></td>
+</tr>
+
+<tr><td>7</td><td>WAITER</td> 
+<td>
+Qualora non ci siano tavoli puliti disponibili (<em>cleaned</em>) il <bc>waiter</bc> deve poter stimare il massimo tempo di attesa per averne uno
+<td><em>nexttablecleantime</em></td>
+</tr>
+
+<tr><td>8</td><td>WAITER</td> 
+<td>
+Il <bc>waiter</bc> deve poter prendere l'ordine dal cliente e trasmetterlo al <bc>barman</bc>
+<td><em>take</em></td>
+</tr>
+
+<tr><td>9</td><td>WAITER</td> 
+<td>
+Il <bc>waiter</bc> deve far pagare il <bc>client</bc> quando ha finito di consumare oppure è scaduto il <em>maxstaytime</em>
+<td><em>collect</em></td>
+</tr>
+
+<tr><td>10</td><td>BARMAN</td> 
+<td>
+Il <bc>barman</bc> deve poter notificare al <bc>waiter</bc>  che il drink è pronto
+<td><em>ready</em></td>
+</tr>
+
+<tr><td>11</td><td>CLIENT</td> 
+<td>
+Il <bc>client</bc> deve poter richiamare il <bc>waiter</bc> per avvertirlo che ha finito di consumare
+<td><em>exitReq</em></td>
+</tr>
+
   
  <br/> <br/>
  </div>    

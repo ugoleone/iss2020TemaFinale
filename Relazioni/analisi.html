@@ -132,7 +132,7 @@
                             <li>L'entità <bc>waiter</bc> deve poter essere in grado di muoversi autonomamente tra i punti <em>home</em>, <em>servicedesk</em>, <em>table1</em>, <em>table2</em>, <em>entrancedoor</em>, <em>exitdoor</em> </li>
                             <li>All'inizio il <bc>waiter</bc> si trova nel punto <em>home</em> e ci ritorna quando non ha più task da svolgere</li>
                             <li>Il <bc>waiter</bc> deve poter raggiungere l'entrata (<em>reach</em>) e accompagnare (<em>convoy</em>) il <bc>client</bc> al <bc>table</bc></li>
-                            <li>Il <bc>waiter</bc> deve poter andare dal <bc>barman</bc> a ritirare il drink e portarlo al <em>table</em> del <bc>client</bc> (<em>serve</em>)</li>
+                            <li>Il <bc>waiter</bc> deve poter andare dal <bc>barman</bc> a ritirare il drink e portarlo al <bc>table</bc> del <bc>client</bc> (<em>serve</em>)</li>
                             <li>Il <bc>waiter</bc> deve poter accompagnare (<em>convoy</em>) il cliente alla <em>exitdoor</em></li>
                         </ul>
                     </li>
@@ -156,13 +156,13 @@
                     </li>
                     <li> <strong>Interazioni waiter-barman-client:</strong>
                         <ul>
-                            <li>Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter far sapere al <bc>client</bc> se può entrare (<em>accept</em>) oppure se deve aspettare un certo tempo (<em>inform</em>) che vi sia un tavolo pulito)</li>
+                            <li>Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter far sapere al <bc>client</bc> se può entrare (<em>accept</em>) oppure se deve aspettare un certo tempo (<em>inform</em>) che vi sia un tavolo pulito</li>
                             <li>Il <bc>waiter</bc> deve poter tener conto di quanto tempo un <bc>client</bc> sia stato al tavolo affinchè non ci resti più di <em>maxstaytime</em></li>
                             <li>Qualora non ci siano tavoli puliti disponibili (<em>cleaned</em>) il <bc>waiter</bc> deve poter stimare il massimo tempo di attesa per averne uno</li>
                             <li>Il <bc>waiter</bc> deve poter prendere (<em>take</em>) l'ordine dal cliente e trasmetterlo al <bc>barman</bc></li>
                             <li>Il <bc>barman</bc> deve poter notificare al <bc>waiter</bc> che il drink è pronto</li>
                             <li>Il <bc>waiter</bc> deve far pagare (<em>collect</em>) il <bc>client</bc> quando ha finito di consumare oppure è scaduto il <em>maxstaytime</em></li>
-                            <li>Il <bc>client</bc> deve poter richiamare il (<em>waiter</em>) per avvertirlo che ha finito di consumare</li>
+                            <li>Il <bc>client</bc> deve poter richiamare il <bc>waiter</bc> per avvertirlo che ha finito di consumare</li>
                         </ul>
                     </li>
                     <li>Ad ogni <bc>client</bc> che passa il test della temperatura viene assegnato un identificativo univoco (<em>clientidentifier</em>)</li>
