@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<link rel="stylesheet" type="text/css" href="css/main.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<!-- <script type="text/javascript" src="../css/issStyle.js"></script> -->
+
+
+<head>
+
+    <title>Sprint 1</title>
+</head>
+
+<body>
+    <div class="content">
+        <div id="top">
+            <h1>SPRINT 1 <font size="5"></font>
+            </h1>
+        </div>
+        <div class="body">
+
+            <h2>Requirements</h2>
+
+            <div class="remark">
+                Il primo Sprint si occupa di modellare la tearoom nella condizione in cui vi è un solo cliente presente
+                che compie le azioni:
+                <ul>
+                    <li>
+                        entrare nella sala
+                    </li>
+                    <li>
+                        sedersi al tavolo
+                    </li>
+                    <li>
+                        compiere un'ordinazione
+                    </li>
+                    <li>
+                        consumare il drink
+                    </li>
+                    <li>
+                        pagare il servizio
+                    </li>
+                    <li>
+                        lasciare la stanza
+                    </li>
+                </ul>
+                Si supponga che:
+                <ul>
+                    <li>
+                        nella stanza è presente un solo cliente.
+                    </li>
+                    <li>
+                        il cliente non compie azioni diverse da quelle elencate precedentemente.
+                    </li>
+                </ul>
+            </div>
+
+
+
+            <h2>Requirement analysis</h2>
+            <div class="remark">
+                <table style="width:100%" border="1">
+
+                    <tr><td><bc>NUMERO REQUISITO</bc></td><td><bc>ATTORE REQUISITO</bc></td><td><bc>DESCRIZIONE REQUISITO</bc></td><td><bc>TAG REQUISITO</bc></td></tr>    
+                    
+                    
+                    <tr><td>0</td><td>WAITER</td> 
+                    <td>
+                    L'entità <bc>waiter</bc> deve poter essere in grado di muoversi autonomamente tra i punti <em>home</em>, <em>servicedesk</em>, <em>table1</em>, <em>table2</em>, <em>entrancedoor</em>, <em>exitdoor</em>
+                    </td>
+                    <td></td>
+                    </tr>  
+                    
+                    <tr><td>1</td><td>WAITER</td> 
+                    <td>
+                    All'inizio il <bc>waiter</bc> si trova nel punto <em>home</em> e ci ritorna quando non ha più task da svolgere</td>
+                    <td></td>
+                    </tr>
+                    
+                    <tr><td>2</td><td>WAITER</td> 
+                    <td>
+                    Il <bc>waiter</bc> deve poter raggiungere l'entrata
+                    <td><em>reach</em></td>
+                    </tr>
+                    
+                    <tr><td>3</td><td>WAITER</td> 
+                    <td>
+                    Il <bc>waiter</bc> deve poter andare dal <bc>barman</bc> a ritirare il drink e portarlo al <bc>table</bc> del <bc>client</bc>
+                    <td><em>serve</em></td>
+                    </tr>
+                    
+                    <tr><td>4</td><td>WAITER</td> 
+                    <td>
+                    Il <bc>waiter</bc> deve poter accompagnare il cliente alla <em>exitdoor</em> e dall'entrata al <bc>table</bc>
+                    <td><em>convoy</em></td>
+                    </tr>
+                    
+                    <tr><td>5</td><td>WAITER</td> 
+                    <td>
+                    Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter rispondere che il <bc>client</bc> può entrare, se ci sono <bc>table</bc>> CLEANED
+                    <td><em>waitingTime(0)</em></td>
+                    </tr>
+                    
+                    
+                    <tr><td>8</td><td>WAITER</td> 
+                    <td>
+                    Il <bc>waiter</bc> deve poter prendere l'ordine dal cliente e trasmetterlo al <bc>barman</bc>
+                    <td><em>take</em></td>
+                    </tr>
+                    
+                    <tr><td>9</td><td>WAITER</td> 
+                    <td>
+                    Il <bc>waiter</bc> deve far pagare il <bc>client</bc> quando ha finito di consumare oppure è scaduto il <em>maxstaytime</em>
+                    <td><em>collect</em></td>
+                    </tr>
+    
+                    <tr><td>10</td><td>WAITER</td> 
+                        <td>
+                        Il <bc>waiter</bc> deve poter pulire un <bc>table</bc>
+                        <td><em>clean</em></td>
+                    </tr>
+                    
+                    <tr><td>11</td><td>WAITER</td> 
+                        <td>
+                        Il <bc>waiter</bc> deve poter controllare lo stato di un <bc>table</bc>
+                        <td><em>tabStatus</em></td>
+                    </tr>
+    
+                    <tr><td>12</td><td>BARMAN</td> 
+                    <td>
+                    Il <bc>barman</bc> quando riceve l'ordine dal <bc>waiter</bc> deve mettersi a preparare il the
+                    <td><em>ready</em></td>
+                    </tr>
+    
+                    <tr><td>13</td><td>BARMAN</td> 
+                        <td>
+                        Il <bc>barman</bc> deve poter notificare al <bc>waiter</bc>  che il drink è pronto
+                        <td><em>ready</em></td>
+                    </tr>
+                    
+                    <tr><td>14</td><td>CLIENT</td> 
+                    <td>
+                    Il <bc>client</bc> deve poter suonare lo <bc>smartbell</bc> per richiedere di entrare
+                    <td><em>notify</em></td>
+                    </tr>
+    
+                    <tr><td>15</td><td>CLIENT</td> 
+                        <td>
+                        Il <bc>client</bc> deve poter avvisare il <bc>waiter</bc> che è pronto per ordinare
+                        <td><em>readyToOrder</em></td>
+                    </tr>
+    
+                    <tr><td>16</td><td>CLIENT</td> 
+                        <td>
+                        Il <bc>client</bc> deve poter ordinare il the al <bc>waiter</bc>
+                        <td><em>order</em></td>
+                    </tr>
+    
+                    <tr><td>17</td><td>CLIENT</td> 
+                        <td>
+                        Il <bc>client</bc> deve poter richiamare il <bc>waiter</bc> per avvertirlo che ha finito di consumare
+                        <td><em>exitReq</em></td>
+                        </tr>
+    
+                    <tr><td>18</td><td>TABLE</td> 
+                        <td>
+                            Un <bc>table</bc> ha tre stati diversi: CLEANED, BUSY, DIRTY
+                        </td>
+                        <td></td>
+                        </tr>  
+                        
+                        <tr><td>19</td><td>TABLE</td> 
+                        <td>
+                            Un <bc>table</bc> quando è CLEANED può essere occupato da un <bc>client</bc> diventando BUSY
+                        <td></td>
+                        </tr>
+                        
+                        <tr><td>20</td><td>TABLE</td> 
+                        <td>
+                            Dopo che un <bc>client</bc> smette di occupare un <bc>teatable</bc> questo risulterà DIRTY
+                        <td></td>
+                        </tr>
+                        
+                        <tr><td>21</td><td>TABLE</td> 
+                        <td>
+                            Dopo che un <bc>waiter</bc> pulisce <bc>teatable</bc> questo risulterà CLEANED
+                        <td></td>
+                        </tr>
+    
+                        <tr><td>22</td><td>TABLE</td> 
+                            <td>
+                                Un <bc>teatable</bc> deve poter comunicare il suo stato dopo che un <bc>waiter</bc> glielo ha chiesto
+                            <td><em>tabState</em></td>
+                            </tr>
+                        
+                        <tr><td>23</td><td>SMARTBELL</td> 
+                        <td>
+                            Lo <bc>smartbell</bc> deve presentare al client un'interfaccia da cui poter chiedere di entrare nella <em>tearoom</em>
+                        <td></td>
+                        </tr>
+                        
+                        <tr><td>24</td><td>SMARTBELL</td> 
+                            <td>
+                                Lo <bc>smartbell</bc> deve misurare la temperatura del <bc>client</bc> e comunicargli l'esito della verifica
+                            <td><em>tempResult</em></td>
+                        </tr>
+                        
+                        <tr><td>25</td><td>SMARTBELL</td> 
+                            <td>
+                                Lo <bc>smartbell</bc> deve avvisare il <bc>waiter</bc> della presenza di un <bc>client</bc> pronto per entrare
+                            <td><em>checkAvail</em></td>
+                        </tr>
+                        
+                        <tr><td>26</td><td>SMARTBELL</td> 
+                            <td>
+                                Lo <bc>smartbell</bc> deve riportare al <bc>client</bc> l'avviso che un <bc>waiter</bc> sta arrivando per accompagnarlo, se ci sono <bc>table</bc> liberi
+                            <td><em>accept</em></td>
+                        </tr>
+                        
+                        
+                        <tr><td>28</td><td>SISTEMA</td> 
+                        <td>
+                            Ad ogni <bc>client</bc> che passa il test della temperatura bisogna assegnare un identificativo univoco (<em>clientidentifier</em>)
+                        <td></td>
+                        </tr>
+    
+    
+                </table>
+
+            </div>
+
+            <h2>Problem analysis</h2>
+            <div class="remark">
+                <ks>GOAL</ks>:
+                <i>i)</i>define the <k>logical architecture</k> of the system (hopefully as an executable model)
+                <i>ii) measure the <k>abstraction gap</k> and </i>give a <k>quantitative measure of the effort/resources
+                </k> necessary to build the system
+                <i>iii)</i> refine the set of <k>functional TestPlan</k>,
+                <i>iv)</i>define a (first) <k>product backlog</k>.<br /><br />
+
+                <ks>WARNING</ks>: expressions like <i>'we have chosen to ...'</i>, <i>'I decided ...'</i>, etc. are <k>
+                    forbidden</k> here. <br />
+                Rather, this section should include sentences like
+                <b><i>'this (aspect of the) problem implies that ...'</i></b> or <i><b>'the usage of this (legacy)
+                        component requires that ...'</i></b>, etc.
+                <br />
+            </div>
+
+            <h2>Test plans</h2>
+            <div class="remark">
+                <ks>GOAL</ks>: give a formal description (for example, by using <ks>JUnit</ks>) of the <k>functional
+                    TestPlans</k>, with reference to the <k>logical architecture</k> of the system .
+            </div>
+
+            <h2>Project</h2>
+            <div class="remark">
+                <ks>GOAL</ks>: define the concrete architecture of the system and the behavior of each component .
+            </div>
+
+            <h2>Testing</h2>
+            <div class="remark">
+                <ks>GOAL</ks>: complete the <k>functional TestPlans</k> according to the project code and execute them.
+            </div>
+
+            <h2>Deployment</h2>
+
+            <div class="remark">
+                <ks>GOAL</ks>: prepare a software application to run and operate in a specific environment.
+                It involves installation, configuration, testing and making changes to optimize the performance of the
+                software.
+                It can either be carried out manually or (hopefully) through automated systems.
+            </div>
+
+
+
+            <h2>Maintenance</h2>
+            <div class="remark">
+                <ks>GOAL</ks>: modify the software product after delivery to correct faults,
+                to improve performance or other attributes.
+                A common perception of maintenance is that it merely involves fixing defects.
+                However, one study indicated that over 80% of maintenance effort is used for non-corrective actions.
+            </div>
+
+
+            <table style="width:100%" border="1">
+                <tr>
+                    <td style="width:50%">
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
+
+            <br /><br />
+
+        </div>
+
+        <!-- TEAM -->
+        <div class="w3-container w3-padding-64 w3-center" id="team">
+            <h2>Our Team</h2>
+
+            <div class="w3-row"><br>
+
+                <div class="w3-third">
+                    <img src="./img/ugo3.jpg" style="width:45%" class="w3-circle">
+                    <h3>Ugo Leone Cavalcanti</h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:ugoleone.cavalcanti@studio.unibo.it">ugoleone.cavalcanti@studio.unibo.it</a>
+                    </p>
+                </div>
+
+                <div class="w3-third">
+                    <img src="./img/amir.jpg" style="width:45%" class="w3-circle">
+                    <h3>Amir Al Sadi</h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:amir.alsadi@studio.unibo.it">amir.alsadi@studio.unibo.it</a></p>
+                </div>
+
+                <div class="w3-third">
+                    <img src="./img/nik2.jpeg" style="width:45%" class="w3-circle">
+                    <h3>Nicolò Romandini</h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:nicolo.romandini@studio.unibo.it">nicolo.romandini@studio.unibo.it</a></p>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
