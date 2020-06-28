@@ -165,7 +165,7 @@
                             <li>Il <bc>client</bc> deve poter richiamare il (<em>waiter</em>) per avvertirlo che ha finito di consumare</li>
                         </ul>
                     </li>
-                    <li>Ad ogni <bc>client</bc> che passa il test della temperatura viene assegnato un identificativo univoco (<em>clientidentifier</em>) [dallo <bc>smartbell</bc>]</li>
+                    <li>Ad ogni <bc>client</bc> che passa il test della temperatura viene assegnato un identificativo univoco (<em>clientidentifier</em>)</li>
                     <li>All'interno della <em>tearoom</em> posso esserci al massimo <tt>N</tt> clienti contemporaneamente (<tt>N</tt>=numero tavoli=2)</li>
                     <li>Bisogna rendere disponibile un'interfaccia web da cui il <bc>manager</bc> deve poter controllare lo stato corrente della <em>tearoom</em>: deve essere infatti possibile in ogni momento conoscere lo stato corrente della stanza</li>
                 </ol>
@@ -180,6 +180,7 @@
                    <li>Dovendosi muovere autonomamente emerge che il <bc>waiter</bc> debba essere in grado di pianificare ed eseguire il percorso tra i vari punti della stanza evitanto anche di andare a sbattere, evitare le collisioni comporta l'uso di un sonar</li>
                    <li>Dai requisiti emerge che un <bc>table</bc> possa trovarsi nei seguenti stati: "libero e <em>clean</em>", "libero e ancora da sanificare", "occupato da un <bc>client</bc>"</li>
                    <li>Lo <bc>smartbell</bc> per poter misurare la temperatura deve essere equipaggiato con un sensore</li>
+                   <li>Dovendo inoltrare la richiesta di accesso dei <bc>client</bc> al <bc>waiter</bc> potrebbe essere direttamente lo <bc>smartbell</bc> a generare e assegnare gli identificativi univoci dei clienti</li>
                    <li>Il <bc>waiter</bc> deve poter conoscere lo stato dei <bc>table</bc></li>
                    <li>Per far rispettare il <em>maxstaytime</em> il <bc>waiter</bc> deve tener traccia del tempo trascorso da quanto un <bc>client</bc> si è seduto al <bc>table<bc></bc></li>
                    <li>Dai requisiti segue che ci debba essere un qualcosa che tenga traccia in tempo reale dello stato della stanza (ad esempio, potrebbe essere direttamente uno degli attori o aggiungere un elemento apposito)</li>
@@ -246,6 +247,16 @@
                         </td>
                     </tr>
                 </table>
+                <p>Una descrizione formale di questo modello si può trovare in <a href="../Workspace/Analisi/it.unibo.trc19.analisi/src/tearoom.qak">tearoom.qak</a></p>
+				<div class="remark">
+				In fase di analisi sono emersi delle problematiche critiche che saranno affrontate più nel dettaglio nei successivi sprint:
+					<ol>
+					   <li>Generare e immagazzinare i <em>clientidentifier</em> e dare definizione più precisa dell'interazione fra gli attori e lo <bc>smartbell</bc>.</li>
+					   <li>Valutare da quando viene misurato il <em>maxstaytime</em> e comprendere chi si deve occupare di tenere il conteggio del tempo trascorso.</li>
+					   <li>Comprendere come tenere la <em>hall</em> in sicurezza utilizzando il <em>presencedetector</em> (Evitando così gli assembramenti).</li>
+					   <li>Definire formalmente cosa si intende per "lo stato della stanza": quali caratteristiche includervi? Oltre a ciò, decidere come e dove conservare queste informazioni: distribuirle su tutto il sistema o centralizzarle?</li>
+					</ol> 
+				</div>
             </div>
 
             <h2>Test plans</h2>
