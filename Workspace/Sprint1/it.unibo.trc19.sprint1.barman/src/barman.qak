@@ -1,0 +1,46 @@
+
+System /*-trace*/ barman
+
+
+
+//seconda immagine
+Dispatch orderReq : orderReq(X) 
+  
+//terza immagine  
+Dispatch ready : ready(X) 
+
+
+
+
+Context ctxwaiter ip [ host= "127.0.0.1"   port= 8010 ] 
+Context ctxbarman ip [ host= "localhost"   port= 8050 ] 
+
+
+ExternalQActor waiter context ctxwaiter
+
+
+QActor barman context ctxbarman{  
+	  	  
+	State s0 initial {	     
+ 		discardMsg Off
+ 	} 
+	Goto  waitingForOrder 
+	
+	State waitingForOrder{
+		println("[BARMAN] Waiting for a new order...")
+ 	} 
+	Transition t0 whenMsg orderReq      -> makeTea
+
+	State makeTea{ 
+ 		println("[BARMAN] Making some delicious tea...")
+ 		delay 2000
+ 	}
+ 	Goto teaReady
+ 
+ 	State teaReady{   
+		println("[BARMAN] The tea is ready!")
+   		forward waiter -m ready : ready(tea)
+  	}
+	Goto waitingForOrder
+		 	
+} 
