@@ -1,0 +1,23 @@
+
+System /*-trace*/ table2
+
+//interazione ingresso client
+Request  tabStatus : tabStatus(X) 
+Reply    tabState : tabState(X)    
+
+
+Context ctxtable2 ip [ host= "localhost"   port= 8030 ] 
+
+
+QActor table2 context ctxtable2{
+	[# var state = "free and clean" #]
+	State s0 initial{ 
+		println("[TABLE2] table2 is starting..") 	
+	} 
+	Transition t0 whenRequest tabStatus -> handleRequests
+	
+	State handleRequests{
+		replyTo tabStatus with tabState : tabState(FreeClean)	 
+			
+	}
+}
