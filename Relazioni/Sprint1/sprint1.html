@@ -116,14 +116,14 @@
                     
                     <tr><td>5</td><td>WAITER</td> 
                     <td>
-                    Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter rispondere che il <bc>client</bc> può entrare, se ci sono <bc>table</bc>> CLEANED
+                    Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter rispondere che il <bc>client</bc> può entrare, se ci sono <bc>table</bc> CLEANED
                     <td><em>waitingTime(0)</em></td>
                     </tr>
                     
                     
                     <tr><td>8</td><td>WAITER</td> 
                     <td>
-                    Il <bc>waiter</bc> deve poter prendere l'ordine dal cliente e trasmetterlo al <bc>barman</bc>
+                    Il <bc>waiter</bc> deve poter prendere l'ordine dal <bc>client</bc> e trasmetterlo al <bc>barman</bc>
                     <td><em>take</em></td>
                     </tr>
                     
@@ -211,8 +211,111 @@
 
             <h2>Test plans</h2>
             <div class="remark">
-                <ks>GOAL</ks>: give a formal description (for example, by using <ks>JUnit</ks>) of the <k>functional
-                    TestPlans</k>, with reference to the <k>logical architecture</k> of the system .
+                <table style="width:100%" border="1">
+
+                    <tr>
+                        <td><bc>TAG TEST</bc></td>
+                        <td><bc>STATO INIZIALE</bc></td>
+                        <td><bc>STATO FINALE</bc></td>
+                    </tr>    
+
+                    <tr>
+                        <td><em>notify</em></td>
+                        <td>Il <bc>client</bc> si trova all'ingresso</td>
+                        <td>Il <bc>client</bc> aspetta la risposta dello <bc>smartbell</bc></td>
+                    </tr>
+
+                    <tr>
+                        <td><em>tempResult</em></td>
+                        <td>Lo <bc>smartbell</bc> ha ricevuto una richiesta di ingresso da un <bc>client</bc></td>
+                        <td>Il <bc>client</bc> esce dal sistema (temperatura pari o superiore ai <tt>37.5</tt>°C) o aspetta di conoscere il tempo di attesa dallo <bc>smartbell</bc></td>
+                    </tr>
+
+                    <tr>
+                        <td><em>checkAvail</em></td>
+                        <td>Lo <bc>smartbell</bc> ha appena accettato un <bc>cliente</bc> misurandogli la temperatura</td>
+                        <td>Lo <bc>smartbell</bc> è pronto afare una <em>accept</em> del <bc>client</bc> nella stanza</td>
+                    </tr>
+
+                    <tr>
+                        <td><em>waitingTime(0)</em></td>
+                        <td>Il <bc>client</bc> è in attesa di scoprire se può entrare</td>
+                        <td>Lo smartbell <bc>client</bc> aspetta il <bc>waiter</bc></td>
+                    </tr>
+
+                    <tr>
+                        <td><em>accept</em></td>
+                        <td>Lo <bc>smartbell</bc> ha appena ricevuto dal <bc>waiter</bc> il via libera a far entrare <b>senza attesa</b> il <bc>client</bc> nella stanza</td>
+                        <td>Il <bc>client</bc> aspetta il <bc>waiter</bc> per essere portato al tavolo</td>
+                    </tr> 
+                    
+                    <tr>
+                        <td><em>reach</em></td>
+                        <td>Il robot <bc>waiter</bc> è fermo nella <em>home</em></td>
+                        <td>Il robot <bc>waiter</bc> si trova alla <em>entrancedoor</em></td>
+                    </tr>
+
+                    <tr>
+                        <td><em>convoy</em></td>
+                        <td>Il <bc>client</bc> si trova nella <em>entrancedoor</em></td>
+                        <td>Il <bc>client</bc> si trova nel suo <bc>table</bc></td>
+                    </tr>
+
+                    <tr>
+                        <td><em>readyToOrder</em></td>
+                        <td>Il <bc>client</bc> ha deciso cosa ordinare</td>
+                        <td>Il <bc>client</bc> si mette in attesa del <bc>waiter</bc> per comunicargli la sua ordinazione</td>
+                    </tr>
+
+                    <tr>
+                        <td><em>take</em></td>
+                        <td>Il <bc>client</bc> aspetta il waiter per comunicargli l'ordine</td>
+                        <td>Il <bc>waiter</bc> è arrivato al <bc>table</bc> ed è pronto a conoscere il contenuto dell'ordinazione</td>
+                    </tr>
+
+                    <tr>
+                        <td><em>order</em></td>
+                        <td>Il <bc>waiter</bc> ha domandato al <bc>client</bc> di comunicargli il contenuto della sua ordinazione</td>
+                        <td>Il <bc>waiter</bc> ha ricevuto l'ordine dal <bc>client</bc></td>
+                    </tr>
+
+                    <tr>
+                        <td><em>orderReq</em></td>
+                        <td>Il <bc>waiter</bc> ha preso in consegna l'ordine del <bc>client</bc></td>
+                        <td>Il <bc>waiter</bc> ha comunicato al <bc>barman</bc> il contenuto dell'ordinazione</td>
+                    </tr>
+
+                    <tr>
+                        <td><em>ready</em></td>
+                        <td>Il <bc>barman</bc> ha concluso di preparare l'ordinazione</td>
+                        <td>Il <bc>waiter</bc> sa che il <bc>barman</bc> ha concluso il drink</td>
+                    </tr>
+
+                    <tr>
+                        <td><em>serve</em></td>
+                        <td>Il <bc>waiter</bc> è fermo in un punto della mappa</td>
+                        <td>Il <bc>waiter</bc> ha preso in consegna il drink pronto, lo ha portato al <bc>table</bc> del <bc>client</bc> e il <bc>client</bc> inizia la consumazione del drink</td>
+                    </tr>
+
+                    <tr>
+                        <td><em>exitReq</em></td>
+                        <td>Il <bc>client</bc> ha concluso la consumazione</td>
+                        <td>Il <bc>waiter</bc> sa che può andare dal <bc>client</bc> per fargli effettuare il pagamento</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><em>collect</em></td>
+                        <td>Il <bc>waiter</bc> comunica l'importo della ordinazione al <bc>client</bc></td>
+                        <td>Il <bc>waiter</bc> ha raccolto l'importo</td>
+                    </tr>
+
+                    <tr>
+                        <td><em>convoy</em></td>
+                        <td>Il <bc>client</bc> si trova nel suo <bc>table</bc></td>
+                        <td>Il <bc>client</bc> si trova nella <bc>exitdoor</bc></td>
+                    </tr>
+                        
+                </table>
             </div>
 
             <h2>Project</h2>
