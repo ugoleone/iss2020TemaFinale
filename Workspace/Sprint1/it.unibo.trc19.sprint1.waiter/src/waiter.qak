@@ -27,6 +27,17 @@ Request  collect : collect(X)
 Reply    payment : payment(X)
 
 
+//interazione col planner
+Dispatch doMove     : doMove(V)
+Request  movetoCell : movetoCell(X,Y)
+Reply    atcell     : atcell(X,Y)
+
+//interazione col basicrobot
+Dispatch cmd       	: cmd(MOVE)    
+Request step : step(TIME)
+Reply stepdone : stepdone(X)
+
+
 
 Context ctxwaiter ip [ host= "localhost"   port= 8010 ] 
 Context ctxtable1 ip [ host= "127.0.0.1"   port= 8020 ] 
@@ -34,12 +45,14 @@ Context ctxtable2 ip [ host= "127.0.0.1"   port= 8030 ]
 Context ctxsmartbell ip [ host= "127.0.0.1"   port= 8040 ] 
 Context ctxbarman ip [ host= "127.0.0.1"   port= 8050 ] 
 Context ctxclient ip [ host= "127.0.0.1"   port= 8060 ] 
+Context ctxbasicrobot ip [ host= "127.0.0.1" port= 8070]
 
 ExternalQActor table1 context ctxtable1
 ExternalQActor table2 context ctxtable2
 ExternalQActor smartbell context ctxsmartbell
 ExternalQActor barman context ctxbarman
 ExternalQActor client context ctxclient
+ExternalQActor basicrobot context ctxbasicrobot
 
 
 
@@ -52,8 +65,9 @@ QActor waiter context ctxwaiter{
 	
 	State s0 initial{ 
 		println("[WAITER] waiter is starting..I'm HOME!") 	
-		delay 200
+		delay 1000
 		discardMsg Off
+		request planner -m movetoCell : movetoCell(1,1) 
 	} 
 	Goto reqHandler
 	
@@ -128,3 +142,64 @@ QActor waiter context ctxwaiter{
 }
 
 
+
+/*
+ * excutes a plan without 'interruption'
+ */
+QActor planner context ctxwaiter{  
+[#
+	var XT = "0"
+	var YT = "0"
+	var CurrentPlannedMove = ""
+	var StepTime    	   = 100L
+#]
+	State s0 initial {	     
+		//println("&&&  insensitivewalker STARTED")
+		run itunibo.planner.plannerUtil.initAI()
+		run itunibo.planner.plannerUtil.loadRoomMap( "roomMap" )
+	}	
+	Transition t0 whenRequest movetoCell -> walk
+	
+	State walk{
+		onMsg( movetoCell : movetoCell(X,Y) ){
+			[# XT = payloadArg(0)
+			   YT = payloadArg(1)			  
+			 #]
+			println("&&&  insensitivewalker  MOVING to ($XT,$YT)")
+			run itunibo.planner.plannerUtil.planForGoal("$XT","$YT")
+		}
+	}
+	Goto execPlannedMoves
+	
+	
+	State execPlannedMoves{ 
+ 		[#  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove() #]
+ 		if [# CurrentPlannedMove.length > 0 # ]{
+ 			forward planner -m doMove : doMove($CurrentPlannedMove)
+ 		}else{
+	     	println("&&&  insensitivewalker POINT ($XT,$YT) REACHED")
+	     	replyTo movetoCell with atcell : atcell($XT,$YT) 			
+ 		}
+ 	}
+ 	Transition t0 whenMsg doMove  -> execTheMove
+ 				  whenRequest movetoCell and [# CurrentPlannedMove.length == 0 #]-> walk
+ 				  
+ 	State execTheMove{ 
+  		onMsg( doMove : doMove(M) ){ 	
+  			if [# payloadArg(0) == "w" #] {
+  				request basicrobot -m step : step(500)
+  			} else {
+  				forward basicrobot -m cmd : cmd($payloadArg(0))	
+  			}
+   			//delayVar StepTime //simulate some real movement ...
+  			[# val move = payloadArg(0)
+  			   itunibo.planner.plannerUtil.updateMap(move,"resumablewalker: OLD MOVE $move")
+  			#]
+  		}	 			
+ 	 } 
+     Goto execPlannedMoves if [# payloadArg(0) != "w" #] else waitStepDone
+     
+     State waitStepDone {
+     } Transition t1 whenReply stepdone -> execPlannedMoves
+     
+ }

@@ -23,8 +23,9 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("s0") { //this:State
 					action { //it:State
 						println("[WAITER] waiter is starting..I'm HOME!")
-						delay(200) 
+						delay(1000) 
 						discardMessages = false
+						request("movetoCell", "movetoCell(1,1)" ,"planner" )  
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
 				}	 
