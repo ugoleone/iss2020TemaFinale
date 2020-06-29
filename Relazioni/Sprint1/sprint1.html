@@ -26,31 +26,47 @@
                 che compie le azioni:
                 <ul>
                     <li>
-                        entrare nella sala
+                        Suonare lo <bc>smartbell</bc>
                     </li>
                     <li>
-                        sedersi al tavolo
+                        Farsi misurare la febbre dallo <bc>smartbell</bc>
                     </li>
                     <li>
-                        compiere un'ordinazione
+                        Entrare nella sala (ci sarà il sempre il <bc>table</bc> libero)
                     </li>
                     <li>
-                        consumare il drink
+                        Sedersi al <bc>table</bc>
                     </li>
                     <li>
-                        pagare il servizio
+                        Compiere un'ordinazione (chiamare il <bc>waiter</bc> e ordinare)
                     </li>
                     <li>
-                        lasciare la stanza
+                        Consumare il drink
+                    </li>
+                    <li>
+                        Pagare il servizio
+                    </li>
+                    <li>
+                        Lasciare la stanza
                     </li>
                 </ul>
                 Si supponga che:
                 <ul>
                     <li>
-                        nella stanza è presente un solo cliente.
+                        Nella simulazione è presente un solo cliente
                     </li>
                     <li>
-                        il cliente non compie azioni diverse da quelle elencate precedentemente.
+                        Il waiter deve poter madare l'ordinazione al <bc>barman</bc> e portarla al <bc>client</bc> quando è pronta
+                    </li>
+                    <li>
+                        Non si tenga conto degli stati del <bc>table</bc> e della pulizia da parte del <bc>waiter</bc>
+                    </li>
+                    <li>
+                        Non si tenga conto del rispetto del <em>maxstaytime</em>
+                    </li>
+
+                    <li>
+                        Il <bc>client</bc> non compie azioni diverse da quelle elencate precedentemente
                     </li>
                 </ul>
             </div>
@@ -117,22 +133,11 @@
                     <td><em>collect</em></td>
                     </tr>
     
-                    <tr><td>10</td><td>WAITER</td> 
-                        <td>
-                        Il <bc>waiter</bc> deve poter pulire un <bc>table</bc>
-                        <td><em>clean</em></td>
-                    </tr>
-                    
-                    <tr><td>11</td><td>WAITER</td> 
-                        <td>
-                        Il <bc>waiter</bc> deve poter controllare lo stato di un <bc>table</bc>
-                        <td><em>tabStatus</em></td>
-                    </tr>
     
                     <tr><td>12</td><td>BARMAN</td> 
                     <td>
                     Il <bc>barman</bc> quando riceve l'ordine dal <bc>waiter</bc> deve mettersi a preparare il the
-                    <td><em>ready</em></td>
+                    <td><em>orderReq</em></td>
                     </tr>
     
                     <tr><td>13</td><td>BARMAN</td> 
@@ -165,37 +170,6 @@
                         <td><em>exitReq</em></td>
                         </tr>
     
-                    <tr><td>18</td><td>TABLE</td> 
-                        <td>
-                            Un <bc>table</bc> ha tre stati diversi: CLEANED, BUSY, DIRTY
-                        </td>
-                        <td></td>
-                        </tr>  
-                        
-                        <tr><td>19</td><td>TABLE</td> 
-                        <td>
-                            Un <bc>table</bc> quando è CLEANED può essere occupato da un <bc>client</bc> diventando BUSY
-                        <td></td>
-                        </tr>
-                        
-                        <tr><td>20</td><td>TABLE</td> 
-                        <td>
-                            Dopo che un <bc>client</bc> smette di occupare un <bc>teatable</bc> questo risulterà DIRTY
-                        <td></td>
-                        </tr>
-                        
-                        <tr><td>21</td><td>TABLE</td> 
-                        <td>
-                            Dopo che un <bc>waiter</bc> pulisce <bc>teatable</bc> questo risulterà CLEANED
-                        <td></td>
-                        </tr>
-    
-                        <tr><td>22</td><td>TABLE</td> 
-                            <td>
-                                Un <bc>teatable</bc> deve poter comunicare il suo stato dopo che un <bc>waiter</bc> glielo ha chiesto
-                            <td><em>tabState</em></td>
-                            </tr>
-                        
                         <tr><td>23</td><td>SMARTBELL</td> 
                         <td>
                             Lo <bc>smartbell</bc> deve presentare al client un'interfaccia da cui poter chiedere di entrare nella <em>tearoom</em>
@@ -220,22 +194,19 @@
                             <td><em>accept</em></td>
                         </tr>
                         
-                        
-                        <tr><td>28</td><td>SISTEMA</td> 
-                        <td>
-                            Ad ogni <bc>client</bc> che passa il test della temperatura bisogna assegnare un identificativo univoco (<em>clientidentifier</em>)
-                        <td></td>
-                        </tr>
-    
-    
                 </table>
             </br>
-                Un problema che emerge nel requisito numero 0 è decidere il criterio di conoscenza dei percorsi del <bc>waiter</bc> all'interno della <em>tearoom</em>.
             </div>
 
             <h2>Problem analysis</h2>
             <div class="remark">
-                
+                <p>
+                    Un problema che emerge nel requisito numero 0 è decidere il criterio di conoscenza dei percorsi del <bc>waiter</bc> all'interno della <em>tearoom</em>: nell'affrontare la possibilità del <bc>waiter</bc> di muoversi autonomamente tra i punti della stanza si potrebbe essere portati a ricorrere ad un'implentazione "dummy" con percorsi prefissati, oppure affrontare sin da subito la progettazione di una soluzione in grado di calcolare i percorsi dinamicamente.
+                    Per ottimizzare i tempi, e disponendo all'interno della nostra software-house di una utility per implementare un planner già pronta, risulta più conveniente iniziare da subito con una soluzione più vicina al prodotto finale. Ciò permette di ridurre i tempi di sviluppo: un'implementazione a percorsi predefiniti utile in una prima fase di testing sarebbe da sostituire, successivamente, con la pianificazione dinamica dei percorsi (più appropriata per il prodotto finale), quindi tantovale iniziare a investire tempo di sviluppo fin da subito su di una soluzione definitiva, sopratutto se è già disponibile un'utility software per farlo.
+                </p></br>
+                <p>
+                    Un planner è un qualcosa che a partire da una rappresentazione dell'ambiente (mappa) calcola il percorso per spostarsi tra due punti. La mappa potrebbe essere sia aggiornata in tempo reale sia fornita solamente all'avvio del sistema (sempre la stessa per tutto il tempo di esecuzione), ciò non è specificato esplicitamente nei requisiti. Inoltre, la mappa può essere calcolata direttamente dal robot oppure essergli fornita all'inizio. Volendo limitare la complessità del sistema nel primo sprint risulta opportuno partire da una mappa statica fornita all'avvio del sistema; oltretutto essendo che i clienti si muoveranno solo se accompagnati da un waiter ed essendo la posizione dei tavoli probabilmente da considerarsi fissa nel tempo questa soluzione potrebbe rivelarsi appropriata anche per il prodotto finale.
+                </p>
             </div>
 
             <h2>Test plans</h2>
