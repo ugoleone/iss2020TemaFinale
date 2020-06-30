@@ -17,7 +17,7 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		  
-				var temperature     = 37.5
+				var temperature     = 37
 				var clientID        = 0
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
@@ -35,12 +35,6 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				state("checkTemp") { //this:State
 					action { //it:State
 						println("[SMARTBELL] Checking your temperature...")
-						 
-						 			val randomNumber = Math.random()
-						 			if  (randomNumber >= 0.7)
-						 				temperature = 39.0
-						 			else
-						 				temperature = 37.0		
 					}
 					 transition( edgeName="goto",targetState="badTemp", cond=doswitchGuarded({ temperature > 37.5  
 					}) )

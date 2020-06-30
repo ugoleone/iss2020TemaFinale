@@ -61,19 +61,23 @@ QActor waiter context ctxwaiter{
 	[# 	
 		var tabFree = "" 
 		var tableToCheck = 1 
+		var TableInUse = "teatable1"
 	#]
 	
 	State s0 initial{ 
-		println("[WAITER] waiter is starting..I'm HOME!") 	
+		println("[WAITER] waiter is starting..I'm HOME!") 
+		solve( consult("sysRules.pl")	 ) 
+		solve(consult("tearoomkb.pl"))	
 		delay 1000
 		discardMsg Off
-		request planner -m movetoCell : movetoCell(1,1) 
+		//request planner -m movetoCell : movetoCell(1,1) 
 	} 
 	Goto reqHandler
 	
  	State reqHandler{
  		println("[WAITER] I'm HOME, waiting for a request!")
  		[# tableToCheck = 1 #]	
+ 		request planner -m movetoCell : movetoCell(0,0)
  	}
  	Transition t0 
  		whenRequest checkAvail -> checkTableState		
@@ -105,10 +109,16 @@ QActor waiter context ctxwaiter{
 	
 	State collectingDrink{
 		println("[WAITER] I'm collecting the drink from the barman")
-		delay 200
+		solve(pos(barman,X,Y))
+		[# 
+			val X = getCurSol("X") 
+		  	val Y = getCurSol("Y") 
+		#]
+		request planner -m movetoCell : movetoCell($X,$Y)
 		println("[WAITER] I'm taking the drink to the client")
 	}
-	Goto reqHandler
+	Transition t0 whenReply atcell -> reqHandler
+	//Goto reqHandler
 	
 	State takingOrder{
 		println("[WAITER] I'm collecting the order from the client")
@@ -156,7 +166,7 @@ QActor planner context ctxwaiter{
 	State s0 initial {	     
 		//println("&&&  insensitivewalker STARTED")
 		run itunibo.planner.plannerUtil.initAI()
-		run itunibo.planner.plannerUtil.loadRoomMap( "roomMap" )
+		run itunibo.planner.plannerUtil.loadRoomMap( "teaRoomExplored" )
 	}	
 	Transition t0 whenRequest movetoCell -> walk
 	
@@ -165,7 +175,7 @@ QActor planner context ctxwaiter{
 			[# XT = payloadArg(0)
 			   YT = payloadArg(1)			  
 			 #]
-			println("&&&  insensitivewalker  MOVING to ($XT,$YT)")
+			println("[PLANNER] MOVING to ($XT,$YT)")
 			run itunibo.planner.plannerUtil.planForGoal("$XT","$YT")
 		}
 	}
@@ -177,7 +187,7 @@ QActor planner context ctxwaiter{
  		if [# CurrentPlannedMove.length > 0 # ]{
  			forward planner -m doMove : doMove($CurrentPlannedMove)
  		}else{
-	     	println("&&&  insensitivewalker POINT ($XT,$YT) REACHED")
+	     	println("[PLANNER] POINT ($XT,$YT) REACHED")
 	     	replyTo movetoCell with atcell : atcell($XT,$YT) 			
  		}
  	}
@@ -187,14 +197,14 @@ QActor planner context ctxwaiter{
  	State execTheMove{ 
   		onMsg( doMove : doMove(M) ){ 	
   			if [# payloadArg(0) == "w" #] {
-  				request basicrobot -m step : step(500)
+  				request basicrobot -m step : step(300)
   			} else {
   				forward basicrobot -m cmd : cmd($payloadArg(0))	
   			}
    			//delayVar StepTime //simulate some real movement ...
-  			[# val move = payloadArg(0)
+  			/*[# val move = payloadArg(0)
   			   itunibo.planner.plannerUtil.updateMap(move,"resumablewalker: OLD MOVE $move")
-  			#]
+  			#]*/
   		}	 			
  	 } 
      Goto execPlannedMoves if [# payloadArg(0) != "w" #] else waitStepDone

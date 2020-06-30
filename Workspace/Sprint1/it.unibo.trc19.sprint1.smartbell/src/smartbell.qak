@@ -25,7 +25,7 @@ ExternalQActor client context ctxclient
 
 QActor smartbell context ctxsmartbell{  
 	[#  
-		var temperature     = 37.5
+		var temperature     = 37
 		var clientID        = 0
 	#]   
 	  
@@ -41,13 +41,13 @@ QActor smartbell context ctxsmartbell{
 
 	State checkTemp{ 
  		println("[SMARTBELL] Checking your temperature...")
- 		[# 
+ 		/*[# 
  			val randomNumber = Math.random()
  			if  (randomNumber >= 0.7)
  				temperature = 39.0
  			else
  				temperature = 37.0		
- 		#]
+ 		#]*/
  	}
  	Goto badTemp if [# temperature > 37.5 #] else goodTemp
  

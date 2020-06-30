@@ -25,9 +25,9 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("s0") { //this:State
 					action { //it:State
 						itunibo.planner.plannerUtil.initAI(  )
-						itunibo.planner.plannerUtil.loadRoomMap( "roomMap"  )
+						itunibo.planner.plannerUtil.loadRoomMap( "teaRoomExplored"  )
 					}
-					 transition(edgeName="t07",targetState="walk",cond=whenRequest("movetoCell"))
+					 transition(edgeName="t08",targetState="walk",cond=whenRequest("movetoCell"))
 				}	 
 				state("walk") { //this:State
 					action { //it:State
@@ -35,7 +35,7 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 XT = payloadArg(0)
 											   YT = payloadArg(1)			  
-								println("&&&  insensitivewalker  MOVING to ($XT,$YT)")
+								println("[PLANNER] MOVING to ($XT,$YT)")
 								itunibo.planner.plannerUtil.planForGoal( "$XT", "$YT"  )
 						}
 					}
@@ -48,12 +48,12 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 ){forward("doMove", "doMove($CurrentPlannedMove)" ,"planner" ) 
 						}
 						else
-						 {println("&&&  insensitivewalker POINT ($XT,$YT) REACHED")
+						 {println("[PLANNER] POINT ($XT,$YT) REACHED")
 						 answer("movetoCell", "atcell", "atcell($XT,$YT)"   )  
 						 }
 					}
-					 transition(edgeName="t08",targetState="execTheMove",cond=whenDispatch("doMove"))
-					transition(edgeName="t09",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
+					 transition(edgeName="t09",targetState="execTheMove",cond=whenDispatch("doMove"))
+					transition(edgeName="t010",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
 					}))
 				}	 
 				state("execTheMove") { //this:State
@@ -61,13 +61,11 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						if( checkMsgContent( Term.createTerm("doMove(V)"), Term.createTerm("doMove(M)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								if(  payloadArg(0) == "w"  
-								 ){request("step", "step(500)" ,"basicrobot" )  
+								 ){request("step", "step(300)" ,"basicrobot" )  
 								}
 								else
 								 {forward("cmd", "cmd(${payloadArg(0)})" ,"basicrobot" ) 
 								 }
-								 val move = payloadArg(0)
-								  			   itunibo.planner.plannerUtil.updateMap(move,"resumablewalker: OLD MOVE $move")
 						}
 					}
 					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitchGuarded({ payloadArg(0) != "w"  
@@ -78,7 +76,7 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("waitStepDone") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t110",targetState="execPlannedMoves",cond=whenReply("stepdone"))
+					 transition(edgeName="t111",targetState="execPlannedMoves",cond=whenReply("stepdone"))
 				}	 
 			}
 		}

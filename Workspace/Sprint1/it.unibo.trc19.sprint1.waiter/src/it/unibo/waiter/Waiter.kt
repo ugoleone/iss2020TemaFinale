@@ -19,13 +19,15 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 		 	
 				var tabFree = "" 
 				var tableToCheck = 1 
+				var TableInUse = "teatable1"
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("[WAITER] waiter is starting..I'm HOME!")
+						solve("consult('sysRules.pl')","") //set resVar	
+						solve("consult('tearoomkb.pl')","") //set resVar	
 						delay(1000) 
 						discardMessages = false
-						request("movetoCell", "movetoCell(1,1)" ,"planner" )  
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
 				}	 
@@ -33,6 +35,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("[WAITER] I'm HOME, waiting for a request!")
 						 tableToCheck = 1  
+						request("movetoCell", "movetoCell(0,0)" ,"planner" )  
 					}
 					 transition(edgeName="t00",targetState="checkTableState",cond=whenRequest("checkAvail"))
 					transition(edgeName="t01",targetState="takingOrder",cond=whenDispatch("readyToOrder"))
@@ -73,17 +76,21 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("collectingDrink") { //this:State
 					action { //it:State
 						println("[WAITER] I'm collecting the drink from the barman")
-						delay(200) 
+						solve("pos(barman,X,Y)","") //set resVar	
+						 
+									val X = getCurSol("X") 
+								  	val Y = getCurSol("Y") 
+						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
 						println("[WAITER] I'm taking the drink to the client")
 					}
-					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
+					 transition(edgeName="t05",targetState="reqHandler",cond=whenReply("atcell"))
 				}	 
 				state("takingOrder") { //this:State
 					action { //it:State
 						println("[WAITER] I'm collecting the order from the client")
 						request("take", "take(1)" ,"client" )  
 					}
-					 transition(edgeName="t05",targetState="clientReady",cond=whenReply("order"))
+					 transition(edgeName="t06",targetState="clientReady",cond=whenReply("order"))
 				}	 
 				state("clientReady") { //this:State
 					action { //it:State
@@ -106,7 +113,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("[WAITER] Collecting the money!")
 						request("collect", "collect(1)" ,"client" )  
 					}
-					 transition(edgeName="t06",targetState="handlePayment",cond=whenReply("payment"))
+					 transition(edgeName="t07",targetState="handlePayment",cond=whenReply("payment"))
 				}	 
 				state("handlePayment") { //this:State
 					action { //it:State
