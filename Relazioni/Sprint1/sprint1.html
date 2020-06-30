@@ -265,13 +265,7 @@
 
             <h2>Problem analysis</h2>
             <div class="remark">
-                <p>
-                    Un problema che emerge nel requisito numero 0 è decidere il criterio di conoscenza dei percorsi del <bc>waiter</bc> all'interno della <em>tearoom</em>: nell'affrontare la possibilità del <bc>waiter</bc> di muoversi autonomamente tra i punti della stanza si potrebbe essere portati a ricorrere ad un'implentazione "dummy" con percorsi prefissati, oppure affrontare sin da subito la progettazione di una soluzione in grado di calcolare i percorsi dinamicamente.
-                    Per ottimizzare i tempi, e disponendo all'interno della nostra software-house di una utility per implementare un planner già pronta, risulta più conveniente iniziare da subito con una soluzione più vicina al prodotto finale. Ciò permette di ridurre i tempi di sviluppo: un'implementazione a percorsi predefiniti utile in una prima fase di testing sarebbe da sostituire, successivamente, con la pianificazione dinamica dei percorsi (più appropriata per il prodotto finale), quindi tantovale iniziare a investire tempo di sviluppo fin da subito su di una soluzione definitiva, sopratutto se è già disponibile un'utility software per farlo.
-                </p></br>
-                <p>
-                    Un planner è un qualcosa che a partire da una rappresentazione dell'ambiente (mappa) calcola il percorso per spostarsi tra due punti. La mappa potrebbe essere sia aggiornata in tempo reale sia fornita solamente all'avvio del sistema (sempre la stessa per tutto il tempo di esecuzione), ciò non è specificato esplicitamente nei requisiti. Inoltre, la mappa può essere calcolata direttamente dal robot oppure essergli fornita all'inizio. Volendo limitare la complessità del sistema nel primo sprint risulta opportuno partire da una mappa statica fornita all'avvio del sistema; oltretutto essendo che i clienti si muoveranno solo se accompagnati da un waiter ed essendo la posizione dei tavoli probabilmente da considerarsi fissa nel tempo questa soluzione potrebbe rivelarsi appropriata anche per il prodotto finale.
-                </p>
+                
             </div>
 
             <h2>Test plans</h2>
