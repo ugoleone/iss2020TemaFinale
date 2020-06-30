@@ -210,13 +210,16 @@
                     </ol>
                 </p>
                 <p>
+                    <strong>Rappresentare lo spazio</strong><br>
                     La rappresentazione dell'ambiente (mappa) è la base di conoscenza che racchiude le informazioni sulla posizione degli elementi nella stanza. Per quanto riguarda tutti gli elementi tranne il <bc>waiter</bc>, la mappa potrebbe rimanere invariata per tutto il tempo di esecuzione del sistema (non emergendo dai requisiti la necessità di spostare tavoli, barman, porte, ...).
                     La mappa iniziale, ovvero priva delle informazioni sulla posizione <bc>waiter</bc>, potrebbe essere calcolata dal waiter stesso o, vista la natura del problema, fornita all'inizio dell'esecuzione del sistema dall'esterno.
                 </p>
                 <p>
+                    <strong>Posizione corrente del waiter</strong></br>
                     Per quanto riguarda, invece, il <bc>waiter</bc> la sua posizione deve essere aggiornata ogni volta che si muove nell'ambiente.
                 </p>
                 <p>
+                    <strong>Pianificare i percorsi</strong></br>
                     Infine per poter calcolare le mosse da eseguire per muoversi nell'ambiente sono possibili due strade:
                     <ul>
                         <li>
@@ -230,12 +233,33 @@
                 </p>
 
                 <p>
+                    <strong>TestPlans</strong></br>
                     Per formalizzare un primo set di test plans ed avere anche una base di partenza per la realizzazione di un planner si potrebbe suddividere il pavimento della <em>tearoom</em> in una griglia di R * C quadrati di lato R. Dove R è il più piccolo possibile tale da contenere il robot.
                     Ogni cella può essere libera oppure occupata da un ostacolo.
                     A questo punto si può definire la posizione di ogni elemento nella mappa come una coppia di coordinate (R,C). Il planner calcolerà il percorso da eseguire dalla posizione corrente del <bc>waiter</bc> fino al punto richiesto, e alla fine dell'esecuzione si potrà testare verificando che la posizione raggiunta sia quella richiesta inizialmente.
                 </p>
                     
-                </br>
+                <p>
+                    Questo concetto di mappa è stato già usato nella nostra software house, supponendo che, in ogni cella:
+                    <ul>
+                        <li>
+                            <bc>r</bc> significa "cella occupata dal waiter"
+                        </li>
+                        <li>
+                            <bc>x</bc> significa "cella occupata da un ostacolo"
+                        </li>
+                        <li>
+                            <bc>1</bc> significa "cella nota come libera"
+                        </li>
+                        <li>
+                            <bc>0</bc> significa "cella sconosciuta"
+                        </li>
+                    </ul>
+                </p>
+
+                <p>
+                    Da tutto ciò consegue che potrebbe essere utile far muovere il waiter di cella in cella definendo questo tipo di movimento "step", per altro già disponibile nel basic robot ....
+                </p>
                 
             </div>
 
