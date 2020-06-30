@@ -21,7 +21,7 @@
 
             <h2>Requirements</h2>
 
-            <div class="remark">
+            <div>
                 Il primo Sprint si occupa di modellare la tearoom nella condizione in cui vi è un solo cliente presente
                 che compie le azioni:
                 <ul>
@@ -74,7 +74,7 @@
 
 
             <h2>Requirement analysis</h2>
-            <div class="remark">
+            <div>
                 Dai requisiti si evince che i requisiti trattati in questo Sprint sono i seguenti:
             </br>
             </br>
@@ -199,7 +199,7 @@
             </div>
 
         </br>
-            <div class="remark">
+            <div>
                 <p>
                     Nell'implementare (e poter testare) la possibilità del <bc>waiter</bc> di muoversi autonomamente tra i punti della stanza, emergono alcuni aspetti:
                     <ol>
@@ -264,12 +264,25 @@
             </div>
 
             <h2>Problem analysis</h2>
-            <div class="remark">
+            <div>
+                <p>
+                    Dal punto di vista logico il nostro sistema distribuito è composto da varie entità ognuna concepita come un attore, modellato come una FSM.
+                    Sicuramente l'entità <bc>waiter</bc> dovendo soddisfare vari requisiti è quella che presenta il maggior grado di complessità. Per risolvere i vari problemi ad essa relativi potrebbe risultare conveniente adottare un'architettura a layer, sopratutto perchè sono già disponibili all'interno della nostra software-house alcune componenti pronte per essere riutilizzate a tal proposito. </br>
+                    La componente <strong>it.unibo.qak20.basicrobot</strong> <a href="https://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qak20.basicrobot/userDocs/Qak20Basicrobot.html"> (definito qui)</a> risulta molto utile per realizzare un'entità che si colloca nel mezzo tra "la mente" del waiter e la sua realizzazione "fisica", potendo ricevere comandi di alto livello come "step" e facendoli attuare ad un robot virtuale.
+
+                    </br>
+                    <center><img src="../HTMLResources/img/basicrobotproject.png" width="50%"></center>
+                    </br>
+
+                    Per quanto riguarda la pianificazione dei percorsi è già disponibile nella nostra software-house un <a href="https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.planner20/resources/itunibo/planner/plannerUtil.kt">planner</a> già compatibile con il basicrobot.
+                    
+
+                </p>
                 
             </div>
 
             <h2>Test plans</h2>
-            <div class="remark">
+            <div>
                 <table style="width:100%" border="1">
 
                     <tr>
@@ -378,8 +391,14 @@
             </div>
 
             <h2>Project</h2>
-            <div class="remark">
-                <ks>GOAL</ks>: define the concrete architecture of the system and the behavior of each component .
+            <div>
+            Si riporta l'esempio relativo al <bc>waiter</bc> per evidenziare l'architettura a layer adottata. In particolre viene mostrato il caso in cui un <bc>client</bc> richieda di uscire dalla sala da te.
+            </br>
+            <center><img src="../HTMLResources/img/waiter_architecture.png" width="50%"></center>
+            </br>
+
+            Per una definizione formale di tutta la struttura, l'interazione ed il comportamento si rimanda alla definizione dei <a href="#">QActor</a>
+            
             </div>
 
             <h2>Testing</h2>
