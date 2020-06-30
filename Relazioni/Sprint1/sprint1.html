@@ -195,7 +195,42 @@
                         </tr>
                         
                 </table>
-            </br>
+            
+            </div>
+
+        </br>
+            <div class="remark">
+                <p>
+                    Nell'implementare (e poter testare) la possibilità del <bc>waiter</bc> di muoversi autonomamente tra i punti della stanza, emergono alcuni aspetti:
+                    <ol>
+                        <li>Rappresentare lo spazio</li>
+                        <li>Conoscere la posizione corrente del <bc>waiter</bc> nello spazio</li>
+                        <li>Spostarsi da un punto all'altro dello spazio</li>
+
+                    </ol>
+                </p>
+                <p>
+                    La rappresentazione dell'ambiente (mappa) è la base di conoscenza che racchiude le informazioni sulla posizione degli elementi nella stanza. Per quanto riguarda tutti gli elementi tranne il <bc>waiter</bc>, la mappa potrebbe rimanere invariata per tutto il tempo di esecuzione del sistema (non emergendo dai requisiti la necessità di spostare tavoli, barman, porte, ...).
+                    La mappa iniziale, ovvero priva delle informazioni sulla posizione <bc>waiter</bc>, potrebbe essere calcolata dal waiter stesso o, vista la natura del problema, fornita all'inizio dell'esecuzione del sistema dall'esterno.
+                </p>
+                <p>
+                    Per quanto riguarda, invece, il <bc>waiter</bc> la sua posizione deve essere aggiornata ogni volta che si muove nell'ambiente.
+                </p>
+                <p>
+                    Infine per poter calcolare le mosse da eseguire per muoversi nell'ambiente sono possibili due strade:
+                    <ul>
+                        <li>
+                            a favore di una maggiore semplicità, si potrebbe essere portati a ricorrere ad un'implentazione "dummy" con percorsi prefissati
+                        </li>
+                        <li>
+                            affrontare sin da subito la progettazione di una soluzione in grado di calcolare i percorsi dinamicamente.
+                        </li>
+                    </ul>
+                    Volendo ottimizzare i tempi, e disponendo all'interno della nostra software-house di una utility per implementare un planner già pronta, risulta più conveniente iniziare da subito con una soluzione più vicina al prodotto finale. Ciò permette di ridurre i tempi di sviluppo: un'implementazione a percorsi predefiniti utile in una prima fase di prova sarebbe da sostituire, successivamente, con la pianificazione dinamica dei percorsi (più appropriata per il prodotto finale), quindi tantovale iniziare a investire tempo di sviluppo fin da subito su di una soluzione definitiva, sopratutto se è già disponibile un'utility software per farlo.
+                </p>
+                    
+                </br>
+                
             </div>
 
             <h2>Problem analysis</h2>
