@@ -19,7 +19,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 		 	
 				var tabFree = "" 
 				var tableToCheck = 1 
-				var TableInUse = "teatable1"
+				var whatImDoing = ""
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -33,9 +33,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("reqHandler") { //this:State
 					action { //it:State
-						println("[WAITER] I'm HOME, waiting for a request!")
+						println("[WAITER] Waiting for a request!")
 						 tableToCheck = 1  
-						request("movetoCell", "movetoCell(0,0)" ,"planner" )  
 					}
 					 transition(edgeName="t00",targetState="checkTableState",cond=whenRequest("checkAvail"))
 					transition(edgeName="t01",targetState="takingOrder",cond=whenDispatch("readyToOrder"))
@@ -68,29 +67,30 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								 }
 						}
 					}
-					 transition( edgeName="goto",targetState="reqHandler", cond=doswitchGuarded({ tabFree == "FreeClean"  
+					 transition( edgeName="goto",targetState="reachEntranceDoor", cond=doswitchGuarded({ tabFree == "FreeClean"  
 					}) )
 					transition( edgeName="goto",targetState="checkTableState", cond=doswitchGuarded({! ( tabFree == "FreeClean"  
 					) }) )
 				}	 
+				state("reachEntranceDoor") { //this:State
+					action { //it:State
+						 whatImDoing = "reach"  
+					}
+					 transition( edgeName="goto",targetState="goingToEntranceDoor", cond=doswitch() )
+				}	 
 				state("collectingDrink") { //this:State
 					action { //it:State
 						println("[WAITER] I'm collecting the drink from the barman")
-						solve("pos(barman,X,Y)","") //set resVar	
-						 
-									val X = getCurSol("X") 
-								  	val Y = getCurSol("Y") 
-						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
 						println("[WAITER] I'm taking the drink to the client")
 					}
-					 transition(edgeName="t05",targetState="reqHandler",cond=whenReply("atcell"))
+					 transition( edgeName="goto",targetState="handleAtCell", cond=doswitch() )
 				}	 
 				state("takingOrder") { //this:State
 					action { //it:State
 						println("[WAITER] I'm collecting the order from the client")
 						request("take", "take(1)" ,"client" )  
 					}
-					 transition(edgeName="t06",targetState="clientReady",cond=whenReply("order"))
+					 transition(edgeName="t05",targetState="clientReady",cond=whenReply("order"))
 				}	 
 				state("clientReady") { //this:State
 					action { //it:State
@@ -113,7 +113,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("[WAITER] Collecting the money!")
 						request("collect", "collect(1)" ,"client" )  
 					}
-					 transition(edgeName="t07",targetState="handlePayment",cond=whenReply("payment"))
+					 transition(edgeName="t06",targetState="handlePayment",cond=whenReply("payment"))
 				}	 
 				state("handlePayment") { //this:State
 					action { //it:State
@@ -123,6 +123,74 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						}
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
+				}	 
+				state("goingToEntranceDoor") { //this:State
+					action { //it:State
+						solve("pos(entrancedoor,X,Y)","") //set resVar	
+						 
+									val X = getCurSol("X") 
+								  	val Y = getCurSol("Y") 
+						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
+					}
+					 transition(edgeName="t17",targetState="handleAtCell",cond=whenReply("atcell"))
+				}	 
+				state("goingToExitDoor") { //this:State
+					action { //it:State
+						solve("pos(exitdoor,X,Y)","") //set resVar	
+						 
+									val X = getCurSol("X") 
+								  	val Y = getCurSol("Y") 
+						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
+					}
+					 transition(edgeName="t18",targetState="handleAtCell",cond=whenReply("atcell"))
+				}	 
+				state("goingToBarman") { //this:State
+					action { //it:State
+						solve("pos(barman,X,Y)","") //set resVar	
+						 
+									val X = getCurSol("X") 
+								  	val Y = getCurSol("Y") 
+						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
+					}
+					 transition(edgeName="t19",targetState="handleAtCell",cond=whenReply("atcell"))
+				}	 
+				state("goingToTable1") { //this:State
+					action { //it:State
+						solve("pos(teatable1,X,Y)","") //set resVar	
+						 
+									val X = getCurSol("X") 
+								  	val Y = getCurSol("Y") 
+						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
+					}
+					 transition(edgeName="t110",targetState="handleAtCell",cond=whenReply("atcell"))
+				}	 
+				state("goingToTable2") { //this:State
+					action { //it:State
+						solve("pos(teatable2,X,Y)","") //set resVar	
+						 
+									val X = getCurSol("X") 
+								  	val Y = getCurSol("Y") 
+						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
+					}
+					 transition(edgeName="t111",targetState="handleAtCell",cond=whenReply("atcell"))
+				}	 
+				state("returnHome") { //this:State
+					action { //it:State
+						solve("pos(home,X,Y)","") //set resVar	
+						 
+									val X = getCurSol("X") 
+								  	val Y = getCurSol("Y") 
+						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
+					}
+					 transition(edgeName="t112",targetState="handleAtCell",cond=whenReply("atcell"))
+				}	 
+				state("handleAtCell") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("atcell(X,Y)"), Term.createTerm("atcell(X,Y)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+						}
+					}
+					 transition(edgeName="t113",targetState="reqHandler",cond=whenReply("atcell"))
 				}	 
 			}
 		}

@@ -27,7 +27,7 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						itunibo.planner.plannerUtil.initAI(  )
 						itunibo.planner.plannerUtil.loadRoomMap( "teaRoomExplored"  )
 					}
-					 transition(edgeName="t08",targetState="walk",cond=whenRequest("movetoCell"))
+					 transition(edgeName="t014",targetState="walk",cond=whenRequest("movetoCell"))
 				}	 
 				state("walk") { //this:State
 					action { //it:State
@@ -52,8 +52,8 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 answer("movetoCell", "atcell", "atcell($XT,$YT)"   )  
 						 }
 					}
-					 transition(edgeName="t09",targetState="execTheMove",cond=whenDispatch("doMove"))
-					transition(edgeName="t010",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
+					 transition(edgeName="t015",targetState="execTheMove",cond=whenDispatch("doMove"))
+					transition(edgeName="t016",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
 					}))
 				}	 
 				state("execTheMove") { //this:State
@@ -76,7 +76,7 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("waitStepDone") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t111",targetState="execPlannedMoves",cond=whenReply("stepdone"))
+					 transition(edgeName="t117",targetState="execPlannedMoves",cond=whenReply("stepdone"))
 				}	 
 			}
 		}

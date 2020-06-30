@@ -61,7 +61,7 @@ QActor waiter context ctxwaiter{
 	[# 	
 		var tabFree = "" 
 		var tableToCheck = 1 
-		var TableInUse = "teatable1"
+		var whatImDoing = ""
 	#]
 	
 	State s0 initial{ 
@@ -70,14 +70,12 @@ QActor waiter context ctxwaiter{
 		solve(consult("tearoomkb.pl"))	
 		delay 1000
 		discardMsg Off
-		//request planner -m movetoCell : movetoCell(1,1) 
 	} 
 	Goto reqHandler
 	
  	State reqHandler{
- 		println("[WAITER] I'm HOME, waiting for a request!")
+ 		println("[WAITER] Waiting for a request!")
  		[# tableToCheck = 1 #]	
- 		request planner -m movetoCell : movetoCell(0,0)
  	}
  	Transition t0 
  		whenRequest checkAvail -> checkTableState		
@@ -85,7 +83,7 @@ QActor waiter context ctxwaiter{
  		whenMsg ready -> collectingDrink 
  		whenMsg exitReq -> exitClient 
  	
- 	State checkTableState{	
+ 	State checkTableState {	
  		println("[WAITER] Checking table state")
  		if [# tableToCheck == 1 #] {
  			request table1 -m tabStatus : tabStatus(1)
@@ -105,20 +103,18 @@ QActor waiter context ctxwaiter{
 				[# tableToCheck = 2 #]
 			}					 		 
  		}
-	}Goto reqHandler if [# tabFree == "FreeClean" #] else checkTableState
+	}Goto reachEntranceDoor if [# tabFree == "FreeClean" #] else checkTableState
+	
+	State reachEntranceDoor {
+		[# whatImDoing = "reach" #]
+	}Goto goingToEntranceDoor
+	
 	
 	State collectingDrink{
 		println("[WAITER] I'm collecting the drink from the barman")
-		solve(pos(barman,X,Y))
-		[# 
-			val X = getCurSol("X") 
-		  	val Y = getCurSol("Y") 
-		#]
-		request planner -m movetoCell : movetoCell($X,$Y)
 		println("[WAITER] I'm taking the drink to the client")
 	}
-	Transition t0 whenReply atcell -> reqHandler
-	//Goto reqHandler
+	Goto handleAtCell
 	
 	State takingOrder{
 		println("[WAITER] I'm collecting the order from the client")
@@ -149,6 +145,76 @@ QActor waiter context ctxwaiter{
 		}
 	}
 	Goto reqHandler
+	
+	
+	// Stati legati al movimento
+	
+	State goingToEntranceDoor {
+		solve(pos(entrancedoor,X,Y))
+		[# 
+			val X = getCurSol("X") 
+		  	val Y = getCurSol("Y") 
+		#]
+		request planner -m movetoCell : movetoCell($X,$Y)
+	}Transition t1 whenReply atcell -> handleAtCell
+	
+	State goingToExitDoor {
+		solve(pos(exitdoor,X,Y))
+		[# 
+			val X = getCurSol("X") 
+		  	val Y = getCurSol("Y") 
+		#]
+		request planner -m movetoCell : movetoCell($X,$Y)
+	}Transition t1 whenReply atcell -> handleAtCell
+	
+	State goingToBarman {
+		solve(pos(barman,X,Y))
+		[# 
+			val X = getCurSol("X") 
+		  	val Y = getCurSol("Y") 
+		#]
+		request planner -m movetoCell : movetoCell($X,$Y)
+	}Transition t1 whenReply atcell -> handleAtCell
+	
+	State goingToTable1 {
+		solve(pos(teatable1,X,Y))
+		[# 
+			val X = getCurSol("X") 
+		  	val Y = getCurSol("Y") 
+		#]
+		request planner -m movetoCell : movetoCell($X,$Y)
+	}Transition t1 whenReply atcell -> handleAtCell
+	
+	State goingToTable2 {
+		solve(pos(teatable2,X,Y))
+		[# 
+			val X = getCurSol("X") 
+		  	val Y = getCurSol("Y") 
+		#]
+		request planner -m movetoCell : movetoCell($X,$Y)
+	}Transition t1 whenReply atcell -> handleAtCell
+	
+	State returnHome {
+		solve(pos(home,X,Y))
+		[# 
+			val X = getCurSol("X") 
+		  	val Y = getCurSol("Y") 
+		#]
+		request planner -m movetoCell : movetoCell($X,$Y)
+	}Transition t1 whenReply atcell -> handleAtCell
+	
+	State handleAtCell {
+		onMsg(atcell : atcell(X,Y)){
+			if [# whatImDoing == "reach" #] {
+				[# whatImDoing = "convoyTable" #]
+				
+			}
+			
+		}
+	}Goto goingToTable1 if [# whatImDoing == "convoyTable" #] else None
+		Goto returnHome if [# whatImDoing != "convoyTable" #]
+	
+	
 }
 
 
@@ -201,10 +267,6 @@ QActor planner context ctxwaiter{
   			} else {
   				forward basicrobot -m cmd : cmd($payloadArg(0))	
   			}
-   			//delayVar StepTime //simulate some real movement ...
-  			/*[# val move = payloadArg(0)
-  			   itunibo.planner.plannerUtil.updateMap(move,"resumablewalker: OLD MOVE $move")
-  			#]*/
   		}	 			
  	 } 
      Goto execPlannedMoves if [# payloadArg(0) != "w" #] else waitStepDone
