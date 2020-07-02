@@ -83,11 +83,12 @@ QActor client context ctxclient {
 		println("[CLIENT] A Na-tea-li please")
 		replyTo take with order	: order(tea)
 	}
+	// qua bisogna fare una transition, devo aspettare di ricevere l'ordine
 	Goto drink
 	
 	State drink {
 		println("[CLIENT] *sip sip* Delicious tea")
-		delay 5000
+		delay 30000
 	}Goto askToPay
 	
 	State askToPay {

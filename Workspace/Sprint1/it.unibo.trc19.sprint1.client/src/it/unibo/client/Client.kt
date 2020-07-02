@@ -79,7 +79,7 @@ class Client ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("drink") { //this:State
 					action { //it:State
 						println("[CLIENT] *sip sip* Delicious tea")
-						delay(5000) 
+						delay(30000) 
 					}
 					 transition( edgeName="goto",targetState="askToPay", cond=doswitch() )
 				}	 

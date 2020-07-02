@@ -66,8 +66,12 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 								}
 								else
 								 {forward("cmd", "cmd(${payloadArg(0)})" ,"basicrobot" ) 
+								 delay(500) 
 								 }
 						}
+						 
+						  			val move = payloadArg(0)
+						  			itunibo.planner.plannerUtil.updateMap(move,"")
 					}
 					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitchGuarded({ payloadArg(0) != "w"  
 					}) )

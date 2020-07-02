@@ -323,9 +323,14 @@ QActor planner context ctxwaiter{
   			if [# payloadArg(0) == "w" #] {
   				request basicrobot -m step : step(370)
   			} else {
-  				forward basicrobot -m cmd : cmd($payloadArg(0))	
+  				forward basicrobot -m cmd : cmd($payloadArg(0))
+  				delay 500	
   			}
-  		}	 			
+  		}
+  		[# 
+  			val move = payloadArg(0)
+  			itunibo.planner.plannerUtil.updateMap(move,"")
+  		#]		 			
  	 } 
      Goto execPlannedMoves if [# payloadArg(0) != "w" #] else waitStepDone
      
