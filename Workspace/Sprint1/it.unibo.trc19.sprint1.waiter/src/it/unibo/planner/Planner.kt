@@ -26,8 +26,9 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 					action { //it:State
 						itunibo.planner.plannerUtil.initAI(  )
 						itunibo.planner.plannerUtil.loadRoomMap( "teaRoomExplored"  )
+						discardMessages = false
 					}
-					 transition(edgeName="t014",targetState="walk",cond=whenRequest("movetoCell"))
+					 transition(edgeName="t019",targetState="walk",cond=whenRequest("movetoCell"))
 				}	 
 				state("walk") { //this:State
 					action { //it:State
@@ -52,8 +53,8 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 answer("movetoCell", "atcell", "atcell($XT,$YT)"   )  
 						 }
 					}
-					 transition(edgeName="t015",targetState="execTheMove",cond=whenDispatch("doMove"))
-					transition(edgeName="t016",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
+					 transition(edgeName="t020",targetState="execTheMove",cond=whenDispatch("doMove"))
+					transition(edgeName="t021",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
 					}))
 				}	 
 				state("execTheMove") { //this:State
@@ -61,7 +62,7 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						if( checkMsgContent( Term.createTerm("doMove(V)"), Term.createTerm("doMove(M)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								if(  payloadArg(0) == "w"  
-								 ){request("step", "step(300)" ,"basicrobot" )  
+								 ){request("step", "step(370)" ,"basicrobot" )  
 								}
 								else
 								 {forward("cmd", "cmd(${payloadArg(0)})" ,"basicrobot" ) 
@@ -76,7 +77,7 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("waitStepDone") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t117",targetState="execPlannedMoves",cond=whenReply("stepdone"))
+					 transition(edgeName="t122",targetState="execPlannedMoves",cond=whenReply("stepdone"))
 				}	 
 			}
 		}

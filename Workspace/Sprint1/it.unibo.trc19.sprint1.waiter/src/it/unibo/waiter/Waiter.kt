@@ -19,7 +19,6 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 		 	
 				var tabFree = "" 
 				var tableToCheck = 1 
-				var whatImDoing = ""
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -37,8 +36,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						 tableToCheck = 1  
 					}
 					 transition(edgeName="t00",targetState="checkTableState",cond=whenRequest("checkAvail"))
-					transition(edgeName="t01",targetState="takingOrder",cond=whenDispatch("readyToOrder"))
-					transition(edgeName="t02",targetState="collectingDrink",cond=whenDispatch("ready"))
+					transition(edgeName="t01",targetState="reachingClientToTakeOrder",cond=whenDispatch("readyToOrder"))
+					transition(edgeName="t02",targetState="goingToBarman",cond=whenDispatch("ready"))
 					transition(edgeName="t03",targetState="exitClient",cond=whenDispatch("exitReq"))
 				}	 
 				state("checkTableState") { //this:State
@@ -74,20 +73,19 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("reachEntranceDoor") { //this:State
 					action { //it:State
-						 whatImDoing = "reach"  
+						solve("replaceRule(whatImDoing(_),whatImDoing(reach))","") //set resVar	
 					}
 					 transition( edgeName="goto",targetState="goingToEntranceDoor", cond=doswitch() )
 				}	 
-				state("collectingDrink") { //this:State
+				state("reachingClientToTakeOrder") { //this:State
 					action { //it:State
-						println("[WAITER] I'm collecting the drink from the barman")
-						println("[WAITER] I'm taking the drink to the client")
+						println("[WAITER] I'm collecting the order from the client")
+						solve("replaceRule(whatImDoing(_),whatImDoing(takingOrder))","") //set resVar	
 					}
-					 transition( edgeName="goto",targetState="handleAtCell", cond=doswitch() )
+					 transition( edgeName="goto",targetState="goingToTable1", cond=doswitch() )
 				}	 
 				state("takingOrder") { //this:State
 					action { //it:State
-						println("[WAITER] I'm collecting the order from the client")
 						request("take", "take(1)" ,"client" )  
 					}
 					 transition(edgeName="t05",targetState="clientReady",cond=whenReply("order"))
@@ -98,15 +96,16 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								forward("orderReq", "orderReq(${payloadArg(0)})" ,"barman" ) 
 						}
-						println("[WAITER] I'm taking the drink to the client")
+						println("[WAITER] I'm transmitting the order to the barman")
 					}
-					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
+					 transition( edgeName="goto",targetState="returnToHome", cond=doswitch() )
 				}	 
 				state("exitClient") { //this:State
 					action { //it:State
 						println("[WAITER] Client requested to exit! Proceeding to the payment")
+						solve("replaceRule(whatImDoing(_),whatImDoing(exitClient))","") //set resVar	
 					}
-					 transition( edgeName="goto",targetState="payment", cond=doswitch() )
+					 transition( edgeName="goto",targetState="goingToTable1", cond=doswitch() )
 				}	 
 				state("payment") { //this:State
 					action { //it:State
@@ -121,8 +120,9 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 println("[WAITER] " + payloadArg(0) + " EUR collected! Have a nice day!")  
 						}
+						solve("replaceRule(whatImDoing(_),whatImDoing(convoyExit))","") //set resVar	
 					}
-					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
+					 transition( edgeName="goto",targetState="goingToExitDoor", cond=doswitch() )
 				}	 
 				state("goingToEntranceDoor") { //this:State
 					action { //it:State
@@ -146,6 +146,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("goingToBarman") { //this:State
 					action { //it:State
+						solve("replaceRule(whatImDoing(_),whatImDoing(collectingDrink))","") //set resVar	
 						solve("pos(barman,X,Y)","") //set resVar	
 						 
 									val X = getCurSol("X") 
@@ -174,8 +175,9 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					}
 					 transition(edgeName="t111",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
-				state("returnHome") { //this:State
+				state("returnToHome") { //this:State
 					action { //it:State
+						solve("replaceRule(whatImDoing(_),whatImDoing(returnHome))","") //set resVar	
 						solve("pos(home,X,Y)","") //set resVar	
 						 
 									val X = getCurSol("X") 
@@ -186,11 +188,58 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("handleAtCell") { //this:State
 					action { //it:State
+						solve("whatImDoing(Z)","") //set resVar	
+						 val WhatImDoing = getCurSol("Z").toString() 
+									println(WhatImDoing)
 						if( checkMsgContent( Term.createTerm("atcell(X,Y)"), Term.createTerm("atcell(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
+								if(  WhatImDoing == "reach"  
+								 ){delay(5000) 
+								solve("replaceRule(whatImDoing(_),whatImDoing(convoyTable))","") //set resVar	
+								forward("convoyTable", "convoyTable(A)" ,"waiter" ) 
+								}
+								if(  WhatImDoing == "convoyTable"  
+								 ){delay(5000) 
+								solve("replaceRule(whatImDoing(_),whatImDoing(returnHome))","") //set resVar	
+								forward("returnHome", "returnHome(A)" ,"waiter" ) 
+								}
+								if(  WhatImDoing == "returnHome"  
+								 ){delay(5000) 
+								solve("replaceRule(whatImDoing(_),whatImDoing(nothing))","") //set resVar	
+								forward("listenRequests", "listenRequests(A)" ,"waiter" ) 
+								}
+								if(  WhatImDoing == "takingOrder" 
+								 ){delay(5000) 
+								solve("replaceRule(whatImDoing(_),whatImDoing(take))","") //set resVar	
+								forward("readyToTakeOrder", "readyToTakeOrder(A)" ,"waiter" ) 
+								}
+								if(  WhatImDoing == "collectingDrink" 
+								 ){delay(5000) 
+								solve("replaceRule(whatImDoing(_),whatImDoing(bringingDrinkToClient))","") //set resVar	
+								forward("goTable1", "goTable1(A)" ,"waiter" ) 
+								}
+								if(  WhatImDoing == "bringingDrinkToClient"  
+								 ){delay(5000) 
+								solve("replaceRule(whatImDoing(_),whatImDoing(returnHome))","") //set resVar	
+								forward("returnHome", "returnHome(A)" ,"waiter" ) 
+								}
+								if(  WhatImDoing == "exitClient"  
+								 ){delay(5000) 
+								forward("pay", "pay(A)" ,"waiter" ) 
+								}
+								if(  WhatImDoing == "convoyExit"  
+								 ){delay(5000) 
+								solve("replaceRule(whatImDoing(_),whatImDoing(returnHome))","") //set resVar	
+								forward("returnHome", "returnHome(A)" ,"waiter" ) 
+								}
 						}
 					}
-					 transition(edgeName="t113",targetState="reqHandler",cond=whenReply("atcell"))
+					 transition(edgeName="t113",targetState="goingToTable1",cond=whenDispatch("convoyTable"))
+					transition(edgeName="t114",targetState="returnToHome",cond=whenDispatch("returnHome"))
+					transition(edgeName="t115",targetState="takingOrder",cond=whenDispatch("readyToTakeOrder"))
+					transition(edgeName="t116",targetState="reqHandler",cond=whenDispatch("listenRequests"))
+					transition(edgeName="t117",targetState="goingToTable1",cond=whenDispatch("goTable1"))
+					transition(edgeName="t118",targetState="payment",cond=whenDispatch("pay"))
 				}	 
 			}
 		}

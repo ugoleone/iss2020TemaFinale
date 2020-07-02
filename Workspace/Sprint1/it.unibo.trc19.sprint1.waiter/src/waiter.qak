@@ -38,6 +38,15 @@ Request step : step(TIME)
 Reply stepdone : stepdone(X)
 
 
+//auto-messaggi di spostamento
+Dispatch convoyTable : convoyTable(X)
+Dispatch returnHome : returnHome(X)
+Dispatch readyToTakeOrder : readyToTakeOrder(X)
+Dispatch listenRequests : listenRequests(X)
+Dispatch goTable1 : goTable1(X)
+Dispatch pay : pay(X)
+
+
 
 Context ctxwaiter ip [ host= "localhost"   port= 8010 ] 
 Context ctxtable1 ip [ host= "127.0.0.1"   port= 8020 ] 
@@ -61,7 +70,6 @@ QActor waiter context ctxwaiter{
 	[# 	
 		var tabFree = "" 
 		var tableToCheck = 1 
-		var whatImDoing = ""
 	#]
 	
 	State s0 initial{ 
@@ -79,8 +87,8 @@ QActor waiter context ctxwaiter{
  	}
  	Transition t0 
  		whenRequest checkAvail -> checkTableState		
- 		whenMsg readyToOrder -> takingOrder 
- 		whenMsg ready -> collectingDrink 
+ 		whenMsg readyToOrder -> reachingClientToTakeOrder 
+ 		whenMsg ready -> goingToBarman 
  		whenMsg exitReq -> exitClient 
  	
  	State checkTableState {	
@@ -106,18 +114,16 @@ QActor waiter context ctxwaiter{
 	}Goto reachEntranceDoor if [# tabFree == "FreeClean" #] else checkTableState
 	
 	State reachEntranceDoor {
-		[# whatImDoing = "reach" #]
+		solve(replaceRule(whatImDoing(_),whatImDoing(reach)))
 	}Goto goingToEntranceDoor
 	
 	
-	State collectingDrink{
-		println("[WAITER] I'm collecting the drink from the barman")
-		println("[WAITER] I'm taking the drink to the client")
-	}
-	Goto handleAtCell
-	
-	State takingOrder{
+	State reachingClientToTakeOrder{
 		println("[WAITER] I'm collecting the order from the client")
+		solve(replaceRule(whatImDoing(_),whatImDoing(takingOrder)))	
+	}Goto goingToTable1 
+	
+	State takingOrder {
 		request client -m take : take(1) 
 	}Transition t0 whenReply order -> clientReady
 	
@@ -125,13 +131,15 @@ QActor waiter context ctxwaiter{
 		onMsg( order : order( ORDER ) ){
 			forward barman -m orderReq : orderReq( $payloadArg(0) )
 		}
-		println("[WAITER] I'm taking the drink to the client")
-	} Goto reqHandler
+		println("[WAITER] I'm transmitting the order to the barman")
+	} 
+	Goto returnToHome
 	
 	State exitClient{
 		println("[WAITER] Client requested to exit! Proceeding to the payment")
+		solve(replaceRule(whatImDoing(_),whatImDoing(exitClient)))
 	}
-	Goto payment
+	Goto goingToTable1
 	
 	State payment{
 		println("[WAITER] Collecting the money!")
@@ -143,13 +151,14 @@ QActor waiter context ctxwaiter{
 		onMsg(payment : payment( MONEY )){
 			[# println("[WAITER] " + payloadArg(0) + " EUR collected! Have a nice day!") #]
 		}
+		solve(replaceRule(whatImDoing(_),whatImDoing(convoyExit)))
 	}
-	Goto reqHandler
+	Goto goingToExitDoor
 	
 	
 	// Stati legati al movimento
 	
-	State goingToEntranceDoor {
+	State goingToEntranceDoor {	
 		solve(pos(entrancedoor,X,Y))
 		[# 
 			val X = getCurSol("X") 
@@ -168,6 +177,7 @@ QActor waiter context ctxwaiter{
 	}Transition t1 whenReply atcell -> handleAtCell
 	
 	State goingToBarman {
+		solve(replaceRule(whatImDoing(_),whatImDoing(collectingDrink)))
 		solve(pos(barman,X,Y))
 		[# 
 			val X = getCurSol("X") 
@@ -194,7 +204,10 @@ QActor waiter context ctxwaiter{
 		request planner -m movetoCell : movetoCell($X,$Y)
 	}Transition t1 whenReply atcell -> handleAtCell
 	
-	State returnHome {
+	
+	// ora non si può interrompere 
+	State returnToHome {
+		solve(replaceRule(whatImDoing(_),whatImDoing(returnHome)))
 		solve(pos(home,X,Y))
 		[# 
 			val X = getCurSol("X") 
@@ -204,16 +217,60 @@ QActor waiter context ctxwaiter{
 	}Transition t1 whenReply atcell -> handleAtCell
 	
 	State handleAtCell {
+		solve(whatImDoing(Z))
+		[# val WhatImDoing = getCurSol("Z").toString() 
+			println(WhatImDoing)
+		#]
 		onMsg(atcell : atcell(X,Y)){
-			if [# whatImDoing == "reach" #] {
-				[# whatImDoing = "convoyTable" #]
-				
+			if [# WhatImDoing == "reach" #] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(convoyTable)))
+				forward waiter -m convoyTable : convoyTable(A)
+			} 
+			if [# WhatImDoing == "convoyTable" #] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(returnHome)))
+				forward waiter -m returnHome : returnHome(A)
 			}
+			if [# WhatImDoing == "returnHome" #] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(nothing)))
+				forward waiter -m listenRequests : listenRequests(A)
+			}
+			if [# WhatImDoing == "takingOrder"#] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(take)))
+				forward waiter -m readyToTakeOrder : readyToTakeOrder(A)
+			}
+			if [# WhatImDoing == "collectingDrink"#] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(bringingDrinkToClient)))
+				forward waiter -m goTable1 : goTable1(A)
+			}
+			if [# WhatImDoing == "bringingDrinkToClient" #] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(returnHome)))
+				forward waiter -m returnHome : returnHome(A)
+			}
+			if [# WhatImDoing == "exitClient" #] {
+				delay 5000
+				forward waiter -m pay : pay(A)
+			}
+			if [# WhatImDoing == "convoyExit" #] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(returnHome)))
+				forward waiter -m returnHome : returnHome(A)
+			} 
+			
+
 			
 		}
-	}Goto goingToTable1 if [# whatImDoing == "convoyTable" #] else None
-		Goto returnHome if [# whatImDoing != "convoyTable" #]
-	
+	}	Transition t1 	whenMsg convoyTable -> goingToTable1  
+						whenMsg returnHome -> returnToHome
+						whenMsg readyToTakeOrder -> takingOrder
+						whenMsg listenRequests -> reqHandler
+						whenMsg goTable1 -> goingToTable1
+						whenMsg pay -> payment
 	
 }
 
@@ -233,6 +290,7 @@ QActor planner context ctxwaiter{
 		//println("&&&  insensitivewalker STARTED")
 		run itunibo.planner.plannerUtil.initAI()
 		run itunibo.planner.plannerUtil.loadRoomMap( "teaRoomExplored" )
+		discardMsg Off
 	}	
 	Transition t0 whenRequest movetoCell -> walk
 	
@@ -263,7 +321,7 @@ QActor planner context ctxwaiter{
  	State execTheMove{ 
   		onMsg( doMove : doMove(M) ){ 	
   			if [# payloadArg(0) == "w" #] {
-  				request basicrobot -m step : step(300)
+  				request basicrobot -m step : step(370)
   			} else {
   				forward basicrobot -m cmd : cmd($payloadArg(0))	
   			}
