@@ -268,7 +268,7 @@
                     La componente <strong>it.unibo.qak20.basicrobot</strong> <a href="https://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qak20.basicrobot/userDocs/Qak20Basicrobot.html"> (definito qui)</a> infatti risulta molto utile per realizzare un'entità che si collochi nel mezzo tra "la mente" del <bc>waiter</bc> e la sua realizzazione "fisica", potendo ricevere comandi di alto livello come "step" e facendoli attuare ad un robot virtuale.
 
                     </br>
-                    <center><img src="../HTMLResources/img/basicrobotproject.png" width="50%"></center>
+                    <center><img src="img/basicrobotproject.png" width="50%"></center>
                     </br>
 
                     Per quanto riguarda la pianificazione dei percorsi è già disponibile nella nostra software-house anche un <a href="https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.planner20/resources/itunibo/planner/plannerUtil.kt">planner</a> già compatibile con il basicrobot.
@@ -385,13 +385,27 @@
                     </tr>
                         
                 </table>
+
+                <h3>Nuova interazione per l'ordinazione client</h3>
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:60%">
+                            <center><img src="img/iss2020Sprint1-Client-Waiter.png" width="75%" height="32%"/></center>
+                        </td>
+                        <td>
+                            Quando il <bc>barman</bc> ha finito di preparare il drink richiesto dal <bc>client</bc>, lo comunica al <bc>waiter</bc> tramite un <em>ready</em>.</br></br>
+                            Allora il <bc>waiter</bc> lo va a prendere e lo porta al <bc>table</bc> del <bc>client</bc> consegnandoglielo con una <strong>serveDrink</strong>.
+                            
+                        </td>
+                    </tr>
+                </table>
             </div>
 
             <h2>Project</h2>
             <div>
             Si riporta l'esempio relativo al <bc>waiter</bc> per evidenziare l'architettura a layer adottata. In particolre viene mostrato il caso in cui un <bc>client</bc> richieda di uscire dalla sala da te.
             </br>
-            <center><img src="../HTMLResources/img/waiter_architecture.png" width="50%"></center>
+            <center><img src="img/waiter_architecture.png" width="50%"></center>
             </br>
 
             Per una definizione formale di tutta la struttura, l'interazione ed il comportamento si rimanda alla definizione dei QActor:
