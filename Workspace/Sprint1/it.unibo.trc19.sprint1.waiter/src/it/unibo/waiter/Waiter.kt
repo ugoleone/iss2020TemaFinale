@@ -37,7 +37,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					}
 					 transition(edgeName="t00",targetState="checkTableState",cond=whenRequest("checkAvail"))
 					transition(edgeName="t01",targetState="reachingClientToTakeOrder",cond=whenDispatch("readyToOrder"))
-					transition(edgeName="t02",targetState="goingToBarman",cond=whenDispatch("ready"))
+					transition(edgeName="t02",targetState="collectingDrink",cond=whenDispatch("ready"))
 					transition(edgeName="t03",targetState="exitClient",cond=whenDispatch("exitReq"))
 				}	 
 				state("checkTableState") { //this:State
@@ -100,6 +100,12 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					}
 					 transition( edgeName="goto",targetState="returnToHome", cond=doswitch() )
 				}	 
+				state("collectingDrink") { //this:State
+					action { //it:State
+						solve("replaceRule(whatImDoing(_),whatImDoing(collectingDrink))","") //set resVar	
+					}
+					 transition( edgeName="goto",targetState="goingToBarman", cond=doswitch() )
+				}	 
 				state("servingDrinkToClient") { //this:State
 					action { //it:State
 						println("[WAITER] Serving the drink")
@@ -133,71 +139,46 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("goingToEntranceDoor") { //this:State
 					action { //it:State
-						solve("pos(entrancedoor,X,Y)","") //set resVar	
-						 
-									val X = getCurSol("X") 
-								  	val Y = getCurSol("Y") 
-						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
+						request("moveTo", "moveTo(entrancedoor)" ,"planner" )  
 					}
 					 transition(edgeName="t17",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("goingToExitDoor") { //this:State
 					action { //it:State
-						solve("pos(exitdoor,X,Y)","") //set resVar	
-						 
-									val X = getCurSol("X") 
-								  	val Y = getCurSol("Y") 
-						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
+						request("moveTo", "moveTo(exitdoor)" ,"planner" )  
 					}
 					 transition(edgeName="t18",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("goingToBarman") { //this:State
 					action { //it:State
-						solve("replaceRule(whatImDoing(_),whatImDoing(collectingDrink))","") //set resVar	
-						solve("pos(barman,X,Y)","") //set resVar	
-						 
-									val X = getCurSol("X") 
-								  	val Y = getCurSol("Y") 
-						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
+						request("moveTo", "moveTo(barman)" ,"planner" )  
 					}
 					 transition(edgeName="t19",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("goingToTable1") { //this:State
 					action { //it:State
-						solve("pos(teatable1,X,Y)","") //set resVar	
-						 
-									val X = getCurSol("X") 
-								  	val Y = getCurSol("Y") 
-						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
+						request("moveTo", "moveTo(teatable1)" ,"planner" )  
 					}
 					 transition(edgeName="t110",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("goingToTable2") { //this:State
 					action { //it:State
-						solve("pos(teatable2,X,Y)","") //set resVar	
-						 
-									val X = getCurSol("X") 
-								  	val Y = getCurSol("Y") 
-						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
+						request("moveTo", "moveTo(teatable2)" ,"planner" )  
 					}
 					 transition(edgeName="t111",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("returnToHome") { //this:State
 					action { //it:State
 						solve("replaceRule(whatImDoing(_),whatImDoing(returnHome))","") //set resVar	
-						solve("pos(home,X,Y)","") //set resVar	
-						 
-									val X = getCurSol("X") 
-								  	val Y = getCurSol("Y") 
-						request("movetoCell", "movetoCell($X,$Y)" ,"planner" )  
+						request("moveTo", "moveTo(home)" ,"planner" )  
 					}
 					 transition(edgeName="t112",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("handleAtCell") { //this:State
 					action { //it:State
 						solve("whatImDoing(Z)","") //set resVar	
-						 val WhatImDoing = getCurSol("Z").toString() 
-									println(WhatImDoing)
+						 val WhatImDoing = getCurSol("Z").toString()  
+						println(WhatImDoing)
 						if( checkMsgContent( Term.createTerm("atcell(X,Y)"), Term.createTerm("atcell(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								if(  WhatImDoing == "reach"  

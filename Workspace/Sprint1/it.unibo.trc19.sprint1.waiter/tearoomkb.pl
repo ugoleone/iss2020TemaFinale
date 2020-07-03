@@ -13,10 +13,9 @@ pos( entrancedoor, 1, 4 ).
 pos( exitdoor,     6, 4 ).
 pos( home,		   0, 0 ).
 
-posCurrent(0,0).
+currentPos(0,0).
 
 %% What I'm doing
-%% nothing
 
 whatImDoing(nothing).	 
 	

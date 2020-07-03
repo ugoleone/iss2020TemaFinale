@@ -26,9 +26,25 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 					action { //it:State
 						itunibo.planner.plannerUtil.initAI(  )
 						itunibo.planner.plannerUtil.loadRoomMap( "teaRoomExplored"  )
+						solve("consult('sysRules.pl')","") //set resVar	
+						solve("consult('tearoomkb.pl')","") //set resVar	
 						discardMessages = false
 					}
-					 transition(edgeName="t020",targetState="walk",cond=whenRequest("movetoCell"))
+					 transition(edgeName="t020",targetState="findTheCell",cond=whenRequest("moveTo"))
+				}	 
+				state("findTheCell") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("moveTo(X)"), Term.createTerm("moveTo(A)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 var Spot = payloadArg(0)  
+								solve("pos($Spot,X,Y)","") //set resVar	
+								 
+											val X = getCurSol("X") 
+										  	val Y = getCurSol("Y") 
+								forward("movetoCell", "movetoCell($X,$Y)" ,"planner" ) 
+						}
+					}
+					 transition(edgeName="t021",targetState="walk",cond=whenDispatch("movetoCell"))
 				}	 
 				state("walk") { //this:State
 					action { //it:State
@@ -50,11 +66,11 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						}
 						else
 						 {println("[PLANNER] POINT ($XT,$YT) REACHED")
-						 answer("movetoCell", "atcell", "atcell($XT,$YT)"   )  
+						 answer("moveTo", "atcell", "atcell($XT,$YT)"   )  
 						 }
 					}
-					 transition(edgeName="t021",targetState="execTheMove",cond=whenDispatch("doMove"))
-					transition(edgeName="t022",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
+					 transition(edgeName="t022",targetState="execTheMove",cond=whenDispatch("doMove"))
+					transition(edgeName="t023",targetState="findTheCell",cond=whenRequestGuarded("moveTo",{ CurrentPlannedMove.length == 0  
 					}))
 				}	 
 				state("execTheMove") { //this:State
@@ -81,8 +97,17 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("waitStepDoneFail") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t123",targetState="execPlannedMoves",cond=whenReply("stepdone"))
-					transition(edgeName="t124",targetState="execPlannedMoves",cond=whenReply("stepfail"))
+					 transition(edgeName="t124",targetState="updateCurrentPos",cond=whenReply("stepdone"))
+					transition(edgeName="t125",targetState="updateCurrentPos",cond=whenReply("stepfail"))
+				}	 
+				state("updateCurrentPos") { //this:State
+					action { //it:State
+						 
+						     		val X = itunibo.planner.plannerUtil.getPosX()
+						     		val Y = itunibo.planner.plannerUtil.getPosY()
+						solve("replaceRule(currentPos(_,_),currentPos($X,$Y))","") //set resVar	
+					}
+					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitch() )
 				}	 
 			}
 		}
