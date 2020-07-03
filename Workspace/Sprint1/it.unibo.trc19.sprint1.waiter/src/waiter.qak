@@ -17,7 +17,7 @@ Reply order : order(X)
 Dispatch orderReq : orderReq(X) 
 
 //to add
-Dispatch giveDrink : giveDrink(X)
+Dispatch serveDrink : serveDrink(X)
   
 //terza immagine  
 Dispatch ready : ready(X) 
@@ -138,6 +138,12 @@ QActor waiter context ctxwaiter{
 	} 
 	Goto returnToHome
 	
+	State servingDrinkToClient {
+		println("[WAITER] Serving the drink")
+		forward client -m serveDrink : serveDrink(tea)
+	}
+	Goto returnToHome
+	
 	State exitClient{
 		println("[WAITER] Client requested to exit! Proceeding to the payment")
 		solve(replaceRule(whatImDoing(_),whatImDoing(exitClient)))
@@ -251,10 +257,9 @@ QActor waiter context ctxwaiter{
 				forward waiter -m goTable1 : goTable1(A)
 			}
 			if [# WhatImDoing == "bringingDrinkToClient" #] {
-				forward client -m giveDrink : giveDrink(A)
 				delay 5000
-				solve(replaceRule(whatImDoing(_),whatImDoing(returnHome)))
-				forward waiter -m returnHome : returnHome(A)
+				solve(replaceRule(whatImDoing(_),whatImDoing(servingDrinkToClient)))
+				forward waiter -m serveDrink : serveDrink(A)
 			}
 			if [# WhatImDoing == "exitClient" #] {
 				delay 5000
@@ -272,6 +277,7 @@ QActor waiter context ctxwaiter{
 	}	Transition t1 	whenMsg convoyTable -> goingToTable1  
 						whenMsg returnHome -> returnToHome
 						whenMsg readyToTakeOrder -> takingOrder
+						whenMsg serveDrink -> servingDrinkToClient
 						whenMsg listenRequests -> reqHandler
 						whenMsg goTable1 -> goingToTable1
 						whenMsg pay -> payment

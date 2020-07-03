@@ -11,7 +11,7 @@ Request take : take(X)
 Reply order : order(X)
   
 //to add
-Dispatch giveDrink : giveDrink(X)
+Dispatch serveDrink : serveDrink(X)
 
 //interazione richiesta uscita client  
 Dispatch exitReq : exitReq(X)
@@ -86,7 +86,7 @@ QActor client context ctxclient {
 		replyTo take with order	: order(tea)
 	}
 	// qua bisogna fare una transition, devo aspettare di ricevere l'ordine
-	Transition t0 whenMsg giveDrink -> drink
+	Transition t0 whenMsg serveDrink -> drink
 	
 	State drink {
 		println("[CLIENT] *sip sip* Delicious tea")

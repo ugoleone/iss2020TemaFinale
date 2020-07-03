@@ -74,7 +74,7 @@ class Client ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("[CLIENT] A Na-tea-li please")
 						answer("take", "order", "order(tea)"   )  
 					}
-					 transition(edgeName="t04",targetState="drink",cond=whenDispatch("giveDrink"))
+					 transition(edgeName="t04",targetState="drink",cond=whenDispatch("serveDrink"))
 				}	 
 				state("drink") { //this:State
 					action { //it:State

@@ -100,6 +100,13 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					}
 					 transition( edgeName="goto",targetState="returnToHome", cond=doswitch() )
 				}	 
+				state("servingDrinkToClient") { //this:State
+					action { //it:State
+						println("[WAITER] Serving the drink")
+						forward("serveDrink", "serveDrink(tea)" ,"client" ) 
+					}
+					 transition( edgeName="goto",targetState="returnToHome", cond=doswitch() )
+				}	 
 				state("exitClient") { //this:State
 					action { //it:State
 						println("[WAITER] Client requested to exit! Proceeding to the payment")
@@ -219,10 +226,9 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								forward("goTable1", "goTable1(A)" ,"waiter" ) 
 								}
 								if(  WhatImDoing == "bringingDrinkToClient"  
-								 ){forward("giveDrink", "giveDrink(A)" ,"client" ) 
-								delay(5000) 
-								solve("replaceRule(whatImDoing(_),whatImDoing(returnHome))","") //set resVar	
-								forward("returnHome", "returnHome(A)" ,"waiter" ) 
+								 ){delay(5000) 
+								solve("replaceRule(whatImDoing(_),whatImDoing(servingDrinkToClient))","") //set resVar	
+								forward("serveDrink", "serveDrink(A)" ,"waiter" ) 
 								}
 								if(  WhatImDoing == "exitClient"  
 								 ){delay(5000) 
@@ -238,9 +244,10 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					 transition(edgeName="t113",targetState="goingToTable1",cond=whenDispatch("convoyTable"))
 					transition(edgeName="t114",targetState="returnToHome",cond=whenDispatch("returnHome"))
 					transition(edgeName="t115",targetState="takingOrder",cond=whenDispatch("readyToTakeOrder"))
-					transition(edgeName="t116",targetState="reqHandler",cond=whenDispatch("listenRequests"))
-					transition(edgeName="t117",targetState="goingToTable1",cond=whenDispatch("goTable1"))
-					transition(edgeName="t118",targetState="payment",cond=whenDispatch("pay"))
+					transition(edgeName="t116",targetState="servingDrinkToClient",cond=whenDispatch("serveDrink"))
+					transition(edgeName="t117",targetState="reqHandler",cond=whenDispatch("listenRequests"))
+					transition(edgeName="t118",targetState="goingToTable1",cond=whenDispatch("goTable1"))
+					transition(edgeName="t119",targetState="payment",cond=whenDispatch("pay"))
 				}	 
 			}
 		}
