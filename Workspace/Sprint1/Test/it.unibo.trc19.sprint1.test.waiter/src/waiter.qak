@@ -1,0 +1,398 @@
+
+System /*-trace*/ waiter
+
+//interazione ingresso client
+Request  checkAvail : checkAvail(X) 
+Reply    waitingTime : waitingTime(X)
+Request  tabStatus : tabStatus(X) 
+Reply    tabState : tabState(X)    
+
+//interazione ordinazione client
+//prima immagine
+Dispatch readyToOrder : readyToOrder(X) 
+
+//seconda immagine
+Request take : take(X)
+Reply order : order(X)
+Dispatch orderReq : orderReq(X) 
+  
+//terza immagine  
+Dispatch ready : ready(X) 
+
+//interazione richiesta uscita client  
+Dispatch exitReq : exitReq(X)
+
+//interazione pagamento client
+Request  collect : collect(X) 
+Reply    payment : payment(X)
+
+
+//interazione col planner
+Dispatch doMove     : doMove(V)
+Request  movetoCell : movetoCell(X,Y)
+Reply    atcell     : atcell(X,Y)
+
+//interazione col basicrobot
+Dispatch cmd       	: cmd(MOVE)    
+Request step : step(TIME)
+Reply stepdone : stepdone(X)
+
+
+//auto-messaggi di spostamento
+Dispatch convoyTable : convoyTable(X)
+Dispatch returnHome : returnHome(X)
+Dispatch readyToTakeOrder : readyToTakeOrder(X)
+Dispatch listenRequests : listenRequests(X)
+Dispatch goTable1 : goTable1(X)
+Dispatch pay : pay(X)
+
+
+/* ESCLUSIVE DEL CLIENT */
+Request 	notify 	: 	notify(X)
+Reply		tempResult	:	tempResult(X)
+Dispatch	accept	:	accept(X)
+Dispatch	inform	:	inform(X)
+
+//interazioni per transizione di stato
+Dispatch enterRoom : enterRoom(X)
+Dispatch startMakingOrder: startMakingOrder(X)
+
+
+Context ctxwaiter ip [ host= "localhost"   port= 8010 ] 
+//Context ctxtable1 ip [ host= "127.0.0.1"   port= 8020 ] 
+//Context ctxtable2 ip [ host= "127.0.0.1"   port= 8030 ] 
+//Context ctxsmartbell ip [ host= "127.0.0.1"   port= 8040 ] 
+//Context ctxbarman ip [ host= "127.0.0.1"   port= 8050 ] 
+//Context ctxclient ip [ host= "127.0.0.1"   port= 8060 ] 
+Context ctxbasicrobot ip [ host= "127.0.0.1" port= 8070]
+
+//ExternalQActor table1 context ctxtable1
+//ExternalQActor table2 context ctxtable2
+//ExternalQActor smartbell context ctxsmartbell
+//ExternalQActor barman context ctxbarman
+//ExternalQActor client context ctxclient
+ExternalQActor basicrobot context ctxbasicrobot
+
+
+
+QActor waiter context ctxwaiter{ 
+	
+	[# 	
+		var tabFree = "" 
+		var tableToCheck = 1 
+	#]
+	
+	State s0 initial{ 
+		println("[WAITER] waiter is starting..I'm HOME!") 
+		solve( consult("sysRules.pl")	 ) 
+		solve(consult("tearoomkb.pl"))	
+		delay 1000
+		discardMsg Off
+	} 
+	Goto reqHandler
+	
+ 	State reqHandler{
+ 		println("[WAITER] Waiting for a request!")
+ 		[# tableToCheck = 1 #]	
+ 	}
+ 	Transition t0 
+ 		whenRequest checkAvail -> checkTableState		
+ 		whenMsg readyToOrder -> reachingClientToTakeOrder 
+ 		whenMsg ready -> goingToBarman 
+ 		whenMsg exitReq -> exitClient 
+ 	
+ 	State checkTableState {	
+ 		println("[WAITER] Checking table state")
+ 		if [# tableToCheck == 1 #] {
+ 			request table1 -m tabStatus : tabStatus(1)
+ 		} else {
+ 			request table2 -m tabStatus : tabStatus(1)
+ 		}
+	}
+	Transition t0 whenReply tabState -> handleTabState
+	
+	State handleTabState {
+		onMsg( tabState : tabState( STATUS ) ){
+			[# tabFree = payloadArg(0) #]
+			if [# tabFree == "FreeClean"#]{
+				println("[WAITER] A table is free!")
+				replyTo checkAvail with waitingTime : waitingTime(0)
+			} else {
+				[# tableToCheck = 2 #]
+			}					 		 
+ 		}
+	}Goto reachEntranceDoor if [# tabFree == "FreeClean" #] else checkTableState
+	
+	State reachEntranceDoor {
+		solve(replaceRule(whatImDoing(_),whatImDoing(reach)))
+	}Goto goingToEntranceDoor
+	
+	
+	State reachingClientToTakeOrder{
+		println("[WAITER] I'm collecting the order from the client")
+		solve(replaceRule(whatImDoing(_),whatImDoing(takingOrder)))	
+	}Goto goingToTable1 
+	
+	State takingOrder {
+		request client -m take : take(1) 
+	}Transition t0 whenReply order -> clientReady
+	
+	State clientReady {
+		onMsg( order : order( ORDER ) ){
+			forward barman -m orderReq : orderReq( $payloadArg(0) )
+		}
+		println("[WAITER] I'm transmitting the order to the barman")
+	} 
+	Goto returnToHome
+	
+	State exitClient{
+		println("[WAITER] Client requested to exit! Proceeding to the payment")
+		solve(replaceRule(whatImDoing(_),whatImDoing(exitClient)))
+	}
+	Goto goingToTable1
+	
+	State payment{
+		println("[WAITER] Collecting the money!")
+		request client -m collect : collect(1)
+	}
+	Transition t0 whenReply payment -> handlePayment
+	
+	State handlePayment {
+		onMsg(payment : payment( MONEY )){
+			[# println("[WAITER] " + payloadArg(0) + " EUR collected! Have a nice day!") #]
+		}
+		solve(replaceRule(whatImDoing(_),whatImDoing(convoyExit)))
+	}
+	Goto goingToExitDoor
+	
+	
+	// Stati legati al movimento
+	
+	State goingToEntranceDoor {	
+		solve(pos(entrancedoor,X,Y))
+		[# 
+			val X = getCurSol("X") 
+		  	val Y = getCurSol("Y") 
+		#]
+		request planner -m movetoCell : movetoCell($X,$Y)
+	}Transition t1 whenReply atcell -> handleAtCell
+	
+	State goingToExitDoor {
+		solve(pos(exitdoor,X,Y))
+		[# 
+			val X = getCurSol("X") 
+		  	val Y = getCurSol("Y") 
+		#]
+		request planner -m movetoCell : movetoCell($X,$Y)
+	}Transition t1 whenReply atcell -> handleAtCell
+	
+	State goingToBarman {
+		solve(replaceRule(whatImDoing(_),whatImDoing(collectingDrink)))
+		solve(pos(barman,X,Y))
+		[# 
+			val X = getCurSol("X") 
+		  	val Y = getCurSol("Y") 
+		#]
+		request planner -m movetoCell : movetoCell($X,$Y)
+	}Transition t1 whenReply atcell -> handleAtCell
+	
+	State goingToTable1 {
+		solve(pos(teatable1,X,Y))
+		[# 
+			val X = getCurSol("X") 
+		  	val Y = getCurSol("Y") 
+		#]
+		request planner -m movetoCell : movetoCell($X,$Y)
+	}Transition t1 whenReply atcell -> handleAtCell
+	
+	State goingToTable2 {
+		solve(pos(teatable2,X,Y))
+		[# 
+			val X = getCurSol("X") 
+		  	val Y = getCurSol("Y") 
+		#]
+		request planner -m movetoCell : movetoCell($X,$Y)
+	}Transition t1 whenReply atcell -> handleAtCell
+	
+	
+	// ora non si può interrompere 
+	State returnToHome {
+		solve(replaceRule(whatImDoing(_),whatImDoing(returnHome)))
+		solve(pos(home,X,Y))
+		[# 
+			val X = getCurSol("X") 
+		  	val Y = getCurSol("Y") 
+		#]
+		request planner -m movetoCell : movetoCell($X,$Y)
+	}Transition t1 whenReply atcell -> handleAtCell
+	
+	State handleAtCell {
+		solve(whatImDoing(Z))
+		[# val WhatImDoing = getCurSol("Z").toString() 
+			println(WhatImDoing)
+		#]
+		updateResource [ #WhatImDoing.toString()#]
+		onMsg(atcell : atcell(X,Y)){
+			if [# WhatImDoing == "reach" #] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(convoyTable)))
+				forward waiter -m convoyTable : convoyTable(A)
+			} 
+			if [# WhatImDoing == "convoyTable" #] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(returnHome)))
+				forward waiter -m returnHome : returnHome(A)
+			}
+			if [# WhatImDoing == "returnHome" #] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(nothing)))
+				forward waiter -m listenRequests : listenRequests(A)
+			}
+			if [# WhatImDoing == "takingOrder"#] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(take)))
+				forward waiter -m readyToTakeOrder : readyToTakeOrder(A)
+			}
+			if [# WhatImDoing == "collectingDrink"#] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(bringingDrinkToClient)))
+				forward waiter -m goTable1 : goTable1(A)
+			}
+			if [# WhatImDoing == "bringingDrinkToClient" #] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(returnHome)))
+				forward waiter -m returnHome : returnHome(A)
+			}
+			if [# WhatImDoing == "exitClient" #] {
+				delay 5000
+				forward waiter -m pay : pay(A)
+			}
+			if [# WhatImDoing == "convoyExit" #] {
+				delay 5000
+				solve(replaceRule(whatImDoing(_),whatImDoing(returnHome)))
+				forward waiter -m returnHome : returnHome(A)
+			} 
+			
+
+			
+		}
+	}	Transition t1 	whenMsg convoyTable -> goingToTable1  
+						whenMsg returnHome -> returnToHome
+						whenMsg readyToTakeOrder -> takingOrder
+						whenMsg listenRequests -> reqHandler
+						whenMsg goTable1 -> goingToTable1
+						whenMsg pay -> payment
+	
+}
+
+QActor planner context ctxwaiter{  
+[#
+	var XT = "0"
+	var YT = "0"
+	var CurrentPlannedMove = ""
+	var StepTime    	   = 100L
+#]
+	State s0 initial {	     
+		//println("&&&  insensitivewalker STARTED")
+		run itunibo.planner.plannerUtil.initAI()
+		run itunibo.planner.plannerUtil.loadRoomMap( "teaRoomExplored" )
+		discardMsg Off
+	}	
+	Transition t0 whenRequest movetoCell -> walk
+	
+	State walk{
+		onMsg( movetoCell : movetoCell(X,Y) ){
+			[# XT = payloadArg(0)
+			   YT = payloadArg(1)			  
+			 #]
+			println("[PLANNER] MOVING to ($XT,$YT)")
+			run itunibo.planner.plannerUtil.planForGoal("$XT","$YT")
+		}
+	}
+	Goto execPlannedMoves
+	
+	
+	State execPlannedMoves{ 
+ 		[#  CurrentPlannedMove = itunibo.planner.plannerUtil.getNextPlannedMove() #]
+ 		if [# CurrentPlannedMove.length > 0 # ]{
+ 			forward planner -m doMove : doMove($CurrentPlannedMove)
+ 		}else{
+	     	println("[PLANNER] POINT ($XT,$YT) REACHED")
+	     	replyTo movetoCell with atcell : atcell($XT,$YT) 			
+ 		}
+ 	}
+ 	Transition t0 whenMsg doMove  -> execTheMove
+ 				  whenRequest movetoCell and [# CurrentPlannedMove.length == 0 #]-> walk
+ 				  
+ 	State execTheMove{ 
+  		onMsg( doMove : doMove(M) ){ 	
+  			if [# payloadArg(0) == "w" #] {
+  				request basicrobot -m step : step(370)
+  			} else {
+  				forward basicrobot -m cmd : cmd($payloadArg(0))
+  				delay 500	
+  			}
+  		}
+  		[# 
+  			val move = payloadArg(0)
+  			itunibo.planner.plannerUtil.updateMap(move,"")
+  		#]		 			
+ 	 } 
+     Goto execPlannedMoves if [# payloadArg(0) != "w" #] else waitStepDone
+     
+     State waitStepDone {
+     } Transition t1 whenReply stepdone -> execPlannedMoves
+     
+ }
+
+QActor client context ctxwaiter {
+	[# var tempResult = "no"	#]
+	State init initial {
+		println("[FAKE CLIENT] Hi! I'm ready to MOCK a CLIENT")
+		discardMsg Off
+	}
+}
+
+QActor smartbell context ctxwaiter {
+	[# var tempResult = "no"	#]
+	State init initial {
+		println("[FAKE SMARTBELL] Hi! I'm ready to MOCK a SMARTBELL")
+		discardMsg Off
+	}
+}
+
+QActor table1 context ctxwaiter{
+	[# var state = "free and clean" #]
+	State s0 initial{ 
+		println("[TABLE1] table1 is starting..") 	
+	} 
+	Transition t0 whenRequest tabStatus -> handleRequests
+	
+	State handleRequests{
+		replyTo tabStatus with tabState : tabState(FreeClean)	 
+			
+	}
+} 
+
+QActor table2 context ctxwaiter{
+	[# var state = "free and clean" #]
+	State s0 initial{ 
+		println("[TABLE2] table2 is starting..") 	
+	} 
+	Transition t0 whenRequest tabStatus -> handleRequests
+	
+	State handleRequests{
+		replyTo tabStatus with tabState : tabState(FreeClean)	 
+			
+	}
+} 
+
+QActor barman context ctxwaiter{  
+	  	  
+	State s0 initial {	  
+		println("[FAKE BARMAN] Hi! I'm ready to MOCK a BARMAN")   
+ 		discardMsg Off
+ 	} 
+		 	
+} 
+
