@@ -75,13 +75,14 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 					}
 					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitchGuarded({ payloadArg(0) != "w"  
 					}) )
-					transition( edgeName="goto",targetState="waitStepDone", cond=doswitchGuarded({! ( payloadArg(0) != "w"  
+					transition( edgeName="goto",targetState="waitStepDoneFail", cond=doswitchGuarded({! ( payloadArg(0) != "w"  
 					) }) )
 				}	 
-				state("waitStepDone") { //this:State
+				state("waitStepDoneFail") { //this:State
 					action { //it:State
 					}
 					 transition(edgeName="t122",targetState="execPlannedMoves",cond=whenReply("stepdone"))
+					transition(edgeName="t123",targetState="execPlannedMoves",cond=whenReply("stepfail"))
 				}	 
 			}
 		}

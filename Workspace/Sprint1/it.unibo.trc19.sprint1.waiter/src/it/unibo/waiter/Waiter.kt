@@ -219,7 +219,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								forward("goTable1", "goTable1(A)" ,"waiter" ) 
 								}
 								if(  WhatImDoing == "bringingDrinkToClient"  
-								 ){delay(5000) 
+								 ){forward("giveDrink", "giveDrink(A)" ,"client" ) 
+								delay(5000) 
 								solve("replaceRule(whatImDoing(_),whatImDoing(returnHome))","") //set resVar	
 								forward("returnHome", "returnHome(A)" ,"waiter" ) 
 								}

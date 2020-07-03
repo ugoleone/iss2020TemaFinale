@@ -15,6 +15,9 @@ Dispatch readyToOrder : readyToOrder(X)
 Request take : take(X)
 Reply order : order(X)
 Dispatch orderReq : orderReq(X) 
+
+//to add
+Dispatch giveDrink : giveDrink(X)
   
 //terza immagine  
 Dispatch ready : ready(X) 
@@ -36,7 +39,7 @@ Reply    atcell     : atcell(X,Y)
 Dispatch cmd       	: cmd(MOVE)    
 Request step : step(TIME)
 Reply stepdone : stepdone(X)
-
+Reply stepfail : stepfail(X)
 
 //auto-messaggi di spostamento
 Dispatch convoyTable : convoyTable(X)
@@ -248,6 +251,7 @@ QActor waiter context ctxwaiter{
 				forward waiter -m goTable1 : goTable1(A)
 			}
 			if [# WhatImDoing == "bringingDrinkToClient" #] {
+				forward client -m giveDrink : giveDrink(A)
 				delay 5000
 				solve(replaceRule(whatImDoing(_),whatImDoing(returnHome)))
 				forward waiter -m returnHome : returnHome(A)
@@ -332,9 +336,10 @@ QActor planner context ctxwaiter{
   			itunibo.planner.plannerUtil.updateMap(move,"")
   		#]		 			
  	 } 
-     Goto execPlannedMoves if [# payloadArg(0) != "w" #] else waitStepDone
+     Goto execPlannedMoves if [# payloadArg(0) != "w" #] else waitStepDoneFail
      
-     State waitStepDone {
-     } Transition t1 whenReply stepdone -> execPlannedMoves
+     State waitStepDoneFail {
+     } Transition t1 	whenReply stepdone -> execPlannedMoves
+     					whenReply stepfail -> execPlannedMoves
      
  }

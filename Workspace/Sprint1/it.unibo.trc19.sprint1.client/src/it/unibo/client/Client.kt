@@ -74,12 +74,12 @@ class Client ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("[CLIENT] A Na-tea-li please")
 						answer("take", "order", "order(tea)"   )  
 					}
-					 transition( edgeName="goto",targetState="drink", cond=doswitch() )
+					 transition(edgeName="t04",targetState="drink",cond=whenDispatch("giveDrink"))
 				}	 
 				state("drink") { //this:State
 					action { //it:State
 						println("[CLIENT] *sip sip* Delicious tea")
-						delay(30000) 
+						delay(10000) 
 					}
 					 transition( edgeName="goto",targetState="askToPay", cond=doswitch() )
 				}	 
@@ -88,7 +88,7 @@ class Client ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("[CLIENT] I want to pay")
 						forward("exitReq", "exitReq(1)" ,"waiter" ) 
 					}
-					 transition(edgeName="t04",targetState="pay",cond=whenRequest("collect"))
+					 transition(edgeName="t05",targetState="pay",cond=whenRequest("collect"))
 				}	 
 				state("pay") { //this:State
 					action { //it:State
