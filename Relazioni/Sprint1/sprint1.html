@@ -23,7 +23,7 @@
 
             <div>
                 Il primo Sprint si occupa di modellare la tearoom nella condizione in cui vi è un solo cliente presente
-                che compie le azioni:
+                che compie le azioni seguenti:
                 <ul>
                     <li>
                         Suonare lo <bc>smartbell</bc>
@@ -75,9 +75,6 @@
 
             <h2>Requirement analysis</h2>
             <div>
-                Dai requisiti si evince che i requisiti trattati in questo Sprint sono i seguenti:
-            </br>
-            </br>
                 <table style="width:100%" border="1">
 
                     <tr><td><bc>NUMERO REQUISITO</bc></td><td><bc>ATTORE REQUISITO</bc></td><td><bc>DESCRIZIONE REQUISITO</bc></td><td><bc>TAG REQUISITO</bc></td></tr>    
@@ -223,18 +220,18 @@
                     Infine per poter calcolare le mosse da eseguire per muoversi nell'ambiente sono possibili due strade:
                     <ul>
                         <li>
-                            a favore di una maggiore semplicità, si potrebbe essere portati a ricorrere ad un'implentazione "dummy" con percorsi prefissati
+                            si potrebbe essere portati a ricorrere ad una più semplice implentazione "dummy" con percorsi prefissati
                         </li>
                         <li>
-                            affrontare sin da subito la progettazione di una soluzione in grado di calcolare i percorsi dinamicamente.
+                            si potrebbe affrontare sin da subito la progettazione di una soluzione in grado di calcolare i percorsi dinamicamente
                         </li>
                     </ul>
-                    Volendo ottimizzare i tempi, e disponendo all'interno della nostra software-house di una utility per implementare un planner già pronta, risulta più conveniente iniziare da subito con una soluzione più vicina al prodotto finale. Ciò permette di ridurre i tempi di sviluppo: un'implementazione a percorsi predefiniti utile in una prima fase di prova sarebbe da sostituire, successivamente, con la pianificazione dinamica dei percorsi (più appropriata per il prodotto finale), quindi tantovale iniziare a investire tempo di sviluppo fin da subito su di una soluzione definitiva, sopratutto se è già disponibile un'utility software per farlo.
+                    Volendo ottimizzare i tempi, e disponendo all'interno della nostra software-house di una utility per implementare un planner già pronta, risulta più conveniente iniziare da subito con una soluzione più vicina al prodotto finale. Ciò permette di ridurre i tempi di sviluppo: un'implementazione a percorsi predefiniti, utile in una prima fase di prova, sarebbe poi da sostituire con la successiva pianificazione dinamica dei percorsi (più affidabile e quindi più appropriata per il prodotto finale): tantovale iniziare a investire tempo di sviluppo fin da subito su di una soluzione definitiva, sopratutto se è già disponibile un'utility software per farlo.
                 </p>
 
                 <p>
                     <strong>TestPlans</strong></br>
-                    Per formalizzare un primo set di test plans ed avere anche una base di partenza per la realizzazione di un planner si potrebbe suddividere il pavimento della <em>tearoom</em> in una griglia di R * C quadrati di lato R. Dove R è il più piccolo possibile tale da contenere il robot.
+                    Per formalizzare un primo set di test plans ed avere anche una base di partenza per la realizzazione di un planner si potrebbe suddividere il pavimento della <em>tearoom</em> in una griglia di <tt>R * C</tt> quadrati di lato <tt>L</tt>. Dove <tt>L</tt> è la dimensione più piccola possibile tale da contenere il robot.
                     Ogni cella può essere libera oppure occupata da un ostacolo.
                     A questo punto si può definire la posizione di ogni elemento nella mappa come una coppia di coordinate (R,C). Il planner calcolerà il percorso da eseguire dalla posizione corrente del <bc>waiter</bc> fino al punto richiesto, e alla fine dell'esecuzione si potrà testare verificando che la posizione raggiunta sia quella richiesta inizialmente.
                 </p>
@@ -258,7 +255,7 @@
                 </p>
 
                 <p>
-                    Da tutto ciò consegue che potrebbe essere utile far muovere il waiter di cella in cella definendo questo tipo di movimento "step", per altro già disponibile nel basic robot ....
+                    Da tutto ciò consegue che potrebbe essere utile far muovere il waiter di cella in cella definendo questo tipo di movimento "step".
                 </p>
                 
             </div>
@@ -268,13 +265,13 @@
                 <p>
                     Dal punto di vista logico il nostro sistema distribuito è composto da varie entità ognuna concepita come un attore, modellato come una FSM.
                     Sicuramente l'entità <bc>waiter</bc> dovendo soddisfare vari requisiti è quella che presenta il maggior grado di complessità. Per risolvere i vari problemi ad essa relativi potrebbe risultare conveniente adottare un'architettura a layer, sopratutto perchè sono già disponibili all'interno della nostra software-house alcune componenti pronte per essere riutilizzate a tal proposito. </br>
-                    La componente <strong>it.unibo.qak20.basicrobot</strong> <a href="https://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qak20.basicrobot/userDocs/Qak20Basicrobot.html"> (definito qui)</a> risulta molto utile per realizzare un'entità che si colloca nel mezzo tra "la mente" del waiter e la sua realizzazione "fisica", potendo ricevere comandi di alto livello come "step" e facendoli attuare ad un robot virtuale.
+                    La componente <strong>it.unibo.qak20.basicrobot</strong> <a href="https://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qak20.basicrobot/userDocs/Qak20Basicrobot.html"> (definito qui)</a> infatti risulta molto utile per realizzare un'entità che si collochi nel mezzo tra "la mente" del <bc>waiter</bc> e la sua realizzazione "fisica", potendo ricevere comandi di alto livello come "step" e facendoli attuare ad un robot virtuale.
 
                     </br>
                     <center><img src="../HTMLResources/img/basicrobotproject.png" width="50%"></center>
                     </br>
 
-                    Per quanto riguarda la pianificazione dei percorsi è già disponibile nella nostra software-house un <a href="https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.planner20/resources/itunibo/planner/plannerUtil.kt">planner</a> già compatibile con il basicrobot.
+                    Per quanto riguarda la pianificazione dei percorsi è già disponibile nella nostra software-house anche un <a href="https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.planner20/resources/itunibo/planner/plannerUtil.kt">planner</a> già compatibile con il basicrobot.
                     
 
                 </p>
@@ -397,7 +394,14 @@
             <center><img src="../HTMLResources/img/waiter_architecture.png" width="50%"></center>
             </br>
 
-            Per una definizione formale di tutta la struttura, l'interazione ed il comportamento si rimanda alla definizione dei <a href="#">QActor</a>
+            Per una definizione formale di tutta la struttura, l'interazione ed il comportamento si rimanda alla definizione dei QActor:
+            <ul>
+                <li><a href="../../Workspace/Sprint1/it.unibo.trc19.sprint1.waiter/src/waiter.qak">waiter.qak</a></li>
+                <li><a href="../../Workspace/Sprint1/it.unibo.trc19.sprint1.client/src/client.qak">client.qak</a></li>
+                <li><a href="../../Workspace/Sprint1/it.unibo.trc19.sprint1.smartbell/src/smartbell.qak">smartbell.qak</a></li>
+                <li><a href="../../Workspace/Sprint1/it.unibo.trc19.sprint1.barman/src/barman.qak">barman.qak</a></li>
+            </ul>
+             
             
             </div>
 
@@ -425,14 +429,6 @@
                 However, one study indicated that over 80% of maintenance effort is used for non-corrective actions.
             </div>
 
-
-            <table style="width:100%" border="1">
-                <tr>
-                    <td style="width:50%">
-                    </td>
-                    <td></td>
-                </tr>
-            </table>
 
             <br /><br />
 

@@ -32,12 +32,13 @@ h1, h2, h3 {
     color: #242424;
     clear: left;
     font: 100% Tahoma, Helvetica, Arial, sans-serif;
-    margin: 10;
+    margin: 10%;
     margin-right: 15px;
-    margin-bottom: 0.5em;
+    margin-bottom: 1em;
     padding-top: 0.5em;
+    padding-bottom: 0.5em;
     padding-left: 10px;
-    border-bottom: 1px solid #242424;
+    /*border-bottom: 1px solid #242424;*/
 }
 
 h1 {
@@ -127,8 +128,8 @@ div.req{
 }     
 */
 .content {
-    max-width: 900px;
-    margin: auto;
+    max-width: 1000px;
+    margin: 5%;
     font-size: 18px;
     text-align: justify;
   }
@@ -142,4 +143,9 @@ div.remark{
 table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
-}         
+}
+
+td {
+    padding-left: 10px;
+    padding-right: 10px;
+}
