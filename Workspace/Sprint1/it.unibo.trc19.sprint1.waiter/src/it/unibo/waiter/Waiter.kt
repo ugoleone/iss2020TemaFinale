@@ -178,7 +178,6 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						solve("whatImDoing(Z)","") //set resVar	
 						 val WhatImDoing = getCurSol("Z").toString()  
-						println(WhatImDoing)
 						if( checkMsgContent( Term.createTerm("atcell(X,Y)"), Term.createTerm("atcell(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								if(  WhatImDoing == "reach"  

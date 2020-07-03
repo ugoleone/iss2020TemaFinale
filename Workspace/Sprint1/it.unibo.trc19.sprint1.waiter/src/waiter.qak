@@ -202,7 +202,6 @@ QActor waiter context ctxwaiter{
 	State handleAtCell {
 		solve(whatImDoing(Z))
 		[# val WhatImDoing = getCurSol("Z").toString() #]
-		println(WhatImDoing)
 		onMsg(atcell : atcell(X,Y)){
 			if [# WhatImDoing == "reach" #] {
 				delay 5000
