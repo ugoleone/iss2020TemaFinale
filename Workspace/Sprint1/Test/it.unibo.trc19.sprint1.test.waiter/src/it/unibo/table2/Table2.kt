@@ -22,7 +22,7 @@ class Table2 ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("[TABLE2] table2 is starting..")
 					}
-					 transition(edgeName="t024",targetState="handleRequests",cond=whenRequest("tabStatus"))
+					 transition(edgeName="t027",targetState="handleRequests",cond=whenRequest("tabStatus"))
 				}	 
 				state("handleRequests") { //this:State
 					action { //it:State
