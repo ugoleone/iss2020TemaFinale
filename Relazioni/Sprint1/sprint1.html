@@ -53,7 +53,7 @@
                 Si supponga che:
                 <ul>
                     <li>
-                        Nella simulazione è presente un solo cliente
+                        Nella simulazione è presente un solo <bc>client</bc>
                     </li>
                     <li>
                         Il waiter deve poter madare l'ordinazione al <bc>barman</bc> e portarla al <bc>client</bc> quando è pronta
@@ -420,8 +420,30 @@
             </div>
 
             <h2>Testing</h2>
-            <div class="remark">
-                <ks>GOAL</ks>: complete the <k>functional TestPlans</k> according to the project code and execute them.
+            <div>
+                <b>Tutti i test sono stati svolti con JUnit4</b></br>
+                <img src="img/test.png"></br></br>
+                I test sono stati svolti analizzando il flusso delle interazioni fra i vari attori del sistema,
+                concentrandosi particolarmente sul movimento del <bc>waiter</bc>. La logica di confronto è 
+                basata sull'osservazione della composizione della mappa dopo ogni spostamento del robot e il test è 
+                svolto confrontando la mappa al momento del test (ottenuta tramite il riferimento in <a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/resources/itunibo/planner/plannerUtil.kt">plannerUtil.kt</a>)
+                e la mappa che ci si aspettava in quel momento.<br></br>
+                Per motivi di testing, tutte le entità esterne al <bc>waiter</bc> sono state rese attori senza logica applicativa. Tutti gli attori sono inseriti
+                nel contesto del <bc>waiter</bc> (si guardi <a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/src/waiter.qak">waiter.qak</a>).</br>
+                Nello specifico, <b>le classi di test sono</b>:
+                <ol>
+                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterConvoyEntrance.kt">TestWaiterConvoyEntrance.kt</a> verifica che il <bc>waiter</bc>
+                    compia correttamente le azioni di <em>reach</em>, <em>convoy</em> all'ingresso e successivo ritorno alla <em>home</em>.</li>
+                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterDrinkOrder.kt">TestWaiterConvoyEntrance.kt</a> verifica che il <bc>waiter</bc>
+                    compia correttamente le azioni di <em>readyToOrder</em> (che implica raggiungimento del tavolo del <bc>client</bc>), <em>take</em>, <em>order</em> e successivo ritorno alla <em>home</em>.</li>
+                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterBringingDrink.kt">TestWaiterBringingDrink.kt</a> verifica che il <bc>waiter</bc>
+                    compia correttamente le azioni di <em>ready</em> (che implica anche il trasporto del drink al <bc>client</bc>), e successivo ritorno alla <em>home</em>.</li>
+                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterPaymentExit.kt">TestWaiterPaymentExit.kt</a> verifica che il <bc>waiter</bc>
+                        compia correttamente le azioni di <em>collect</em>, <em>payment</em>, <em>convoy</em> in uscita e successivo ritorno alla <em>home</em>.</li>
+                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterComplessivo.kt">TestWaiterComplessivo.kt</a> esegue in successione i precedenti test,
+                        simulando tutto il flow del <bc>client</bc> all'interno del sistema.</li>        
+                </ol>
+
             </div>
 
             
