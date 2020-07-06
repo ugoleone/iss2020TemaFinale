@@ -149,3 +149,7 @@ td {
     padding-left: 10px;
     padding-right: 10px;
 }
+
+.done{
+    background-color: rgba(0, 128, 28, 0.514);
+}

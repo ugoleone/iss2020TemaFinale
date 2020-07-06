@@ -75,6 +75,7 @@
 
             <h2>Requirement analysis</h2>
             <div>
+                Di seguito sono riportati i requisiti trattati in questo sprint:</br></br>
                 <table style="width:100%" border="1">
 
                     <tr><td><bc>NUMERO REQUISITO</bc></td><td><bc>ATTORE REQUISITO</bc></td><td><bc>DESCRIZIONE REQUISITO</bc></td><td><bc>TAG REQUISITO</bc></td></tr>    
@@ -280,8 +281,13 @@
 
             <h2>Test plans</h2>
             <div>
+                
                 <table style="width:100%" border="1">
-
+                    Di seguito è riportata una tabella che riassume tutte le funzionalità coperte e testate
+                    all' interno di questo sprint, evidenziando stato pre e post interazione. </br>
+                    Le interazioni colorate in verde sono quelle testate nella sezione di <a href="#testing">Testing</a>, mentre
+                    quelle non colorate si suppongono già testate in quanto semplici interazioni (dispatch,request-response definite <a href="http://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qakactor/userDocs/LabQakIntro2020.html#messages">qui</a>) implementate nel framework di riferimento 
+                    QAK già presente nella nostra software-house.</br></br>
                     <tr>
                         <td><bc>TAG TEST</bc></td>
                         <td><bc>STATO INIZIALE</bc></td>
@@ -303,7 +309,7 @@
                     <tr>
                         <td><em>checkAvail</em></td>
                         <td>Lo <bc>smartbell</bc> ha appena accettato un <bc>cliente</bc> misurandogli la temperatura</td>
-                        <td>Lo <bc>smartbell</bc> è pronto afare una <em>accept</em> del <bc>client</bc> nella stanza</td>
+                        <td>Lo <bc>smartbell</bc> è pronto a fare una <em>accept</em> del <bc>client</bc> nella stanza</td>
                     </tr>
 
                     <tr>
@@ -318,37 +324,37 @@
                         <td>Il <bc>client</bc> aspetta il <bc>waiter</bc> per essere portato al tavolo</td>
                     </tr> 
                     
-                    <tr>
+                    <tr class="done">
                         <td><em>reach</em></td>
                         <td>Il robot <bc>waiter</bc> è fermo nella <em>home</em></td>
                         <td>Il robot <bc>waiter</bc> si trova alla <em>entrancedoor</em></td>
                     </tr>
 
-                    <tr>
+                    <tr class="done">
                         <td><em>convoy</em></td>
                         <td>Il <bc>client</bc> si trova nella <em>entrancedoor</em></td>
                         <td>Il <bc>client</bc> si trova nel suo <bc>table</bc></td>
                     </tr>
 
-                    <tr>
+                    <tr class="done">
                         <td><em>readyToOrder</em></td>
                         <td>Il <bc>client</bc> ha deciso cosa ordinare</td>
                         <td>Il <bc>client</bc> si mette in attesa del <bc>waiter</bc> per comunicargli la sua ordinazione</td>
                     </tr>
 
-                    <tr>
+                    <tr class="done">
                         <td><em>take</em></td>
                         <td>Il <bc>client</bc> aspetta il waiter per comunicargli l'ordine</td>
                         <td>Il <bc>waiter</bc> è arrivato al <bc>table</bc> ed è pronto a conoscere il contenuto dell'ordinazione</td>
                     </tr>
 
-                    <tr>
+                    <tr class="done">
                         <td><em>order</em></td>
                         <td>Il <bc>waiter</bc> ha domandato al <bc>client</bc> di comunicargli il contenuto della sua ordinazione</td>
                         <td>Il <bc>waiter</bc> ha ricevuto l'ordine dal <bc>client</bc></td>
                     </tr>
 
-                    <tr>
+                    <tr class="done">
                         <td><em>orderReq</em></td>
                         <td>Il <bc>waiter</bc> ha preso in consegna l'ordine del <bc>client</bc></td>
                         <td>Il <bc>waiter</bc> ha comunicato al <bc>barman</bc> il contenuto dell'ordinazione</td>
@@ -360,25 +366,25 @@
                         <td>Il <bc>waiter</bc> sa che il <bc>barman</bc> ha concluso il drink</td>
                     </tr>
 
-                    <tr>
+                    <tr class="done">
                         <td><em>serve</em></td>
                         <td>Il <bc>waiter</bc> è fermo in un punto della mappa</td>
                         <td>Il <bc>waiter</bc> ha preso in consegna il drink pronto, lo ha portato al <bc>table</bc> del <bc>client</bc> e il <bc>client</bc> inizia la consumazione del drink</td>
                     </tr>
 
-                    <tr>
+                    <tr class="done">
                         <td><em>exitReq</em></td>
                         <td>Il <bc>client</bc> ha concluso la consumazione</td>
                         <td>Il <bc>waiter</bc> sa che può andare dal <bc>client</bc> per fargli effettuare il pagamento</td>
                     </tr>
                     
-                    <tr>
+                    <tr class="done">
                         <td><em>collect</em></td>
                         <td>Il <bc>waiter</bc> comunica l'importo della ordinazione al <bc>client</bc></td>
                         <td>Il <bc>waiter</bc> ha raccolto l'importo</td>
                     </tr>
 
-                    <tr>
+                    <tr class="done">
                         <td><em>convoy</em></td>
                         <td>Il <bc>client</bc> si trova nel suo <bc>table</bc></td>
                         <td>Il <bc>client</bc> si trova nella <bc>exitdoor</bc></td>
@@ -419,7 +425,7 @@
             
             </div>
 
-            <h2>Testing</h2>
+            <h2 id="testing">Testing</h2>
             <div>
                 <b>Tutti i test sono stati svolti con JUnit4</b></br>
                 <img src="img/test.png"></br></br>
@@ -434,10 +440,10 @@
                 <ol>
                     <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterConvoyEntrance.kt">TestWaiterConvoyEntrance.kt</a> verifica che il <bc>waiter</bc>
                     compia correttamente le azioni di <em>reach</em>, <em>convoy</em> all'ingresso e successivo ritorno alla <em>home</em>.</li>
-                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterDrinkOrder.kt">TestWaiterConvoyEntrance.kt</a> verifica che il <bc>waiter</bc>
+                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterDrinkOrder.kt">TestWaiterDrinkOrder.kt</a> verifica che il <bc>waiter</bc>
                     compia correttamente le azioni di <em>readyToOrder</em> (che implica raggiungimento del tavolo del <bc>client</bc>), <em>take</em>, <em>order</em> e successivo ritorno alla <em>home</em>.</li>
                     <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterBringingDrink.kt">TestWaiterBringingDrink.kt</a> verifica che il <bc>waiter</bc>
-                    compia correttamente le azioni di <em>ready</em> (che implica anche il trasporto del drink al <bc>client</bc>), e successivo ritorno alla <em>home</em>.</li>
+                    compia correttamente la <em>serve</em> (che implica che il <bc>barman</bc> gli abbia notificato una <em>ready</em>), e successivo ritorno alla <em>home</em>.</li>
                     <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterPaymentExit.kt">TestWaiterPaymentExit.kt</a> verifica che il <bc>waiter</bc>
                         compia correttamente le azioni di <em>collect</em>, <em>payment</em>, <em>convoy</em> in uscita e successivo ritorno alla <em>home</em>.</li>
                     <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterComplessivo.kt">TestWaiterComplessivo.kt</a> esegue in successione i precedenti test,
