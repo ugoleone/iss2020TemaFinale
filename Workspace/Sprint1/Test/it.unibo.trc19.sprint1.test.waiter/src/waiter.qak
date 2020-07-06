@@ -52,27 +52,14 @@ Dispatch pay : pay(X)
 
 
 Context ctxwaiter ip [ host= "localhost"   port= 8010 ] 
-//Context ctxtable1 ip [ host= "127.0.0.1"   port= 8020 ] 
-//Context ctxtable2 ip [ host= "127.0.0.1"   port= 8030 ] 
-//Context ctxsmartbell ip [ host= "127.0.0.1"   port= 8040 ] 
-//Context ctxbarman ip [ host= "127.0.0.1"   port= 8050 ] 
-//Context ctxclient ip [ host= "127.0.0.1"   port= 8060 ] 
+
 Context ctxbasicrobot ip [ host= "127.0.0.1" port= 8070]
 
-//ExternalQActor table1 context ctxtable1
-//ExternalQActor table2 context ctxtable2
-//ExternalQActor smartbell context ctxsmartbell
-//ExternalQActor barman context ctxbarman
-//ExternalQActor client context ctxclient
 ExternalQActor basicrobot context ctxbasicrobot
 
 
+
 QActor waiter context ctxwaiter{ 
-	
-	[# 	
-		var tabFree = "" 
-		var tableToCheck = 1 
-	#]
 	
 	State s0 initial{ 
 		println("[WAITER] waiter is starting..I'm HOME!") 
@@ -85,7 +72,6 @@ QActor waiter context ctxwaiter{
 	
  	State reqHandler{
  		println("[WAITER] Waiting for a request!")
- 		[# tableToCheck = 1 #]	
  	}
  	Transition t0 
  		whenRequest checkAvail -> checkTableState		
@@ -95,25 +81,9 @@ QActor waiter context ctxwaiter{
  	
  	State checkTableState {	
  		println("[WAITER] Checking table state")
- 		if [# tableToCheck == 1 #] {
- 			request table1 -m tabStatus : tabStatus(1)
- 		} else {
- 			request table2 -m tabStatus : tabStatus(1)
- 		}
+ 		replyTo checkAvail with waitingTime : waitingTime(0)
 	}
-	Transition t0 whenReply tabState -> handleTabState
-	
-	State handleTabState {
-		onMsg( tabState : tabState( STATUS ) ){
-			[# tabFree = payloadArg(0) #]
-			if [# tabFree == "FreeClean"#]{
-				println("[WAITER] A table is free!")
-				replyTo checkAvail with waitingTime : waitingTime(0)
-			} else {
-				[# tableToCheck = 2 #]
-			}					 		 
- 		}
-	}Goto reachEntranceDoor if [# tabFree == "FreeClean" #] else checkTableState
+	Goto reachEntranceDoor
 	
 	State reachEntranceDoor {
 		solve(replaceRule(whatImDoing(_),whatImDoing(reach)))
@@ -350,32 +320,6 @@ QActor smartbell context ctxwaiter {
 		discardMsg Off
 	}
 }
-
-QActor table1 context ctxwaiter{
-	[# var state = "free and clean" #]
-	State s0 initial{ 
-		println("[TABLE1] table1 is starting..") 	
-	} 
-	Transition t0 whenRequest tabStatus -> handleRequests
-	
-	State handleRequests{
-		replyTo tabStatus with tabState : tabState(FreeClean)	 
-			
-	}
-} 
-
-QActor table2 context ctxwaiter{
-	[# var state = "free and clean" #]
-	State s0 initial{ 
-		println("[TABLE2] table2 is starting..") 	
-	} 
-	Transition t0 whenRequest tabStatus -> handleRequests
-	
-	State handleRequests{
-		replyTo tabStatus with tabState : tabState(FreeClean)	 
-			
-	}
-} 
 
 QActor barman context ctxwaiter{  
 	  	  

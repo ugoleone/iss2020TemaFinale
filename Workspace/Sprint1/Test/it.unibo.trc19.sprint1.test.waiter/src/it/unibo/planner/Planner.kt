@@ -30,7 +30,7 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						solve("consult('tearoomkb.pl')","") //set resVar	
 						discardMessages = false
 					}
-					 transition(edgeName="t020",targetState="findTheCell",cond=whenRequest("moveTo"))
+					 transition(edgeName="t019",targetState="findTheCell",cond=whenRequest("moveTo"))
 				}	 
 				state("findTheCell") { //this:State
 					action { //it:State
@@ -44,7 +44,7 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 								forward("movetoCell", "movetoCell($X,$Y)" ,"planner" ) 
 						}
 					}
-					 transition(edgeName="t021",targetState="walk",cond=whenDispatch("movetoCell"))
+					 transition(edgeName="t020",targetState="walk",cond=whenDispatch("movetoCell"))
 				}	 
 				state("walk") { //this:State
 					action { //it:State
@@ -69,8 +69,8 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 answer("moveTo", "atcell", "atcell($XT,$YT)"   )  
 						 }
 					}
-					 transition(edgeName="t022",targetState="execTheMove",cond=whenDispatch("doMove"))
-					transition(edgeName="t023",targetState="findTheCell",cond=whenRequestGuarded("moveTo",{ CurrentPlannedMove.length == 0  
+					 transition(edgeName="t021",targetState="execTheMove",cond=whenDispatch("doMove"))
+					transition(edgeName="t022",targetState="findTheCell",cond=whenRequestGuarded("moveTo",{ CurrentPlannedMove.length == 0  
 					}))
 				}	 
 				state("execTheMove") { //this:State
@@ -97,8 +97,8 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("waitStepDoneFail") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t124",targetState="updateCurrentPos",cond=whenReply("stepdone"))
-					transition(edgeName="t125",targetState="updateCurrentPos",cond=whenReply("stepfail"))
+					 transition(edgeName="t123",targetState="updateCurrentPos",cond=whenReply("stepdone"))
+					transition(edgeName="t124",targetState="updateCurrentPos",cond=whenReply("stepfail"))
 				}	 
 				state("updateCurrentPos") { //this:State
 					action { //it:State

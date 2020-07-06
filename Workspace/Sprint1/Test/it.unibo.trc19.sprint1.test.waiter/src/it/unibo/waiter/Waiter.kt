@@ -16,9 +16,6 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		 	
-				var tabFree = "" 
-				var tableToCheck = 1 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -33,7 +30,6 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("reqHandler") { //this:State
 					action { //it:State
 						println("[WAITER] Waiting for a request!")
-						 tableToCheck = 1  
 					}
 					 transition(edgeName="t00",targetState="checkTableState",cond=whenRequest("checkAvail"))
 					transition(edgeName="t01",targetState="reachingClientToTakeOrder",cond=whenDispatch("readyToOrder"))
@@ -43,33 +39,9 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("checkTableState") { //this:State
 					action { //it:State
 						println("[WAITER] Checking table state")
-						if(  tableToCheck == 1  
-						 ){request("tabStatus", "tabStatus(1)" ,"table1" )  
-						}
-						else
-						 {request("tabStatus", "tabStatus(1)" ,"table2" )  
-						 }
+						answer("checkAvail", "waitingTime", "waitingTime(0)"   )  
 					}
-					 transition(edgeName="t04",targetState="handleTabState",cond=whenReply("tabState"))
-				}	 
-				state("handleTabState") { //this:State
-					action { //it:State
-						if( checkMsgContent( Term.createTerm("tabState(X)"), Term.createTerm("tabState(STATUS)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								 tabFree = payloadArg(0)  
-								if(  tabFree == "FreeClean" 
-								 ){println("[WAITER] A table is free!")
-								answer("checkAvail", "waitingTime", "waitingTime(0)"   )  
-								}
-								else
-								 { tableToCheck = 2  
-								 }
-						}
-					}
-					 transition( edgeName="goto",targetState="reachEntranceDoor", cond=doswitchGuarded({ tabFree == "FreeClean"  
-					}) )
-					transition( edgeName="goto",targetState="checkTableState", cond=doswitchGuarded({! ( tabFree == "FreeClean"  
-					) }) )
+					 transition( edgeName="goto",targetState="reachEntranceDoor", cond=doswitch() )
 				}	 
 				state("reachEntranceDoor") { //this:State
 					action { //it:State
@@ -88,7 +60,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						request("take", "take(1)" ,"client" )  
 					}
-					 transition(edgeName="t05",targetState="clientReady",cond=whenReply("order"))
+					 transition(edgeName="t04",targetState="clientReady",cond=whenReply("order"))
 				}	 
 				state("clientReady") { //this:State
 					action { //it:State
@@ -125,7 +97,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("[WAITER] Collecting the money!")
 						request("collect", "collect(1)" ,"client" )  
 					}
-					 transition(edgeName="t06",targetState="handlePayment",cond=whenReply("payment"))
+					 transition(edgeName="t05",targetState="handlePayment",cond=whenReply("payment"))
 				}	 
 				state("handlePayment") { //this:State
 					action { //it:State
@@ -141,38 +113,38 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						request("moveTo", "moveTo(entrancedoor)" ,"planner" )  
 					}
-					 transition(edgeName="t17",targetState="handleAtCell",cond=whenReply("atcell"))
+					 transition(edgeName="t16",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("goingToExitDoor") { //this:State
 					action { //it:State
 						request("moveTo", "moveTo(exitdoor)" ,"planner" )  
 					}
-					 transition(edgeName="t18",targetState="handleAtCell",cond=whenReply("atcell"))
+					 transition(edgeName="t17",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("goingToBarman") { //this:State
 					action { //it:State
 						request("moveTo", "moveTo(barman)" ,"planner" )  
 					}
-					 transition(edgeName="t19",targetState="handleAtCell",cond=whenReply("atcell"))
+					 transition(edgeName="t18",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("goingToTable1") { //this:State
 					action { //it:State
 						request("moveTo", "moveTo(teatable1)" ,"planner" )  
 					}
-					 transition(edgeName="t110",targetState="handleAtCell",cond=whenReply("atcell"))
+					 transition(edgeName="t19",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("goingToTable2") { //this:State
 					action { //it:State
 						request("moveTo", "moveTo(teatable2)" ,"planner" )  
 					}
-					 transition(edgeName="t111",targetState="handleAtCell",cond=whenReply("atcell"))
+					 transition(edgeName="t110",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("returnToHome") { //this:State
 					action { //it:State
 						solve("replaceRule(whatImDoing(_),whatImDoing(returnHome))","") //set resVar	
 						request("moveTo", "moveTo(home)" ,"planner" )  
 					}
-					 transition(edgeName="t112",targetState="handleAtCell",cond=whenReply("atcell"))
+					 transition(edgeName="t111",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("handleAtCell") { //this:State
 					action { //it:State
@@ -221,13 +193,13 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								}
 						}
 					}
-					 transition(edgeName="t113",targetState="goingToTable1",cond=whenDispatch("convoyTable"))
-					transition(edgeName="t114",targetState="returnToHome",cond=whenDispatch("returnHome"))
-					transition(edgeName="t115",targetState="takingOrder",cond=whenDispatch("readyToTakeOrder"))
-					transition(edgeName="t116",targetState="servingDrinkToClient",cond=whenDispatch("serveDrink"))
-					transition(edgeName="t117",targetState="reqHandler",cond=whenDispatch("listenRequests"))
-					transition(edgeName="t118",targetState="goingToTable1",cond=whenDispatch("goTable1"))
-					transition(edgeName="t119",targetState="payment",cond=whenDispatch("pay"))
+					 transition(edgeName="t112",targetState="goingToTable1",cond=whenDispatch("convoyTable"))
+					transition(edgeName="t113",targetState="returnToHome",cond=whenDispatch("returnHome"))
+					transition(edgeName="t114",targetState="takingOrder",cond=whenDispatch("readyToTakeOrder"))
+					transition(edgeName="t115",targetState="servingDrinkToClient",cond=whenDispatch("serveDrink"))
+					transition(edgeName="t116",targetState="reqHandler",cond=whenDispatch("listenRequests"))
+					transition(edgeName="t117",targetState="goingToTable1",cond=whenDispatch("goTable1"))
+					transition(edgeName="t118",targetState="payment",cond=whenDispatch("pay"))
 				}	 
 			}
 		}
