@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<link rel="stylesheet" type="text/css" href="../HTMLResources/css/main.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<!-- <script type="text/javascript" src="../css/issStyle.js"></script> -->
+
+
+<head>
+
+    <title>Sprint 2</title>
+</head>
+
+<body>
+    <div class="content">
+        <div id="top">
+            <h1>LABORATORIO DI SISTEMI SOFTWARE <font size="5"></font>
+            </h1>
+        </div>
+        <div class="body">
+            <h2>Requirements</h2>
+            <div>
+                Questo sprint si occupa di definire lo stato della stanza, introducendo un'architettura esagonale.
+            </div>
+
+
+            <h2>Requirement analysis</h2>
+            <div>
+                Per "stato della stanza" si intenda:
+                <ul>
+                    <li>Posizione degli elementi nella stanza</li>
+                    <li>Posizione corrente del waiter</li>
+                    <li>Attività in cui è impegnato waiter</li>
+                    <li>Stato dei tavoli</li>
+                    <li>Clienti attualmente dentro la stanza</li>
+                    <li>Attività in cui è impegnato il Barman</li>
+                    <li>Eventuali statistiche del sistema
+                        <ul>
+                            <li>ad es, numero di clienti serviti</li>
+                        </ul>
+                    </li>
+                </ul> 
+                </br>
+                L'architettura esagonale, o architettura a porte e adattatori, è un pattern architetturale usato in
+                software design.</br>
+                <center><img src="img/portAdapter.png" alt="tearoom20.png" width="15%" height="32%" /></center></br>
+                Il principale obiettivo di questa architettura è quello di disaccoppiare la logica core
+                dell'applicazione dai servizi che essa usa. Ciò permette a differenti servizi di poter essere "plugged
+                in", ed inoltre di poter eseguire senza questi servizi.
+                La <em>connessione tra la parte interna e quella esterna</em> del sistema è realizzata tramite
+                l'astrazione delle <bc>porte</bc> e la loro controparte implementativa chiamata <bc>adattatori</bc>.
+                <ul>
+                    <li>La <em>business logic</em> di un'applicazione consiste negli algoritmi essenziali per il suo
+                        scopo. Essi implementano i <em>casi d'uso</em> che sono il cuore dell'applicazione.
+                    </li>
+                    <li> I <em>servizi</em> non sono essenziali. Essi possono essere sostituiti senza camibiare lo scopo
+                        dell'applicazione.
+                        Esempi: accesso a database, interfaccia utente, hardware devices.
+                    </li>
+                    <li>È <em>facile sostituire i servizi</em> con altri che sono più idonei alla luce di nuove
+                        esigenze.
+                    </li>
+                </ul>
+            </br>
+                    <center><img src="img/portAdapterArch.png" alt="tearoom20.png" width="55%" height="32%" /></center>
+
+            </div>
+
+            <h2>Problem analysis</h2>
+            <div>
+                <ks>GOAL</ks>:
+                <i>i)</i>define the <k>logical architecture</k> of the system (hopefully as an executable model)
+                <i>ii) measure the <k>abstraction gap</k> and </i>give a <k>quantitative measure of the effort/resources
+                </k> necessary to build the system
+                <i>iii)</i> refine the set of <k>functional TestPlan</k>,
+                <i>iv)</i>define a (first) <k>product backlog</k>.<br /><br />
+
+                <ks>WARNING</ks>: expressions like <i>'we have chosen to ...'</i>, <i>'I decided ...'</i>, etc. are <k>
+                    forbidden</k> here. <br />
+                Rather, this section should include sentences like
+                <b><i>'this (aspect of the) problem implies that ...'</i></b> or <i><b>'the usage of this (legacy)
+                        component requires that ...'</i></b>, etc.
+                <br />
+            </div>
+
+            <h2>Test plans</h2>
+            <div>
+                <ks>GOAL</ks>: give a formal description (for example, by using <ks>JUnit</ks>) of the <k>functional
+                    TestPlans</k>, with reference to the <k>logical architecture</k> of the system .
+            </div>
+
+            <h2>Project</h2>
+            <div>
+                <ks>GOAL</ks>: define the concrete architecture of the system and the behavior of each component .
+            </div>
+
+            <h2>Testing</h2>
+            <div>
+                <ks>GOAL</ks>: complete the <k>functional TestPlans</k> according to the project code and execute them.
+            </div>
+
+            <h2>Deployment</h2>
+
+            <div>
+                <ks>GOAL</ks>: prepare a software application to run and operate in a specific environment.
+                It involves installation, configuration, testing and making changes to optimize the performance of the
+                software.
+                It can either be carried out manually or (hopefully) through automated systems.
+            </div>
+
+
+
+            <h2>Maintenance</h2>
+            <div>
+                <ks>GOAL</ks>: modify the software product after delivery to correct faults,
+                to improve performance or other attributes.
+                A common perception of maintenance is that it merely involves fixing defects.
+                However, one study indicated that over 80% of maintenance effort is used for non-corrective actions.
+            </div>
+
+
+            <table style="width:100%" border="1">
+                <tr>
+                    <td style="width:50%">
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
+
+            <br /><br />
+
+        </div>
+
+        <!-- TEAM -->
+        <div class="w3-container w3-padding-64 w3-center" id="team">
+            <h2>Our Team</h2>
+
+            <div class="w3-row"><br>
+
+                <div class="w3-third">
+                    <img src="../HTMLResources/img/ugo3.jpg" style="width:45%" class="w3-circle">
+                    <h3>Ugo Leone Cavalcanti</h3>
+                    <p style="font-size: 70%;"><a
+                            href="MAILTO:ugoleone.cavalcanti@studio.unibo.it">ugoleone.cavalcanti@studio.unibo.it</a>
+                    </p>
+                </div>
+
+                <div class="w3-third">
+                    <img src="../HTMLResources/img/amir.jpg" style="width:45%" class="w3-circle">
+                    <h3>Amir Al Sadi</h3>
+                    <p style="font-size: 70%;"><a
+                            href="MAILTO:amir.alsadi@studio.unibo.it">amir.alsadi@studio.unibo.it</a></p>
+                </div>
+
+                <div class="w3-third">
+                    <img src="../HTMLResources/img/nik2.jpeg" style="width:45%" class="w3-circle">
+                    <h3>Nicolò Romandini</h3>
+                    <p style="font-size: 70%;"><a
+                            href="MAILTO:nicolo.romandini@studio.unibo.it">nicolo.romandini@studio.unibo.it</a></p>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
