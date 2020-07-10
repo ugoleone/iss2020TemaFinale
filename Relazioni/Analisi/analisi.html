@@ -271,7 +271,78 @@
 				la relazione fra stati e messaggi.</br>
 				<b>Il piano di testing deve essere progettato per verificare tutte queste condizioni.</b> 
             </div>
-
+            
+            <h2>Piano di lavoro</h2>
+            <div>
+                Dalla analisi preliminare del sistema risulta necessario pianificare un piano di lavoro architettato in sprint,
+                di seguito riportati.
+                <table style="width:100%">
+                    <tr>
+                        <td>
+                           <bc>NOME</bc> 
+                        </td>
+                        <td>
+                           <bc>DESCRIZIONE</bc>  
+                        </td>
+                        <td>
+                            <bc>MOTIVAZIONE</bc> 
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                           <b>SPRINT 1</b> 
+                        </td>
+                        <td>
+                           Si occupa della modellazione del sistema nell'ipotesi in cui operi un solo <bc>client</bc> e che compia unicamente
+                           le azioni previste dal suo comportamento standard, senza interferenze di alcun genere.  
+                        </td>
+                        <td>
+                           La scelta di questo primo sprint è motivata dalla volontà di simulare un primo scenario di base che preveda una interazione
+                           "controllata" e "prevista" del sistema, in modo da aggiungere nei successivi sprint i casi imprevisti.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                           <b>SPRINT 2</b> 
+                        </td>
+                        <td>
+                           Si occupa della definizione dello stato della stanza.</br></br>
+                           Questo sprint aggiunge al primo sprint una descrizione degli elementi della stanza,
+                           introducendo il concetto di <b>architettura esagonale</b>.
+                        </td>
+                        <td>
+                           Dopo aver verificato le funzionalità base del sistema è necessario iniziare a dare 
+                           una forma a quella che sarà l'architettura finale.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                           <b>SPRINT 3</b> 
+                        </td>
+                        <td>
+                           Si occupa della <b>concorrenza</b> fra <bc>client</bc>, ossia la presenza di più <bc>client</bc> nella <em>tearoom</em>
+                           contemporaneamente.
+                        </td>
+                        <td>
+                           Dopo aver costruito una prima versione dell'architettura finale, aggiungiamo al sistema 
+                           ulteriori casi d'uso con lo scopo di avvicinarlo sempre più al prodotto finale richiesto.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                           <b>SPRINT 4</b> 
+                        </td>
+                        <td>
+                           Aggiunge alla precedente architettura le situazioni impreviste non precedentemente trattate 
+                           (ad esempio comportamenti inaspettati del <bc>client</bc>) e i requisiti facoltativi.
+                        </td>
+                        <td>
+                           Questo sprint finale aggiunge all' architettura le ultime modifiche con lo scopo di renderla più
+                           resistente nel caso di situazioni impreviste.
+                        </td>
+                    </tr>
+                </table>
+            </div>
 
             <br /><br />
         </div>
