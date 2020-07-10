@@ -32,7 +32,7 @@
                     <li>Posizione corrente del waiter</li>
                     <li>Attività in cui è impegnato waiter</li>
                     <li>Stato dei tavoli</li>
-                    <li>Clienti attualmente dentro la stanza</li>
+                    <li>Identificativo dei clienti attualmente dentro la stanza</li>
                     <li>Attività in cui è impegnato il Barman</li>
                     <li>Eventuali statistiche del sistema
                         <ul>
@@ -62,8 +62,21 @@
                     </li>
                 </ul>
             </br>
-                    <center><img src="img/portAdapterArch.png" alt="tearoom20.png" width="55%" height="32%" /></center>
+                    <center><img src="img/portAdapterArch.png" alt="tearoom20.png" width="55%" height="32%" /></center></br>
+			Viene di seguito riportato il <b>modello formale</b> del sistema definito in fase di analisi dei requisiti.</br>
+			<div>
+			<pre>
+System resourcemodel
+Context <ks>ctxresourcemodel</ks> ip[host="localhost" port=8010]
 
+QActor <k>resourcemodel</k> context ctxresourcemodel{
+	State s0 initial{<kc>
+			//questo attore presenterà tramite l'uso di un 
+			//generico meccanismo le informazioni richieste nei
+			//requisiti</kc>	
+	}
+}				</pre>
+			</div>
             </div>
 
             <h2>Problem analysis</h2>
