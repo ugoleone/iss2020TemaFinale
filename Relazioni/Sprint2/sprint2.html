@@ -81,6 +81,9 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
 
             <h2>Problem analysis</h2>
             <div>
+                Adottando un'architettura esagonale si avrà un attore principale <bc>resourcemodel</bc> che andrà a gestire quello che è il modello del dominio nell'architettura esagonale.</br>
+                Già nel precedente sprint era stata impiegata una base di conoscenza (scritta in Prolog) per mantenere alcune informazioni sul sistema, ciò, insieme alle informazioni dello stato della stanza, costituisce il <i>domain model</i> vero e proprio. E il <bc>resourcemodel</bc> andrà a fare da controller per questa base di conoscenza.</br>
+
                 <ks>GOAL</ks>:
                 <i>i)</i>define the <k>logical architecture</k> of the system (hopefully as an executable model)
                 <i>ii) measure the <k>abstraction gap</k> and </i>give a <k>quantitative measure of the effort/resources
