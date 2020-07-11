@@ -90,7 +90,32 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
 				Viene di seguito riportato il <b>modello formale</b> del sistema definito in fase di analisi del problema.</br> 
 				<div>
 				<pre>
-				</pre>
+System resourcemodel
+
+Dispatch modelChange : modelChange(CHANGE)
+Event modelChanged : modelChanged(CHANGE)
+
+Context <ks>ctxresourcemodel</ks> ip[host="localhost" port=8010]
+
+QActor <k>resourcemodel</k> context ctxresourcemodel{
+    State s0 initial{
+        println("STARTING, I will be soon ready to listen to changes!")
+        solve(consult("tearoomkb.pl"))
+        delay 200
+    }
+    Goto listenToChanges
+    
+    State listenToChanges{
+        println("LISTENING...")
+    } Transition t0 
+            whenMsg modelChange-> informChanges
+    
+    State informChanges{
+        println("MODEL has changed...")
+        solve(modelChange)
+        emit modelChanged: modelChange("change")
+    } Goto listenToChanges
+}   			</pre>
 				</div>
             </div>
 
