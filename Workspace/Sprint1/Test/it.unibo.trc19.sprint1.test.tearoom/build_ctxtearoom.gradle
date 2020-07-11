@@ -1,12 +1,12 @@
 /*
 ================================================================================
-build_ctxwaiter.gradle
+build_ctxtearoom.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctxwaiter.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctxwaiter.gradle distZip
-	gradle  -b build_ctxwaiter.gradle -q tasks --all
-	gradle  -b build_ctxwaiter.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxtearoom.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxtearoom.gradle distZip
+	gradle  -b build_ctxtearoom.gradle -q tasks --all
+	gradle  -b build_ctxtearoom.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {
