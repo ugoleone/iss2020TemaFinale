@@ -1,12 +1,12 @@
 /*
 ================================================================================
-build_ctxclient.gradle
+build_ctxsmartbell.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctxclient.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctxclient.gradle distZip
-	gradle  -b build_ctxclient.gradle -q tasks --all
-	gradle  -b build_ctxclient.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxsmartbell.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxsmartbell.gradle distZip
+	gradle  -b build_ctxsmartbell.gradle -q tasks --all
+	gradle  -b build_ctxsmartbell.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {
