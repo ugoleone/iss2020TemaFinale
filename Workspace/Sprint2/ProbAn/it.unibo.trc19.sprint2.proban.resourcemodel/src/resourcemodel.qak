@@ -1,0 +1,27 @@
+System resourcemodel
+
+Dispatch modelChange : modelChange(CHANGE)
+Event modelChanged : modelChanged(CHANGE)
+
+Context ctxresourcemodel ip[host="localhost" port=8010]
+
+QActor resourcemodel context ctxresourcemodel{
+	State s0 initial{
+		println("STARTING, I will be soon ready to listen to changes!")
+		solve(consult("tearoomkb.pl"))
+		delay 200
+	}
+	Goto listenToChanges
+	
+	State listenToChanges{
+		println("LISTENING...")
+	} Transition t0 
+			whenMsg modelChange-> informChanges
+	
+	State informChanges{
+		println("MODEL has changed...")
+		solve(modelChange)
+		emit modelChanged: modelChange("change")
+	} Goto listenToChanges
+}
+	

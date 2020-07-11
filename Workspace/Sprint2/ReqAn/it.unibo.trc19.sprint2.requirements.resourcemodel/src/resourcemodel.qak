@@ -1,0 +1,12 @@
+System resourcemodel
+
+Context ctxresourcemodel ip[host="localhost" port=8010]
+
+QActor resourcemodel context ctxresourcemodel{
+	State s0 initial{
+		//questo attore presenterà tramite l'uso di un 
+		//generico meccanismo le informazioni richieste nie
+		//requisiti	
+	}
+}
+	
