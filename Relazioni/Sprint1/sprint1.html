@@ -281,13 +281,12 @@
 
             <h2>Test plans</h2>
             <div>
-                
+                Di seguito è riportata una tabella che riassume tutte le funzionalità coperte e testate
+                all' interno di questo sprint, evidenziando stato pre e post interazione. </br>
+                Le interazioni colorate in verde sono quelle testate nella sezione di <a href="#testing">Testing</a>, mentre
+                quelle non colorate si suppongono già testate in quanto semplici interazioni (dispatch,request-response definite <a href="http://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qakactor/userDocs/LabQakIntro2020.html#messages">qui</a>) implementate nel framework di riferimento 
+                QAK già presente nella nostra software-house.</br></br>
                 <table style="width:100%" border="1">
-                    Di seguito è riportata una tabella che riassume tutte le funzionalità coperte e testate
-                    all' interno di questo sprint, evidenziando stato pre e post interazione. </br>
-                    Le interazioni colorate in verde sono quelle testate nella sezione di <a href="#testing">Testing</a>, mentre
-                    quelle non colorate si suppongono già testate in quanto semplici interazioni (dispatch,request-response definite <a href="http://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qakactor/userDocs/LabQakIntro2020.html#messages">qui</a>) implementate nel framework di riferimento 
-                    QAK già presente nella nostra software-house.</br></br>
                     <tr>
                         <td><bc>TAG TEST</bc></td>
                         <td><bc>STATO INIZIALE</bc></td>
@@ -435,7 +434,7 @@
                 svolto confrontando la mappa al momento del test (ottenuta tramite il riferimento in <a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/resources/itunibo/planner/plannerUtil.kt">plannerUtil.kt</a>)
                 e la mappa che ci si aspettava in quel momento.<br></br>
                 Per motivi di testing, tutte le entità esterne al <bc>waiter</bc> sono state rese attori senza logica applicativa. Tutti gli attori sono inseriti
-                nel contesto del <bc>waiter</bc> (si guardi <a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/src/waiter.qak">waiter.qak</a>).</br>
+                nel contesto del <bc>waiter</bc> (si guardi <a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.tearoom/src/tearoom.qak">tearoom.qak</a>).</br>
                 Nello specifico, <b>le classi di test sono</b>:
                 <ol>
                     <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterConvoyEntrance.kt">TestWaiterConvoyEntrance.kt</a> verifica che il <bc>waiter</bc>
@@ -453,7 +452,6 @@
             <b>ATTENZIONE!</b> Ricaricare la mappa virtuale a ogni tentativo di test, in modo da sincronizzare correttamente la base di conoscenza.
 
             </div>
-
             
 
             <br /><br />

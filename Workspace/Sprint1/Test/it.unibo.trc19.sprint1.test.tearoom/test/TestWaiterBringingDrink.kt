@@ -31,7 +31,7 @@ val initDelayTime     = 1000L   //
 //  		println( mapRoomKotlin.mapUtil.refMapForTesting )
    		//activate the application: SEE boundaryTest
    		kotlin.concurrent.thread(start = true) {
-			it.unibo.ctxwaiter.main()  //WARNING: elininate the autostart
+			it.unibo.ctxtearoom.main()  //WARNING: elininate the autostart
 		}
 	}
 

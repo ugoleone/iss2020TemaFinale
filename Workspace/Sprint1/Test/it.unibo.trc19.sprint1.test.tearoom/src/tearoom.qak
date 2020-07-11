@@ -51,7 +51,7 @@ Dispatch goTable1 : goTable1(X)
 Dispatch pay : pay(X)
 
 
-Context ctxwaiter ip [ host= "localhost"   port= 8010 ] 
+Context ctxtearoom ip [ host= "localhost"   port= 8010 ] 
 
 Context ctxbasicrobot ip [ host= "127.0.0.1" port= 8070]
 
@@ -59,7 +59,7 @@ ExternalQActor basicrobot context ctxbasicrobot
 
 
 
-QActor waiter context ctxwaiter{ 
+QActor waiter context ctxtearoom{ 
 	
 	State s0 initial{ 
 		println("[WAITER] waiter is starting..I'm HOME!") 
@@ -222,7 +222,7 @@ QActor waiter context ctxwaiter{
 	
 }
 
-QActor planner context ctxwaiter{  
+QActor planner context ctxtearoom{  
 [#
 	var XT = "0"
 	var YT = "0"
@@ -305,7 +305,7 @@ QActor planner context ctxwaiter{
      
  }
 
-QActor client context ctxwaiter {
+QActor client context ctxtearoom {
 	[# var tempResult = "no"	#]
 	State init initial {
 		println("[FAKE CLIENT] Hi! I'm ready to MOCK a CLIENT")
@@ -313,7 +313,7 @@ QActor client context ctxwaiter {
 	}
 }
 
-QActor smartbell context ctxwaiter {
+QActor smartbell context ctxtearoom {
 	[# var tempResult = "no"	#]
 	State init initial {
 		println("[FAKE SMARTBELL] Hi! I'm ready to MOCK a SMARTBELL")
@@ -321,7 +321,7 @@ QActor smartbell context ctxwaiter {
 	}
 }
 
-QActor barman context ctxwaiter{  
+QActor barman context ctxtearoom{  
 	  	  
 	State s0 initial {	  
 		println("[FAKE BARMAN] Hi! I'm ready to MOCK a BARMAN")   
