@@ -128,7 +128,13 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
 
             <h2>Project</h2>
             <div>
-                <ks>GOAL</ks>: define the concrete architecture of the system and the behavior of each component .
+                Il <bc>waiter</bc> interagisce ora con il <bc>resourcemodel</bc> in due occasioni:
+                <ol>
+                    <li>Tramite <b>taskUpdate</b>, per notificare il completamento di un task.</li>
+                    <li>Tramite <b>askWhere</b>, per richiedere la posizione (ottenuta tramite <b>location</b>) di un oggetto nella stanza
+                    verso cui si deve spostare il robot.</li>
+                </ol> 
+                <center><img src="img/nuova_struttura_waiter.png" alt="struttura_waiter.png" width="55%" height="32%" /></center></br>
             </div>
 
             <h2>Testing</h2>
