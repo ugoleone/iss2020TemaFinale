@@ -29,7 +29,7 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("[SMARTBELL] Waiting for a new client...")
 					}
-					 transition(edgeName="t023",targetState="checkTemp",cond=whenRequest("notify"))
+					 transition(edgeName="t024",targetState="checkTemp",cond=whenRequest("notify"))
 				}	 
 				state("checkTemp") { //this:State
 					action { //it:State
@@ -59,7 +59,7 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						println("[SMARTBELL] Checking table situation... ")
 						forward("newClient", "newClient(0)" ,"resourcemodel" ) 
 					}
-					 transition(edgeName="t124",targetState="informClient",cond=whenEvent("waitingTimeEvent"))
+					 transition(edgeName="t125",targetState="informClient",cond=whenEvent("waitingTimeEvent"))
 				}	 
 				state("informClient") { //this:State
 					action { //it:State

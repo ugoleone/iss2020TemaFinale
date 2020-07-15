@@ -64,6 +64,7 @@ Event waiterTaskChangedEvent : waiterTaskChangedEvent(X,T)
 Event waitingTimeEvent : waitingTimeEvent(X)
 Event newOrderEvent : newOrderEvent(X)
 Event orderReadyEvent : orderReadyEvent(X)
+Event robotCurrentPosition : robotCurrentPosition(X,Y)
 
 
 
@@ -92,23 +93,18 @@ QActor resourcemodel context ctxtearoom{
 			whenMsg taskUpdate -> informChanges
 			whenMsg ready -> informChanges
 			whenMsg orderReq -> informChanges
+			whenEvent robotCurrentPosition -> informChanges
 			whenRequest askWhere -> findLocation
 	
 	State informChanges{
 		onMsg(newClient : newClient(X)) {
 			println("[RESOURCE MODEL] New Client")
-			solve(totalNumberOfClient(N))
-			[# 
-			var N = getCurSol("N").toString().toInt()
-			N = N + 1
-			#]
-			println("[RESOURCE MODEL] New total number of client $N")
-			solve(replaceRule(totalNumberOfClient(_),totalNumberOfClient($N)))
+			solve(newClient)
 			solve(teatable(X,available))
 	 		ifSolved {
 	 			println("[RESOURCE MODEL] A table is free!")
 	 			[# 
-				val X = getCurSol("X") 
+				val X = getCurSol("X").toString()
 				#]
 				solve(replaceRule(teatable($X,_),teatable($X,busy)))
 				println("[RESOURCE MODEL] Waiter task updated: reachEntranceDoor")
@@ -118,12 +114,15 @@ QActor resourcemodel context ctxtearoom{
 	 		} else {
 	 			println("[RESOURCE MODEL] All tables is busy")
 				emit waitingTimeEvent : waitingTimeEvent(5000) //maxstaytime
-		 	}
+		 	}		
 		}
 		onMsg(taskUpdate : taskUpdate(Task)) {
 			[# val Task = payloadArg(0)#]
 			println("[RESOURCE MODEL] Waiter task updated: $Task")
 			solve(replaceRule(waiter(_),waiter($Task)))
+			if [#Task == "returnHomeFromExit"#] {
+				solve(exitClient)
+			}
 		}
 		onMsg(orderReq : orderReq(T)){
 			[# val T = payloadArg(0)#]
@@ -138,6 +137,30 @@ QActor resourcemodel context ctxtearoom{
 			solve(replaceRule(waiter(_),waiter(collectingDrink)))
 			emit waiterTaskChangedEvent : waiterTaskChangedEvent(collectingDrink,$T)
 		}
+		onMsg(robotCurrentPosition : robotCurrentPosition(X,Y)) {
+			[# 
+				val X = payloadArg(0)
+				val Y = payloadArg(1)
+			#]
+			solve(replaceRule(currentWaiterPos(_,_),currentWaiterPos($X,$Y)))
+		}
+		
+		solve(roomstate( waiter(S),currentWaiterPos(X,Y) , stateOfTeatables(T1,T2), servicedesk(D), totalNumberOfClients(NC), clientsInTheRoom(CR)))
+		[# 	
+			val S = getCurSol("S").toString()
+			val X = getCurSol("X").toString()
+			val Y = getCurSol("Y").toString()
+			val T1 = getCurSol("T1").toString()
+			val T2 = getCurSol("T2").toString()
+			val D = getCurSol("D").toString()
+			val NC = getCurSol("NC").toString()
+			val CR = getCurSol("CR").toString()
+			
+			
+			val JsonState : String = itunibo.formatter.formatterUtil.formatJson(S,X,Y,T1,T2,D,NC,CR)
+		#]
+		updateResource [# JsonState #]
+		
 	} Goto listenToChanges
 	
 	State findLocation {
@@ -146,8 +169,8 @@ QActor resourcemodel context ctxtearoom{
 			println("[RESOURCE MODEL] Find location $Spot")
 			solve(pos($Spot,X,Y))
 			[# 
-			val X = getCurSol("X") 
-		  	val Y = getCurSol("Y") 
+			val X = getCurSol("X").toString() 
+		  	val Y = getCurSol("Y").toString()
 			#]
 			replyTo askWhere with location : location($X,$Y)
 		}
@@ -314,7 +337,7 @@ QActor waiter context ctxtearoom{
 			}
 			if [# WhatImDoing == "convoyExit" #] {
 				delay 3000
-				forward resourcemodel -m taskUpdate : taskUpdate(returnHome)
+				forward resourcemodel -m taskUpdate : taskUpdate(returnHomeFromExit)
 				[# WhatImDoing = "returnHome" #]
 				forward waiter -m moveTo : moveTo(home)
 			} 
@@ -401,7 +424,7 @@ QActor planner context ctxtearoom{
      		val X = itunibo.planner.plannerUtil.getPosX()
      		val Y = itunibo.planner.plannerUtil.getPosY()
      	#]
-     	//solve(replaceRule(currentPos(_,_), currentPos($X,$Y)))
+     	emit robotCurrentPosition : robotCurrentPosition($X,$Y)
      }Goto execPlannedMoves
      
  }

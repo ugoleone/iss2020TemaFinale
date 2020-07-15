@@ -34,23 +34,19 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					transition(edgeName="t01",targetState="informChanges",cond=whenDispatch("taskUpdate"))
 					transition(edgeName="t02",targetState="informChanges",cond=whenDispatch("ready"))
 					transition(edgeName="t03",targetState="informChanges",cond=whenDispatch("orderReq"))
-					transition(edgeName="t04",targetState="findLocation",cond=whenRequest("askWhere"))
+					transition(edgeName="t04",targetState="informChanges",cond=whenEvent("robotCurrentPosition"))
+					transition(edgeName="t05",targetState="findLocation",cond=whenRequest("askWhere"))
 				}	 
 				state("informChanges") { //this:State
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("newClient(X)"), Term.createTerm("newClient(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								println("[RESOURCE MODEL] New Client")
-								solve("totalNumberOfClient(N)","") //set resVar	
-								 
-											var N = getCurSol("N").toString().toInt()
-											N = N + 1
-								println("[RESOURCE MODEL] New total number of client $N")
-								solve("replaceRule(totalNumberOfClient(_),totalNumberOfClient($N))","") //set resVar	
+								solve("newClient","") //set resVar	
 								solve("teatable(X,available)","") //set resVar	
 								if( currentSolution.isSuccess() ) {println("[RESOURCE MODEL] A table is free!")
 								 
-												val X = getCurSol("X") 
+												val X = getCurSol("X").toString()
 								solve("replaceRule(teatable($X,_),teatable($X,busy))","") //set resVar	
 								println("[RESOURCE MODEL] Waiter task updated: reachEntranceDoor")
 								solve("replaceRule(waiter(_),waiter(reachEntranceDoor))","") //set resVar	
@@ -67,6 +63,9 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								 val Task = payloadArg(0) 
 								println("[RESOURCE MODEL] Waiter task updated: $Task")
 								solve("replaceRule(waiter(_),waiter($Task))","") //set resVar	
+								if( Task == "returnHomeFromExit" 
+								 ){solve("exitClient","") //set resVar	
+								}
 						}
 						if( checkMsgContent( Term.createTerm("orderReq(X)"), Term.createTerm("orderReq(T)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
@@ -83,6 +82,28 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								solve("replaceRule(waiter(_),waiter(collectingDrink))","") //set resVar	
 								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(collectingDrink,$T)" ) 
 						}
+						if( checkMsgContent( Term.createTerm("robotCurrentPosition(X,Y)"), Term.createTerm("robotCurrentPosition(X,Y)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 
+												val X = payloadArg(0)
+												val Y = payloadArg(1)
+								solve("replaceRule(currentWaiterPos(_,_),currentWaiterPos($X,$Y))","") //set resVar	
+						}
+						solve("roomstate(waiter(S),currentWaiterPos(X,Y),stateOfTeatables(T1,T2),servicedesk(D),totalNumberOfClients(NC),clientsInTheRoom(CR))","") //set resVar	
+						 	
+									val S = getCurSol("S").toString()
+									val X = getCurSol("X").toString()
+									val Y = getCurSol("Y").toString()
+									val T1 = getCurSol("T1").toString()
+									val T2 = getCurSol("T2").toString()
+									val D = getCurSol("D").toString()
+									val NC = getCurSol("NC").toString()
+									val CR = getCurSol("CR").toString()
+									
+									
+									val JsonState : String = itunibo.formatter.formatterUtil.formatJson(S,X,Y,T1,T2,D,NC,CR)
+						updateResourceRep( JsonState  
+						)
 					}
 					 transition( edgeName="goto",targetState="listenToChanges", cond=doswitch() )
 				}	 
@@ -94,8 +115,8 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								println("[RESOURCE MODEL] Find location $Spot")
 								solve("pos($Spot,X,Y)","") //set resVar	
 								 
-											val X = getCurSol("X") 
-										  	val Y = getCurSol("Y") 
+											val X = getCurSol("X").toString() 
+										  	val Y = getCurSol("Y").toString()
 								answer("askWhere", "location", "location($X,$Y)"   )  
 						}
 					}

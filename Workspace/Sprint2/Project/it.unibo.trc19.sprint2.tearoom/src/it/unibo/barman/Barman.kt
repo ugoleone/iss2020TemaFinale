@@ -28,7 +28,7 @@ class Barman ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("[BARMAN] Waiting for a new order...")
 					}
-					 transition(edgeName="t025",targetState="makeTea",cond=whenEvent("newOrderEvent"))
+					 transition(edgeName="t026",targetState="makeTea",cond=whenEvent("newOrderEvent"))
 				}	 
 				state("makeTea") { //this:State
 					action { //it:State
