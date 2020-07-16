@@ -28,7 +28,7 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						itunibo.planner.plannerUtil.loadRoomMap( "teaRoomExplored"  )
 						discardMessages = false
 					}
-					 transition(edgeName="t019",targetState="walk",cond=whenRequest("movetoCell"))
+					 transition(edgeName="t021",targetState="walk",cond=whenRequest("movetoCell"))
 				}	 
 				state("walk") { //this:State
 					action { //it:State
@@ -53,8 +53,8 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 answer("movetoCell", "atcell", "atcell($XT,$YT)"   )  
 						 }
 					}
-					 transition(edgeName="t020",targetState="execTheMove",cond=whenDispatch("doMove"))
-					transition(edgeName="t021",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
+					 transition(edgeName="t022",targetState="execTheMove",cond=whenDispatch("doMove"))
+					transition(edgeName="t023",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
 					}))
 				}	 
 				state("execTheMove") { //this:State
@@ -81,8 +81,8 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("waitStepDoneFail") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t122",targetState="updateCurrentPos",cond=whenReply("stepdone"))
-					transition(edgeName="t123",targetState="updateCurrentPos",cond=whenReply("stepfail"))
+					 transition(edgeName="t124",targetState="updateCurrentPos",cond=whenReply("stepdone"))
+					transition(edgeName="t125",targetState="updateCurrentPos",cond=whenReply("stepfail"))
 				}	 
 				state("updateCurrentPos") { //this:State
 					action { //it:State

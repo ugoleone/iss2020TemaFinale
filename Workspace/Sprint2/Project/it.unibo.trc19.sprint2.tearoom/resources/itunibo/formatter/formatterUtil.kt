@@ -5,7 +5,8 @@ import org.json.JSONObject
 object formatterUtil {
 	
 	@JvmStatic fun formatJson( robotState : String, xRobot : String, yRobot: String, teatable1State : String, teatable2State : String,
-							   serviceDeskState : String, totalNumberOfClients : String,
+							   serviceDeskState : String, teaServed : String,
+							   totalNumberOfClients : String,
 							   clientsInTheRoom : String ) :String{
 		val jo = JSONObject()
 		jo.put("robotState", robotState)
@@ -14,6 +15,7 @@ object formatterUtil {
 		jo.put("teatable1State", teatable1State)
 		jo.put("teatable2State", teatable2State)
 		jo.put("serviceDeskState", serviceDeskState)
+		jo.put("teaServed", teaServed)
 		jo.put("totalNumberOfClients", totalNumberOfClients)
 		jo.put("clientsInTheRoom", clientsInTheRoom)
 		

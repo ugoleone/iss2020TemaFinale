@@ -23,25 +23,22 @@ currentWaiterPos(0,0).
 %% ------------------------------------------ 
 %% Waiter
 %% ------------------------------------------ 
-%%  athome
-%%	serving( CLIENTID )
-%%	movingto( CELL )
-%%	cleaning( table(N) )
 
-waiter( athome ).
+waiter( home ).
 
 
 %% ------------------------------------------ 
 %% Teatables
 %% ------------------------------------------ 
-%% busy
-%% free		(not busy and not clean)
-%% dirty	(not clean)
-%% clean	(not dirty)
+%% busy		(not free and not clean)
+%% dirty	(free and not clean)
 %% available (free and clean)	
 
 teatable( 1, available ).
 teatable( 2, available ).
+
+teatableClientID(1,-1).
+teatableClientID(2,-1).
 
 stateOfTeatables(T1,T2) :- teatable(1,T1),teatable(2,T2).
 
@@ -53,7 +50,7 @@ stateOfTeatables(T1,T2) :- teatable(1,T1),teatable(2,T2).
 %% ------------------------------------------ 
 
 clientIDs([]).
-addClientID(X) :- replaceRule(clientIDs(L),clientIDs([X|L]).
+addClientID(X) :- replaceRule(clientIDs(L),clientIDs([X|L])).
 
 
 
@@ -65,6 +62,7 @@ addClientID(X) :- replaceRule(clientIDs(L),clientIDs([X|L]).
 %% ready( CLIENTID )
 
 servicedesk( idle ).
+
  
 	 
 %% ------------------------------------------ 
@@ -73,17 +71,17 @@ servicedesk( idle ).
 
 totalNumberOfClients(0).
 clientsInTheRoom(0).
+teaServed(0).
 
-newClient :- totalNumberOfClient(N),X is N+1,replaceRule(totalNumberOfClient(_),totalNumberOfClient(X)),clientsInTheRoom(NC),XC is NC+1,replaceRule(clientsInTheRoom(_),clientsInTheRoom(XC)).
+newClient :- totalNumberOfClients(N),X is N+1,replaceRule(totalNumberOfClients(_),totalNumberOfClients(X)),clientsInTheRoom(NC),XC is NC+1,replaceRule(clientsInTheRoom(_),clientsInTheRoom(XC)).
 exitClient :- clientsInTheRoom(NC),XC is NC-1,replaceRule(clientsInTheRoom(_),clientsInTheRoom(XC)).
-
+serveTea :- teaServed(TS), NTS is TS + 1, replaceRule(teaServed(_),teaServed(NTS)).
 
 
 %% ------------------------------------------ 
 %% Room as a whole
 %% ------------------------------------------ 
-roomstate(  waiter(S), stateOfTeatables(T1,T2), servicedesk(D), totalNumberOfClients(X), clientsInTheRoom(Y) ):-
-	 waiter(S), stateOfTeatables(T1,T2), servicedesk(D),totalNumberOfClients(X), clientsInTheRoom(Y).
+roomstate( waiter(S),currentWaiterPos(Y,X) , stateOfTeatables(T1,T2), servicedesk(D), teaServed(TS), totalNumberOfClients(NC), clientsInTheRoom(CR)):- waiter(S),currentWaiterPos(Y,X) , stateOfTeatables(T1,T2), servicedesk(D), teaServed(TS), totalNumberOfClients(NC), clientsInTheRoom(CR).
 
 
 	 

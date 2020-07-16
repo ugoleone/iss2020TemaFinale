@@ -16,7 +16,8 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		 var tempResult = "no"	 
+		 
+				var tempResult = "no"	
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
@@ -31,7 +32,7 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 						println("[CLIENT] Knock Knock, I'm here")
 						request("notify", "notify" ,"smartbell" )  
 					}
-					 transition(edgeName="t027",targetState="handleReply",cond=whenReply("tempResult"))
+					 transition(edgeName="t029",targetState="handleReply",cond=whenReply("tempResult"))
 				}	 
 				state("handleReply") { //this:State
 					action { //it:State
@@ -48,15 +49,15 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				state("waitToEnter") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t128",targetState="wait",cond=whenDispatch("inform"))
-					transition(edgeName="t129",targetState="enter",cond=whenDispatch("accept"))
+					 transition(edgeName="t130",targetState="wait",cond=whenDispatch("inform"))
+					transition(edgeName="t131",targetState="enter",cond=whenDispatch("accept"))
 				}	 
 				state("wait") { //this:State
 					action { //it:State
 						println("[CLIENT] I have to wait")
 						if( checkMsgContent( Term.createTerm("inform(X)"), Term.createTerm("inform(TIME)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 var Time = payloadArg(0).toLong()  
+								 var Time = payloadArg(0).toLong() 
 								delay(Time)
 						}
 					}
@@ -64,32 +65,36 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				}	 
 				state("enter") { //this:State
 					action { //it:State
-						println("[CLIENT] Choosing a drink")
-						delay(50000) 
-						forward("readyToOrder", "readyToOrder(1)" ,"waiter" ) 
+						if( checkMsgContent( Term.createTerm("accept(ID)"), Term.createTerm("accept(X)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								delay(20000) 
+								println("[CLIENT] Choosing a drink")
+								delay(30000) 
+								emit("readyToOrder", "readyToOrder(1)" ) 
+						}
 					}
-					 transition(edgeName="t030",targetState="makeOrder",cond=whenRequest("take"))
+					 transition(edgeName="t032",targetState="makeOrder",cond=whenRequest("take"))
 				}	 
 				state("makeOrder") { //this:State
 					action { //it:State
 						println("[CLIENT] A Na-tea-li please")
 						answer("take", "order", "order(tea)"   )  
 					}
-					 transition(edgeName="t031",targetState="drink",cond=whenDispatch("serveDrink"))
+					 transition(edgeName="t033",targetState="drink",cond=whenDispatch("serveDrink"))
 				}	 
 				state("drink") { //this:State
 					action { //it:State
 						println("[CLIENT] *sip sip* Delicious tea")
-						delay(10000) 
+						delay(50000) 
 					}
 					 transition( edgeName="goto",targetState="askToPay", cond=doswitch() )
 				}	 
 				state("askToPay") { //this:State
 					action { //it:State
 						println("[CLIENT] I want to pay")
-						forward("exitReq", "exitReq(1)" ,"waiter" ) 
+						emit("exitReq", "exitReq(1)" ) 
 					}
-					 transition(edgeName="t032",targetState="pay",cond=whenRequest("collect"))
+					 transition(edgeName="t034",targetState="pay",cond=whenRequest("collect"))
 				}	 
 				state("pay") { //this:State
 					action { //it:State

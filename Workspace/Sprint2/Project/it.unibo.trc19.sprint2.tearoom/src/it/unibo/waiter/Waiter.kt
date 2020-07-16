@@ -17,7 +17,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		 
-				var WhatImDoing = "nothing" 
+				var WhatImDoing = "athome" 
 			   	var Table = ""
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
@@ -31,10 +31,10 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("[WAITER] Waiting for a request!")
 					}
-					 transition(edgeName="t06",targetState="reachingClientToTakeOrder",cond=whenDispatch("readyToOrder"))
-					transition(edgeName="t07",targetState="exitClient",cond=whenDispatch("exitReq"))
-					transition(edgeName="t08",targetState="handleChange",cond=whenEvent("waiterTaskChangedEvent"))
-					transition(edgeName="t09",targetState="movementHelper",cond=whenDispatch("moveTo"))
+					 transition(edgeName="t07",targetState="reachingClientToTakeOrder",cond=whenEvent("readyToOrder"))
+					transition(edgeName="t08",targetState="exitClient",cond=whenEvent("exitReq"))
+					transition(edgeName="t09",targetState="handleChange",cond=whenEvent("waiterTaskChangedEvent"))
+					transition(edgeName="t010",targetState="movementHelper",cond=whenDispatch("moveTo"))
 				}	 
 				state("handleChange") { //this:State
 					action { //it:State
@@ -43,11 +43,15 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								 WhatImDoing = payloadArg(0) 
 								println("[WAITER] New task: $WhatImDoing")
 								if(  WhatImDoing == "reachEntranceDoor" 
-								 ){Table = "teatable" + payloadArg(1) 
+								 ){Table = payloadArg(1) 
 								forward("moveTo", "moveTo(entrancedoor)" ,"waiter" ) 
 								}
 								if(  WhatImDoing == "collectingDrink" 
 								 ){forward("moveTo", "moveTo(barman)" ,"waiter" ) 
+								}
+								if( WhatImDoing == "sanitizing" 
+								 ){Table = payloadArg(1) 
+								forward("moveTo", "moveTo($Table)" ,"waiter" ) 
 								}
 						}
 					}
@@ -55,26 +59,28 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("reachingClientToTakeOrder") { //this:State
 					action { //it:State
-						println("[WAITER] I'm collecting the order from the client")
-						forward("taskUpdate", "taskUpdate(takingOrder)" ,"resourcemodel" ) 
-						 WhatImDoing = "takingOrder"  
-						forward("moveTo", "moveTo($Table)" ,"waiter" ) 
+						if( checkMsgContent( Term.createTerm("readyToOrder(X)"), Term.createTerm("readyToOrder(T)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("[WAITER] I'm collecting the order from the client")
+								forward("taskUpdate", "taskUpdate(takingOrder)" ,"resourcemodel" ) 
+								 WhatImDoing = "takingOrder"  
+								forward("moveTo", "moveTo(teatable1)" ,"waiter" ) 
+						}
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
 				}	 
 				state("takingOrder") { //this:State
 					action { //it:State
+						delay(5000) 
 						request("take", "take(1)" ,"clientsimulator" )  
 					}
-					 transition(edgeName="t010",targetState="clientReady",cond=whenReply("order"))
+					 transition(edgeName="t011",targetState="clientReady",cond=whenReply("order"))
 				}	 
 				state("clientReady") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("order(X)"), Term.createTerm("order(ORDER)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								forward("orderReq", "orderReq($Table)" ,"resourcemodel" ) 
-						}
+						forward("orderReq", "orderReq(1)" ,"resourcemodel" ) 
 						println("[WAITER] I'm transmitting the order to the barman")
+						forward("taskUpdate", "taskUpdate(returnHome)" ,"resourcemodel" ) 
 						WhatImDoing = "returnHome" 
 						forward("moveTo", "moveTo(home)" ,"waiter" ) 
 					}
@@ -84,6 +90,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("[WAITER] Serving the drink")
 						forward("serveDrink", "serveDrink(tea)" ,"clientsimulator" ) 
+						delay(5000) 
+						forward("taskUpdate", "taskUpdate(returnHome)" ,"resourcemodel" ) 
 						WhatImDoing = "returnHome" 
 						forward("moveTo", "moveTo(home)" ,"waiter" ) 
 					}
@@ -92,8 +100,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("exitClient") { //this:State
 					action { //it:State
 						println("[WAITER] Client requested to exit! Proceeding to the payment")
-						forward("taskUpdate", "taskUpdate(exitClient)" ,"resourcemodel" ) 
-						 WhatImDoing = "exitClient"  
+						forward("taskUpdate", "taskUpdate(collectingPayment)" ,"resourcemodel" ) 
+						 WhatImDoing = "collectingPayment"  
 						forward("moveTo", "moveTo(teatable1)" ,"waiter" ) 
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
@@ -103,17 +111,33 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("[WAITER] Collecting the money!")
 						request("collect", "collect(1)" ,"clientsimulator" )  
 					}
-					 transition(edgeName="t011",targetState="handlePayment",cond=whenReply("payment"))
+					 transition(edgeName="t012",targetState="handlePayment",cond=whenReply("payment"))
 				}	 
 				state("handlePayment") { //this:State
 					action { //it:State
+						delay(5000) 
 						if( checkMsgContent( Term.createTerm("payment(X)"), Term.createTerm("payment(MONEY)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 println("[WAITER] " + payloadArg(0) + " EUR collected! Have a nice day!")  
 						}
-						WhatImDoing = "convoyExit" 
 						forward("taskUpdate", "taskUpdate(convoyExit)" ,"resourcemodel" ) 
+						WhatImDoing = "convoyExit" 
 						forward("moveTo", "moveTo(exitdoor)" ,"waiter" ) 
+					}
+					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
+				}	 
+				state("cleaningTable") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("cleanTable(T)"), Term.createTerm("cleanTable(Table)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								Table = payloadArg(0) 
+								println("[WAITER] Cleaning $Table!")
+								delay(15000) 
+								forward("tableCleaned", "tableCleaned($Table)" ,"resourcemodel" ) 
+								forward("taskUpdate", "taskUpdate(returnHome)" ,"resourcemodel" ) 
+								 WhatImDoing = "returnHome"  
+								forward("moveTo", "moveTo(home)" ,"waiter" ) 
+						}
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
 				}	 
@@ -132,64 +156,66 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								request("movetoCell", "movetoCell($XT,$YT)" ,"planner" )  
 						}
 					}
-					 transition(edgeName="t112",targetState="movementHelper",cond=whenReply("location"))
-					transition(edgeName="t113",targetState="handleAtCell",cond=whenReply("atcell"))
+					 transition(edgeName="t113",targetState="movementHelper",cond=whenReply("location"))
+					transition(edgeName="t114",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("handleAtCell") { //this:State
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("atcell(X,Y)"), Term.createTerm("atcell(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								if(  WhatImDoing == "reachEntranceDoor"  
-								 ){delay(3000) 
-								 WhatImDoing = "convoyTable"  
+								 when(WhatImDoing) {
+												"reachEntranceDoor" ->  {  
+								delay(5000) 
 								forward("taskUpdate", "taskUpdate(convoyTable)" ,"resourcemodel" ) 
+								 WhatImDoing = "convoyTable"  
 								forward("moveTo", "moveTo($Table)" ,"waiter" ) 
-								}
-								if(  WhatImDoing == "convoyTable"  
-								 ){delay(3000) 
+								 } 
+												"convoyTable" ->  {
+								delay(5000) 
 								forward("taskUpdate", "taskUpdate(returnHome)" ,"resourcemodel" ) 
 								 WhatImDoing = "returnHome"  
 								forward("moveTo", "moveTo(home)" ,"waiter" ) 
-								}
-								if(  WhatImDoing == "returnHome"  
-								 ){delay(3000) 
-								forward("taskUpdate", "taskUpdate(nothing)" ,"resourcemodel" ) 
-								 WhatImDoing = "nothing"  
+								 } 
+												"returnHome" ->  {
+								forward("taskUpdate", "taskUpdate(athome)" ,"resourcemodel" ) 
+								 WhatImDoing = "athome"  
 								forward("listenRequests", "listenRequests(A)" ,"waiter" ) 
-								}
-								if(  WhatImDoing == "takingOrder" 
-								 ){delay(3000) 
+								 } 
+												"takingOrder" ->  {
 								forward("readyToTakeOrder", "readyToTakeOrder(A)" ,"waiter" ) 
-								}
-								if(  WhatImDoing == "collectingDrink" 
-								 ){delay(3000) 
+								 } 
+												"collectingDrink" ->  {
+								delay(5000) 
 								forward("taskUpdate", "taskUpdate(bringingDrinkToClient)" ,"resourcemodel" ) 
 								 WhatImDoing = "bringingDrinkToClient"  
 								forward("moveTo", "moveTo($Table)" ,"waiter" ) 
-								}
-								if(  WhatImDoing == "bringingDrinkToClient"  
-								 ){delay(3000) 
+								 } 
+												"bringingDrinkToClient" ->  {
 								forward("taskUpdate", "taskUpdate(servingDrinkToClient)" ,"resourcemodel" ) 
 								 WhatImDoing = "servingDrinkToClient"  
 								forward("serveDrink", "serveDrink(A)" ,"waiter" ) 
-								}
-								if(  WhatImDoing == "exitClient"  
-								 ){delay(3000) 
+								 } 
+												"collectingPayment" ->  {
 								forward("pay", "pay(A)" ,"waiter" ) 
-								}
-								if(  WhatImDoing == "convoyExit"  
-								 ){delay(3000) 
+								 } 
+												"convoyExit" ->  {
+								delay(5000) 
 								forward("taskUpdate", "taskUpdate(returnHomeFromExit)" ,"resourcemodel" ) 
 								 WhatImDoing = "returnHome"  
 								forward("moveTo", "moveTo(home)" ,"waiter" ) 
+								 } 
+												"sanitizing" ->  {
+								forward("cleanTable", "cleanTable(teatable1)" ,"waiter" ) 
 								}
+											} 
 						}
 					}
-					 transition(edgeName="t114",targetState="movementHelper",cond=whenDispatch("moveTo"))
-					transition(edgeName="t115",targetState="takingOrder",cond=whenDispatch("readyToTakeOrder"))
-					transition(edgeName="t116",targetState="servingDrinkToClient",cond=whenDispatch("serveDrink"))
-					transition(edgeName="t117",targetState="payment",cond=whenDispatch("pay"))
-					transition(edgeName="t118",targetState="reqHandler",cond=whenDispatch("listenRequests"))
+					 transition(edgeName="t115",targetState="movementHelper",cond=whenDispatch("moveTo"))
+					transition(edgeName="t116",targetState="takingOrder",cond=whenDispatch("readyToTakeOrder"))
+					transition(edgeName="t117",targetState="servingDrinkToClient",cond=whenDispatch("serveDrink"))
+					transition(edgeName="t118",targetState="payment",cond=whenDispatch("pay"))
+					transition(edgeName="t119",targetState="cleaningTable",cond=whenDispatch("cleanTable"))
+					transition(edgeName="t120",targetState="reqHandler",cond=whenDispatch("listenRequests"))
 				}	 
 			}
 		}

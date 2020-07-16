@@ -2,7 +2,7 @@
 % tearoom description   
 %====================================================================================
 context(ctxtearoom, "localhost",  "TCP", "8010").
-context(ctxbasicrobot, "127.0.0.1",  "TCP", "8070").
+context(ctxbasicrobot, "127.0.0.1",  "TCP", "8020").
  qactor( basicrobot, ctxbasicrobot, "external").
   qactor( resourcemodel, ctxtearoom, "it.unibo.resourcemodel.Resourcemodel").
   qactor( waiter, ctxtearoom, "it.unibo.waiter.Waiter").
