@@ -31,7 +31,7 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 						println("[CLIENT] Knock Knock, I'm here")
 						request("notify", "notify" ,"smartbell" )  
 					}
-					 transition(edgeName="t026",targetState="handleReply",cond=whenReply("tempResult"))
+					 transition(edgeName="t027",targetState="handleReply",cond=whenReply("tempResult"))
 				}	 
 				state("handleReply") { //this:State
 					action { //it:State
@@ -48,8 +48,8 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				state("waitToEnter") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t127",targetState="wait",cond=whenDispatch("inform"))
-					transition(edgeName="t128",targetState="enter",cond=whenDispatch("accept"))
+					 transition(edgeName="t128",targetState="wait",cond=whenDispatch("inform"))
+					transition(edgeName="t129",targetState="enter",cond=whenDispatch("accept"))
 				}	 
 				state("wait") { //this:State
 					action { //it:State
@@ -68,14 +68,14 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 						delay(50000) 
 						forward("readyToOrder", "readyToOrder(1)" ,"waiter" ) 
 					}
-					 transition(edgeName="t029",targetState="makeOrder",cond=whenRequest("take"))
+					 transition(edgeName="t030",targetState="makeOrder",cond=whenRequest("take"))
 				}	 
 				state("makeOrder") { //this:State
 					action { //it:State
 						println("[CLIENT] A Na-tea-li please")
 						answer("take", "order", "order(tea)"   )  
 					}
-					 transition(edgeName="t030",targetState="drink",cond=whenDispatch("serveDrink"))
+					 transition(edgeName="t031",targetState="drink",cond=whenDispatch("serveDrink"))
 				}	 
 				state("drink") { //this:State
 					action { //it:State
@@ -89,7 +89,7 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 						println("[CLIENT] I want to pay")
 						forward("exitReq", "exitReq(1)" ,"waiter" ) 
 					}
-					 transition(edgeName="t031",targetState="pay",cond=whenRequest("collect"))
+					 transition(edgeName="t032",targetState="pay",cond=whenRequest("collect"))
 				}	 
 				state("pay") { //this:State
 					action { //it:State

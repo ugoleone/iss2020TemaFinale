@@ -31,10 +31,10 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("[WAITER] Waiting for a request!")
 					}
-					 transition(edgeName="t05",targetState="reachingClientToTakeOrder",cond=whenDispatch("readyToOrder"))
-					transition(edgeName="t06",targetState="exitClient",cond=whenDispatch("exitReq"))
-					transition(edgeName="t07",targetState="handleChange",cond=whenEvent("waiterTaskChangedEvent"))
-					transition(edgeName="t08",targetState="movementHelper",cond=whenDispatch("moveTo"))
+					 transition(edgeName="t06",targetState="reachingClientToTakeOrder",cond=whenDispatch("readyToOrder"))
+					transition(edgeName="t07",targetState="exitClient",cond=whenDispatch("exitReq"))
+					transition(edgeName="t08",targetState="handleChange",cond=whenEvent("waiterTaskChangedEvent"))
+					transition(edgeName="t09",targetState="movementHelper",cond=whenDispatch("moveTo"))
 				}	 
 				state("handleChange") { //this:State
 					action { //it:State
@@ -66,7 +66,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						request("take", "take(1)" ,"clientsimulator" )  
 					}
-					 transition(edgeName="t09",targetState="clientReady",cond=whenReply("order"))
+					 transition(edgeName="t010",targetState="clientReady",cond=whenReply("order"))
 				}	 
 				state("clientReady") { //this:State
 					action { //it:State
@@ -103,7 +103,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("[WAITER] Collecting the money!")
 						request("collect", "collect(1)" ,"clientsimulator" )  
 					}
-					 transition(edgeName="t010",targetState="handlePayment",cond=whenReply("payment"))
+					 transition(edgeName="t011",targetState="handlePayment",cond=whenReply("payment"))
 				}	 
 				state("handlePayment") { //this:State
 					action { //it:State
@@ -132,8 +132,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								request("movetoCell", "movetoCell($XT,$YT)" ,"planner" )  
 						}
 					}
-					 transition(edgeName="t111",targetState="movementHelper",cond=whenReply("location"))
-					transition(edgeName="t112",targetState="handleAtCell",cond=whenReply("atcell"))
+					 transition(edgeName="t112",targetState="movementHelper",cond=whenReply("location"))
+					transition(edgeName="t113",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("handleAtCell") { //this:State
 					action { //it:State
@@ -179,17 +179,17 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								}
 								if(  WhatImDoing == "convoyExit"  
 								 ){delay(3000) 
-								forward("taskUpdate", "taskUpdate(returnHome)" ,"resourcemodel" ) 
+								forward("taskUpdate", "taskUpdate(returnHomeFromExit)" ,"resourcemodel" ) 
 								 WhatImDoing = "returnHome"  
 								forward("moveTo", "moveTo(home)" ,"waiter" ) 
 								}
 						}
 					}
-					 transition(edgeName="t113",targetState="movementHelper",cond=whenDispatch("moveTo"))
-					transition(edgeName="t114",targetState="takingOrder",cond=whenDispatch("readyToTakeOrder"))
-					transition(edgeName="t115",targetState="servingDrinkToClient",cond=whenDispatch("serveDrink"))
-					transition(edgeName="t116",targetState="payment",cond=whenDispatch("pay"))
-					transition(edgeName="t117",targetState="reqHandler",cond=whenDispatch("listenRequests"))
+					 transition(edgeName="t114",targetState="movementHelper",cond=whenDispatch("moveTo"))
+					transition(edgeName="t115",targetState="takingOrder",cond=whenDispatch("readyToTakeOrder"))
+					transition(edgeName="t116",targetState="servingDrinkToClient",cond=whenDispatch("serveDrink"))
+					transition(edgeName="t117",targetState="payment",cond=whenDispatch("pay"))
+					transition(edgeName="t118",targetState="reqHandler",cond=whenDispatch("listenRequests"))
 				}	 
 			}
 		}
