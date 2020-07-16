@@ -1,0 +1,315 @@
+
+System /*-trace*/ tearoom
+
+//interazione ingresso client
+Request  checkAvail : checkAvail(X) 
+Reply    waitingTime : waitingTime(X)
+Request  tabStatus : tabStatus(X) 
+Reply    tabState : tabState(X)    
+
+//interazione ordinazione client
+//prima immagine
+Dispatch readyToOrder : readyToOrder(X) 
+
+//seconda immagine
+Request take : take(X)
+Reply order : order(X)
+Dispatch orderReq : orderReq(X) 
+  
+//terza immagine  
+Dispatch ready : ready(X) 
+
+//interazione richiesta uscita client  
+Dispatch exitReq : exitReq(X)
+
+//interazione pagamento client
+Request  collect : collect(X) 
+Reply    payment : payment(X)
+
+//interazione con timer
+Dispatch startTimer : startTimer(X)
+Dispatch endTime : endTime(X)
+
+//interazioni client
+Request 	notify 	: 	notify(X)
+Reply		tempResult	:	tempResult(X)
+Dispatch	accept	:	accept(X)
+Dispatch	inform	:	inform(X)
+
+
+Context ctxtearoom ip [ host= "localhost"   port= 8038 ]  
+
+
+QActor waiter context ctxtearoom{ 
+	
+	[# 	
+		var tabFree = "" 
+		var tableToCheck = 1 
+	#]
+	
+	State s0 initial{ 
+		println("[WAITER] waiter is starting..I'm HOME!") 	
+		delay 200
+		discardMsg Off
+	} 
+	Goto reqHandler
+	
+ 	State reqHandler{
+ 		println("[WAITER] I'm HOME, waiting for a request!")
+ 		[# tableToCheck = 1 #]	
+ 	}
+ 	Transition t0 
+ 		whenRequest checkAvail -> checkTableState		
+ 		whenMsg readyToOrder -> takingOrder 
+ 		whenMsg ready -> collectingDrink 
+ 		whenMsg exitReq -> exitClient 
+ 		whenMsg endTime -> payment
+ 	
+ 	//funzione a puro scopo dimostrativo, in quanto non specificato il metodo di consultazione dello stato dei tavoli
+ 	
+ 	State checkTableState{	
+ 		if [# tableToCheck == 1 #] {
+ 			//legge lo stato del tavolo 1, supposto freeClean
+ 			[# tabFree = "freeClean"#]
+ 		} else {
+ 			//legge lo stato del tavolo 2, supposto freeClean
+ 			[# tabFree = "freeClean"#]
+ 		}
+	}
+	Transition t0 whenReply tabState -> handleTabState
+	
+	State handleTabState {
+		if [# tabFree == "FreeClean"#]{
+			replyTo checkAvail with waitingTime : waitingTime(0)
+		} else {
+			[# tableToCheck = 2 #]
+		}					 		 
+	}Goto reqHandler if [# tabFree == "FreeClean" #] else checkTableState
+	
+	State collectingDrink{
+		println("[WAITER] I'm collecting the drink from the barman")
+		delay 200
+		println("[WAITER] I'm taking the drink to the client")
+	}
+	Goto reqHandler
+	
+	State takingOrder{
+		println("[WAITER] I'm collecting the order from the client")
+		request client -m take : take(1) 
+	}Transition t0 whenReply order -> clientReady
+	
+	State clientReady {
+		onMsg( order : order( ORDER ) ){
+			forward barman -m orderReq : orderReq( $payloadArg(0) )
+		}
+		println("[WAITER] I'm taking the drink to the client")
+	} Goto reqHandler
+	
+	State exitClient{
+		println("[WAITER] Client requested to exit! Proceeding to the payment")
+	}
+	Goto payment
+	
+	State payment{
+		println("[WAITER] Collecting the money!")
+		request client -m collect : collect(1)
+	}
+	Transition t0 whenReply payment -> handlePayment
+	
+	State handlePayment {
+		onMsg(payment : payment( MONEY )){
+			[# println("[WAITER] " + payloadArg(0) + " EUR collected! Have a nice day!") #]
+		}
+	}
+	Goto reqHandler
+}
+
+//supponiamo un solo cliente per volta
+//usato per simulare maxstaytime
+
+QActor timer context ctxtearoom{
+	State s0 initial{ 
+		println("[TIMER] timer is starting..") 
+	} 
+	Goto waitingToStart
+	
+	State waitingToStart{
+	}
+	Transition t0 
+ 		whenMsg startTimer -> watchDog
+	
+ 	State watchDog{
+ 	}
+ 	Transition t0 
+ 		whenTime 1000 -> exitMsg
+ 	
+ 	State exitMsg{
+ 		forward waiter -m endTime : endTime(1)
+ 	}
+}
+
+
+/********* BARMAN *********/
+QActor barman context ctxtearoom{  
+	  	  
+	State s0 initial {	     
+ 		discardMsg Off
+ 	} 
+	Goto  waitingForOrder 
+	
+	State waitingForOrder{
+		println("[BARMAN] Waiting for a new order...")
+ 	} 
+	Transition t0 whenMsg orderReq      -> makeTea
+
+	State makeTea{ 
+ 		println("[BARMAN] Making some delicious tea...")
+ 		delay 2000
+ 	}
+ 	Goto teaReady
+ 
+ 	State teaReady{   
+		println("[BARMAN] The tea is ready!")
+   		forward waiter -m ready : ready(tea)
+  	}
+	Goto waitingForOrder
+		 	
+} 
+
+
+/************ CLIENT **************/
+QActor client context ctxtearoom {
+	[# var tempResult = "no"	#]
+	State init initial {
+		println("[CLIENT] Client STARTED")
+		discardMsg Off
+	}
+	Goto askToEnter
+	
+	State askToEnter {
+		println("[CLIENT] Knock Knock, I'm here")
+		request smartbell -m notify : notify
+	}
+	Transition t0 whenReply tempResult -> handleReply
+	
+	
+	State handleReply {
+		onMsg(tempResult : tempResult(RES)){
+			[# tempResult = payloadArg(0) #]
+		}
+	}Goto waitToEnter if [# tempResult == "yes" #] else exit
+	
+	State waitToEnter {
+	} 
+	Transition t0 	whenMsg inform -> wait
+					whenMsg accept -> enter
+	
+	
+	State wait {
+		println("[CLIENT] I have to wait")
+		onMsg(inform : inform(TIME)){
+			[# var Time = payloadArg(0).toLong() #]
+			delayVar Time
+		}
+	}
+	Goto enter
+	
+	State enter {
+		println("[CLIENT] Choosing a drink")
+		delay 1000 // simulate going to table and choosing a drink
+		forward waiter -m readyToOrder : readyToOrder(1)
+	}
+	Transition t0 whenRequest take -> makeOrder
+	
+	State makeOrder {
+		println("[CLIENT] A Na-tea-li please")
+		replyTo take with order	: order(tea)
+	}
+	Goto drink
+	
+	State drink {
+		println("[CLIENT] *sip sip* Delicious tea")
+		delay 5000
+	}Goto askToPay
+	
+	State askToPay {
+		println("[CLIENT] I want to pay")
+		forward waiter -m 	exitReq	: exitReq(1)
+	}Transition t0 whenRequest collect -> pay
+	
+	State pay {
+		println("[CLIENT] Paying")
+		replyTo collect with payment : payment(10)
+	}Goto exit
+	
+	State exit {
+		println("[CLIENT] Client EXIT Byeeee!")
+		terminate 1
+	}
+	
+}
+
+/************* SMARTBELL ***************/
+QActor smartbell context ctxtearoom{  
+	[#  
+		var temperature     = 37.5
+		var clientID        = 0
+	#]   
+	  
+	State s0 initial {	     
+ 		discardMsg Off
+ 	} 
+	Goto  waitingForClient  
+	
+	State waitingForClient{
+		println("[SMARTBELL] Waiting for a new client...")
+ 	} 
+	Transition t0 whenRequest notify      -> checkTemp
+
+	State checkTemp{ 
+ 		println("[SMARTBELL] Checking your temperature...")
+ 		[# 
+ 			val randomNumber = Math.random()
+ 			if  (randomNumber >= 0.7)
+ 				temperature = 39.0
+ 			else
+ 				temperature = 37.0		
+ 		#]
+ 	}
+ 	Goto badTemp if [# temperature > 37.5 #] else goodTemp
+ 
+ 	State badTemp{   
+		println("[SMARTBELL] You should go to the hospital! ")
+   		replyTo notify with tempResult : tempResult(no)
+  	}
+	Goto waitingForClient
+	
+	State goodTemp{   
+		println("[SMARTBELL] Your temperature is ok ")
+		[# clientID++ #]
+   		replyTo notify with tempResult : tempResult(yes)
+  	}
+	Goto waiterInfo
+ 	
+ 	State waiterInfo {  
+ 		println("[SMARTBELL] Checking table situation with the waiter... ")
+ 		request waiter -m checkAvail : checkAvail( clientID )
+ 	}
+    Transition t1 	whenReply waitingTime -> informClient
+    				
+ 	
+ 	State informClient{
+ 		onMsg(waitingTime : waitingTime(X)){
+  			if [# payloadArg(0).toDouble() == 0.0 	#] {
+  				println("[SMARTBELL] A waiter is coming... ")
+  				forward client -m accept : accept(Y)
+  			} else {
+  				println("[SMARTBELL] You have to wait... ")
+  				forward client -m inform : inform($payloadArg(0))
+  			}
+  		}
+ 	}   
+ 	Goto waitingForClient 
+ 	
+ 	
+} 

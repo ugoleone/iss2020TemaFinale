@@ -135,6 +135,10 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
                     verso cui si deve spostare il robot.</li>
                 </ol> 
                 <center><img src="img/nuova_struttura_waiter.png" alt="struttura_waiter.png" width="55%" height="32%" /></center></br>
+                Inoltre, viene introdotta la parte frontend di interazione con il manager, che rappresenta le informazioni elencate nei requisiti.</br>
+                Questa, implementata tramite il framework <a href="https://spring.io/">Spring</a>, si relazione con il resource model tramite un canale <a href="https://en.wikipedia.org/wiki/Constrained_Application_Protocol">CoAP</a>,
+                che viene aggiornato ogniqualvolta avviene un cambio di modello, utilizzando la featore QAK <b>updateResource</b>.</br></br>
+                <center><img src="img/iss2020Sprint2-HTML_manager_esagonale.png" alt="HTML_esagonale.png" width="65%" height="32%" /></center></br>
             </div>
 
             <h2>Testing</h2>

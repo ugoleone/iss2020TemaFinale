@@ -1,0 +1,51 @@
+
+System /*-trace*/ tearoom
+
+
+Context ctxtearoom ip [ host= "localhost"   port= 8038 ]  
+
+
+QActor waiter context ctxtearoom{ 
+	
+	//il waiter conosce lo stato dei tavoli tramite un 
+	//meccanismo di conoscenza
+	
+	[#
+		var stateTable1="stateTable1"
+		var stateTable2="stateTable2"
+	#]
+	State s0 initial{ 
+		println("I'm WAITER") 	
+	} 
+	Goto reqHandler
+	
+ 	State reqHandler{
+ 		println("[WAITER] I'm HOME, waiting for a request!")
+ 		[# tableToCheck = 1 #]	
+ 	}
+}
+
+
+/********* BARMAN *********/
+QActor barman context ctxtearoom{  
+	  	  
+	State s0 initial {	     
+ 		println("I'm BARMAN")
+ 	} 
+		 	
+} 
+
+
+/************ CLIENT **************/
+QActor client context ctxtearoom {
+	State init initial {
+		println("I'm CLIENT")
+	}
+}
+
+/************* SMARTBELL ***************/
+QActor smartbell context ctxtearoom{  
+	State s0 initial {	     
+ 		println("I'm SMARTBELL")
+ 	}  	
+} 

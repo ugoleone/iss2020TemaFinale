@@ -111,7 +111,6 @@
             Il <em>waiter</em> deve aprire la <em>exitdoor</em> solo quando la hall è libera, i.e. non deve aprire la
             porta se la hall è già occupata da un cliente in attesa di entrare dalla <em>entrancedoor</em>.
 
-
             <h2>Requirement analysis</h2>
             <div>
                 <ol>
@@ -173,6 +172,9 @@
                     <li>All'interno della <em>tearoom</em> posso esserci al massimo <tt>N</tt> clienti contemporaneamente (<tt>N</tt>=numero tavoli=2)</li>
                     <li>Bisogna rendere disponibile un'interfaccia web da cui il <bc>manager</bc> deve poter controllare lo stato corrente della <em>tearoom</em>: deve essere infatti possibile in ogni momento conoscere lo stato corrente della stanza</li>
                 </ol>
+                
+                <p>Una descrizione formale di questo modello si può trovare in <a href="../../Workspace/AnalisiRequisiti/it.unibo.analisirequisiti.tearoom/src/tearoom.qak">tearoom.qak</a></p>
+
             </div>
 
             <h2>Problem analysis</h2>
@@ -204,7 +206,7 @@
                             Lo <bc>smartbell</bc> risponde (<em>tempResult</em>) al <bc>client</bc> informandolo se la sua temperatura rispetti le disposizioni sanitarie,
                             e quindi sia autorizzato a poter entrare.
                         </br></br>
-                            Lo <bc>smartbell</bc> informa il <bc>waiter</bc> della presenza di un nuovo <bc>client</bc> inviando il <em>clientidentifier</em> appena generato. Il <bc>waiter</bc> chiede ai <bc>table</bc> il loro stato. 
+                            Lo <bc>smartbell</bc> informa il <bc>waiter</bc> della presenza di un nuovo <bc>client</bc> inviando il <em>clientidentifier</em> appena generato. Il <bc>waiter</bc> legge lo stato dei <bc>table</bc>. 
                             Il <bc>waiter</bc> risponde allo <bc>smartbell</bc> se il nuovo <bc>client</bc> possa o meno entrare in sala. Tale risposta viene propagata al <bc>client</bc>,
                             il quale in caso affermativo aspetta il <bc>waiter</bc> per essere accompagnato ad un <bc>table</bc>, mentre in caso negativo si mette in attesa.
                         </td>
@@ -251,7 +253,7 @@
                         </td>
                     </tr>
                 </table>
-                <p>Una descrizione formale di questo modello si può trovare in <a href="../../Workspace/Analisi/it.unibo.trc19.analisi/src/tearoom.qak">tearoom.qak</a></p>
+                <p>Una descrizione formale di questo modello si può trovare in <a href="../../Workspace/AnalisiProblema/it.unibo.trc19.analisi/src/tearoom.qak">tearoom.qak</a></p>
 				<div>
 				In fase di analisi sono emersi delle problematiche critiche che saranno affrontate più nel dettaglio nei successivi sprint:
 					<ol>
