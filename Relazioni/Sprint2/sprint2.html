@@ -20,8 +20,8 @@
         <div class="body">
             <h2>Requirements</h2>
             <div>
-                Questo sprint si occupa di definire lo stato della stanza, introducendo un'architettura esagonale.</br></br>
-                Inoltre si inizierà a costruire il pannello di controllo da fornire al manager, tramite il quale si potrà visualizzare lo stato.
+                Questo sprint si occupa di definire lo stato della stanza, introducendo un'architettura esagonale.</br>
+                Inoltre si inizierà a costruire il pannello di controllo da fornire al manager, tramite il quale si potrà visualizzare lo stato della stanza.
             </div>
 
 
@@ -42,7 +42,7 @@
                     </li>
                 </ul> 
                 </br>
-                L'architettura esagonale, o architettura a porte e adattatori, è un pattern architetturale usato in
+                L'<a href ="https://jmgarridopaz.github.io/content/hexagonalarchitecture.html">architettura esagonale</a>, o architettura a porte e adattatori, è un pattern architetturale usato in
                 software design.</br>
                 <center><img src="img/portAdapter.png" alt="tearoom20.png" width="15%" height="32%" /></center></br>
                 Il principale obiettivo di questa architettura è quello di disaccoppiare la logica core
@@ -122,58 +122,42 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
 
             <h2>Test plans</h2>
             <div>
-                <ks>GOAL</ks>: give a formal description (for example, by using <ks>JUnit</ks>) of the <k>functional
-                    TestPlans</k>, with reference to the <k>logical architecture</k> of the system .
+                Non sono sorte in fase di analisi funzionalità da testare, in quanto questo sprint si occupa unicamente di modificare il precedente
+                modello introducendo il modello esagonale (completamente espresso con la tecnologia QAK, framework presente nella nostra software house).
             </div>
 
             <h2>Project</h2>
             <div>
-                Il <bc>waiter</bc> interagisce ora con il <bc>resourcemodel</bc> in due occasioni:
+                Il <bc>waiter</bc> interagisce ora con il <bc>resourcemodel</bc> in tre occasioni:
                 <ol>
+                    <li>Tramite <b>teaTableCleaned</b>, per notificare il cambiamento di stato del tavolo, dopo averlo pulito.</li>
                     <li>Tramite <b>taskUpdate</b>, per notificare il completamento di un task.</li>
                     <li>Tramite <b>askWhere</b>, per richiedere la posizione (ottenuta tramite <b>location</b>) di un oggetto nella stanza
                     verso cui si deve spostare il robot.</li>
                 </ol> 
+                Il <bc>planner</bc> interagisce ora con il <bc>resourcemodel</bc> tramite l'evento <b>waiterCurrentPosition</b>, per aggiornare 
+                la posizione corrente del waiter nella stanza.</br>
+                La scelta di una interazione ad evento è basata su due considerazioni:
+                <ul>
+                    <li>Essendo il planner un attore di "supporto" al sistema, è stato preferito non dargli la responsabilità di <b>interagire direttamente</b> con il modello.</li>
+                    <li>La possibilità di aggiornare la posizione corrente del waiter tramite un evento può risultare utile nel momento in cui l'attore venga spostato
+                        in una <b>posizione esterna</b> al sistema.</li>
+                </ul>
                 <center><img src="img/nuova_struttura_waiter.png" alt="struttura_waiter.png" width="55%" height="32%" /></center></br>
+                Una descrizione formale di questo modello si può trovare in <a href="../../Workspace/Sprint2/Project/it.unibo.trc19.sprint2.tearoom/src/tearoom.qak">tearoom.qak</a></br>
                 Inoltre, viene introdotta la parte frontend di interazione con il manager, che rappresenta le informazioni elencate nei requisiti.</br>
                 Questa, implementata tramite il framework <a href="https://spring.io/">Spring</a>, si relazione con il resource model tramite un canale <a href="https://en.wikipedia.org/wiki/Constrained_Application_Protocol">CoAP</a>,
                 che viene aggiornato ogniqualvolta avviene un cambio di modello, utilizzando la feature QAK <b>updateResource</b>.</br></br>
                 <center><img src="img/iss2020Sprint2-HTML_manager_esagonale.png" alt="HTML_esagonale.png" width="65%" height="32%" /></center></br>
+                Il main della interfaccia web si può trovare in <a href="../../Workspace/Sprint2/Project/robotWeb2020/src/main/java/it/unibo/robotWeb2020/RobotWeb2020Application.java">RobotWeb2020Application</a> (collocata in <b>localhost:7001</b>).
             </div>
 
             <h2>Testing</h2>
             <div>
-                <ks>GOAL</ks>: complete the <k>functional TestPlans</k> according to the project code and execute them.
+                Il testing viene svolto tramite il confronto fra il comportamento atteso (descritto nei requisiti) e quello reale della
+                interfaccia web realizzata per il manager (<a href="../../Workspace/Sprint2/Project/robotWeb2020/src/main/java/it/unibo/robotWeb2020/RobotWeb2020Application.java">RobotWeb2020Application</a>),
+                supportato dall' infrastruttura software modellata in <a href="../../Workspace/Sprint2/Project/it.unibo.trc19.sprint2.tearoom/src/tearoom.qak">tearoom.qak</a>.
             </div>
-
-            <h2>Deployment</h2>
-
-            <div>
-                <ks>GOAL</ks>: prepare a software application to run and operate in a specific environment.
-                It involves installation, configuration, testing and making changes to optimize the performance of the
-                software.
-                It can either be carried out manually or (hopefully) through automated systems.
-            </div>
-
-
-
-            <h2>Maintenance</h2>
-            <div>
-                <ks>GOAL</ks>: modify the software product after delivery to correct faults,
-                to improve performance or other attributes.
-                A common perception of maintenance is that it merely involves fixing defects.
-                However, one study indicated that over 80% of maintenance effort is used for non-corrective actions.
-            </div>
-
-
-            <table style="width:100%" border="1">
-                <tr>
-                    <td style="width:50%">
-                    </td>
-                    <td></td>
-                </tr>
-            </table>
-
             <br /><br />
 
         </div>
@@ -186,24 +170,27 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
 
                 <div class="w3-third">
                     <img src="../HTMLResources/img/ugo3.jpg" style="width:45%" class="w3-circle">
-                    <h3>Ugo Leone Cavalcanti</h3>
-                    <p style="font-size: 70%;"><a
-                            href="MAILTO:ugoleone.cavalcanti@studio.unibo.it">ugoleone.cavalcanti@studio.unibo.it</a>
+                    <h3>Ugo Leone Cavalcanti</br>
+                        <i>Analista</i>
+                    </h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:ugoleone.cavalcanti@studio.unibo.it">ugoleone.cavalcanti@studio.unibo.it</a>
                     </p>
                 </div>
 
                 <div class="w3-third">
                     <img src="../HTMLResources/img/amir.jpg" style="width:45%" class="w3-circle">
-                    <h3>Amir Al Sadi</h3>
-                    <p style="font-size: 70%;"><a
-                            href="MAILTO:amir.alsadi@studio.unibo.it">amir.alsadi@studio.unibo.it</a></p>
+                    <h3>Amir Al Sadi</br>
+                        <i>Tester</i>
+                    </h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:amir.alsadi@studio.unibo.it">amir.alsadi@studio.unibo.it</a></p>
                 </div>
 
                 <div class="w3-third">
                     <img src="../HTMLResources/img/nik2.jpeg" style="width:45%" class="w3-circle">
-                    <h3>Nicolò Romandini</h3>
-                    <p style="font-size: 70%;"><a
-                            href="MAILTO:nicolo.romandini@studio.unibo.it">nicolo.romandini@studio.unibo.it</a></p>
+                    <h3>Nicolò Romandini</br>
+                        <i>Progettista</i>
+                    </h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:nicolo.romandini@studio.unibo.it">nicolo.romandini@studio.unibo.it</a></p>
                 </div>
 
 
