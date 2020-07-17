@@ -162,6 +162,33 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
 
         </div>
 
+        <h2>Sprint review del 17/7/2020</h2>
+        <div>
+            <ul>
+                <li>aggiungere tasto per far progredire la storia del clientsimulator</li>
+                <li>possibilità di avere il controllo manuale</li>
+            </ul>
+        </div>
+
+        <h2>Sprint retrospective del 17/7/2020</h2>
+        <div>
+            <ul>
+                <li>noi ragioniamo per macro stati (reach, convoy, collect ...)</li>
+                <li>il modello mantiene lo stato (task) corrente del waiter</li>
+                <li>il movimento che il waiter fa è indotto dal task che deve svolgere</li>
+                <li>il waiter portato a termine un task ne da la conferma al modello</li>
+                <li>il modello lancia il task successivo del waiter</li>
+                <li>(la successione dei task sarà nel modello e non più nel waiter</li>
+                <li>il planner non è un semplice attuatore, ma è in grado di fornire anche la conferma che uno step sia avvenuto</li>
+                <li>Il modello si relaziona con il waiter attraverso i task, il planner fa parte del waiter</li>
+                <li>Il planner comunica, per avere informazioni aggiuntive, con un dispatch (e non più un evento) la posizione corrente del waiter al modello</li>
+            </ul>
+
+            <ul>
+                <li>Considerazioni sulle interazioni con il dominio, in particolare specificare (riguardo a quando sono sicuro di poter aggiornare lo stato) le eventuali assunzioni: quando ricevo, ad esempio, uno stepdone assumo di averlo fatto</li>
+            </ul>
+        </div>
+
         <!-- TEAM -->
         <div class="w3-container w3-padding-64 w3-center" id="team">
             <h2>Our Team</h2>
