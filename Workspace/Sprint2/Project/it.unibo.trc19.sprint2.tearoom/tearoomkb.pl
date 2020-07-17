@@ -23,8 +23,20 @@ currentWaiterPos(0,0).
 %% ------------------------------------------ 
 %% Waiter
 %% ------------------------------------------ 
+%% athome
+%% reachEntranceDoor
+%% convoyTable
+%% takingOrder
+%% collectingDrink
+%% bringingDrinkToClient
+%% servingDrinkToClient
+%% collectingPayment
+%% convoyExit
+%% sanitizing
+%% returnHome
+%% returnHomeFromExit
 
-waiter( home ).
+waiter( athome ).
 
 
 %% ------------------------------------------ 

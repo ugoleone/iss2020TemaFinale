@@ -70,7 +70,7 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 								delay(20000) 
 								println("[CLIENT] Choosing a drink")
 								delay(30000) 
-								emit("readyToOrder", "readyToOrder(1)" ) 
+								forward("readyToOrder", "readyToOrder(1)" ,"waiter" ) 
 						}
 					}
 					 transition(edgeName="t032",targetState="makeOrder",cond=whenRequest("take"))
@@ -92,7 +92,7 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				state("askToPay") { //this:State
 					action { //it:State
 						println("[CLIENT] I want to pay")
-						emit("exitReq", "exitReq(1)" ) 
+						forward("exitReq", "exitReq(1)" ,"waiter" ) 
 					}
 					 transition(edgeName="t034",targetState="pay",cond=whenRequest("collect"))
 				}	 

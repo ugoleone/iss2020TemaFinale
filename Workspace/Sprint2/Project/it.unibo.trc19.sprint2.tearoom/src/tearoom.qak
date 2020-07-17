@@ -13,7 +13,7 @@ Dispatch	inform	:	inform(X)
 
 //interazione ordinazione client
 //prima immagine
-Event readyToOrder : readyToOrder(X) 
+Dispatch readyToOrder : readyToOrder(X) 
 
 //seconda immagine
 Request take : take(X)
@@ -27,7 +27,7 @@ Dispatch serveDrink : serveDrink(X)
 Dispatch ready : ready(X) 
 
 //interazione richiesta uscita client  
-Event exitReq : exitReq(X)
+Dispatch exitReq : exitReq(X)
 
 //interazione pagamento client
 Request  collect : collect(X) 
@@ -57,14 +57,14 @@ Dispatch goEntranceDoor : goEntranceDoor(X)
 //interazioni resource model
 Dispatch newClient : newClient(X)
 Dispatch taskUpdate : taskUpdate(X)
-Dispatch tableCleaned : tableCleaned(T)
+Dispatch teatableCleaned : teatableCleaned(T)
 Request askWhere : askWhere(X)
 Reply location : location(X,Y)
 Event waiterTaskChangedEvent : waiterTaskChangedEvent(X,T)
 Event waitingTimeEvent : waitingTimeEvent(X)
 Event newOrderEvent : newOrderEvent(X)
 Event orderReadyEvent : orderReadyEvent(X)
-Event robotCurrentPosition : robotCurrentPosition(X,Y)
+Event waiterCurrentPosition : waiterCurrentPosition(X,Y)
 
 
 
@@ -93,8 +93,8 @@ QActor resourcemodel context ctxtearoom{
 			whenMsg taskUpdate -> informChanges
 			whenMsg ready -> informChanges
 			whenMsg orderReq -> informChanges
-			whenMsg tableCleaned -> informChanges
-			whenEvent robotCurrentPosition -> informChanges
+			whenMsg teatableCleaned -> informChanges
+			whenEvent waiterCurrentPosition -> informChanges
 			whenRequest askWhere -> findLocation
 	
 	State informChanges{
@@ -160,14 +160,14 @@ QActor resourcemodel context ctxtearoom{
 			solve(replaceRule(waiter(_),waiter(collectingDrink)))
 			emit waiterTaskChangedEvent : waiterTaskChangedEvent(collectingDrink,$T)
 		}
-		onMsg(robotCurrentPosition : robotCurrentPosition(X,Y)) {
+		onMsg(waiterCurrentPosition : waiterCurrentPosition(X,Y)) {
 			[# 
 				val X = payloadArg(0)
 				val Y = payloadArg(1)
 			#]
 			solve(replaceRule(currentWaiterPos(_,_),currentWaiterPos($X,$Y)))
 		}
-		onMsg(tableCleaned : tableCleaned(T)) {
+		onMsg(teatableCleaned : teatableCleaned(T)) {
 			[#
 				Teatable = payloadArg(0)
 			#]
@@ -229,8 +229,8 @@ QActor waiter context ctxtearoom{
  		println("[WAITER] Waiting for a request!")
  	}
  	Transition t0 
- 		whenEvent readyToOrder -> reachingClientToTakeOrder 
- 		whenEvent exitReq -> exitClient
+ 		whenMsg readyToOrder -> reachingClientToTakeOrder 
+ 		whenMsg exitReq -> exitClient
  		whenEvent waiterTaskChangedEvent -> handleChange
  		whenMsg moveTo -> movementHelper
  		
@@ -318,7 +318,7 @@ QActor waiter context ctxtearoom{
 			[#Table = payloadArg(0)#]
 			println("[WAITER] Cleaning $Table!")
 			delay 15000
-			forward resourcemodel -m tableCleaned : tableCleaned($Table)
+			forward resourcemodel -m teatableCleaned : teatableCleaned($Table)
 			forward resourcemodel -m taskUpdate : taskUpdate(returnHome)
 			[# WhatImDoing = "returnHome" #]
 			forward waiter -m moveTo : moveTo(home)
@@ -483,7 +483,7 @@ QActor planner context ctxtearoom{
      		val X = itunibo.planner.plannerUtil.getPosX()
      		val Y = itunibo.planner.plannerUtil.getPosY()
      	#]
-     	emit robotCurrentPosition : robotCurrentPosition($X,$Y)
+     	emit waiterCurrentPosition : waiterCurrentPosition($X,$Y)
      }Goto execPlannedMoves
      
  }
@@ -629,7 +629,7 @@ QActor clientsimulator context ctxtearoom {
 			println("[CLIENT] Choosing a drink")
 		 	// simulate going to table and choosing a drink
 		 	delay 30000
-			emit readyToOrder : readyToOrder(1)
+			forward waiter -m readyToOrder : readyToOrder(1)
 		}
 	}
 	Transition t0 whenRequest take -> makeOrder
@@ -648,7 +648,7 @@ QActor clientsimulator context ctxtearoom {
 	
 	State askToPay {
 		println("[CLIENT] I want to pay")
-		emit exitReq	: exitReq(1)
+		forward waiter -m exitReq	: exitReq(1)
 	}Transition t0 whenRequest collect -> pay
 	
 	State pay {

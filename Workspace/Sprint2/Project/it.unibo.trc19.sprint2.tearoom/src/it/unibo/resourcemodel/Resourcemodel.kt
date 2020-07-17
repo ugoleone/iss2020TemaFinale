@@ -34,8 +34,8 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					transition(edgeName="t01",targetState="informChanges",cond=whenDispatch("taskUpdate"))
 					transition(edgeName="t02",targetState="informChanges",cond=whenDispatch("ready"))
 					transition(edgeName="t03",targetState="informChanges",cond=whenDispatch("orderReq"))
-					transition(edgeName="t04",targetState="informChanges",cond=whenDispatch("tableCleaned"))
-					transition(edgeName="t05",targetState="informChanges",cond=whenEvent("robotCurrentPosition"))
+					transition(edgeName="t04",targetState="informChanges",cond=whenDispatch("teatableCleaned"))
+					transition(edgeName="t05",targetState="informChanges",cond=whenEvent("waiterCurrentPosition"))
 					transition(edgeName="t06",targetState="findLocation",cond=whenRequest("askWhere"))
 				}	 
 				state("informChanges") { //this:State
@@ -104,14 +104,14 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								solve("replaceRule(waiter(_),waiter(collectingDrink))","") //set resVar	
 								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(collectingDrink,$T)" ) 
 						}
-						if( checkMsgContent( Term.createTerm("robotCurrentPosition(X,Y)"), Term.createTerm("robotCurrentPosition(X,Y)"), 
+						if( checkMsgContent( Term.createTerm("waiterCurrentPosition(X,Y)"), Term.createTerm("waiterCurrentPosition(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 
 												val X = payloadArg(0)
 												val Y = payloadArg(1)
 								solve("replaceRule(currentWaiterPos(_,_),currentWaiterPos($X,$Y))","") //set resVar	
 						}
-						if( checkMsgContent( Term.createTerm("tableCleaned(T)"), Term.createTerm("tableCleaned(T)"), 
+						if( checkMsgContent( Term.createTerm("teatableCleaned(T)"), Term.createTerm("teatableCleaned(T)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								
 												Teatable = payloadArg(0)

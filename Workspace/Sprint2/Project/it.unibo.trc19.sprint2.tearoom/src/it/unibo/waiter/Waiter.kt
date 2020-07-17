@@ -31,8 +31,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("[WAITER] Waiting for a request!")
 					}
-					 transition(edgeName="t07",targetState="reachingClientToTakeOrder",cond=whenEvent("readyToOrder"))
-					transition(edgeName="t08",targetState="exitClient",cond=whenEvent("exitReq"))
+					 transition(edgeName="t07",targetState="reachingClientToTakeOrder",cond=whenDispatch("readyToOrder"))
+					transition(edgeName="t08",targetState="exitClient",cond=whenDispatch("exitReq"))
 					transition(edgeName="t09",targetState="handleChange",cond=whenEvent("waiterTaskChangedEvent"))
 					transition(edgeName="t010",targetState="movementHelper",cond=whenDispatch("moveTo"))
 				}	 
@@ -133,7 +133,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								Table = payloadArg(0) 
 								println("[WAITER] Cleaning $Table!")
 								delay(15000) 
-								forward("tableCleaned", "tableCleaned($Table)" ,"resourcemodel" ) 
+								forward("teatableCleaned", "teatableCleaned($Table)" ,"resourcemodel" ) 
 								forward("taskUpdate", "taskUpdate(returnHome)" ,"resourcemodel" ) 
 								 WhatImDoing = "returnHome"  
 								forward("moveTo", "moveTo(home)" ,"waiter" ) 
