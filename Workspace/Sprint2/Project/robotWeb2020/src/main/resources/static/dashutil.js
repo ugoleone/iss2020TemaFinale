@@ -83,6 +83,14 @@ function updateStatus(stato) {
     document.getElementById(stato).style.backgroundColor = coloreSelezionato;
 }
 
+/*
+ * Questa funzione serve per aggiornare lo stato corrente del barman,
+ * 
+ */
+function updateBarmanStatus(stato) {
+    document.getElementById("barmanStatus").innerText = "Barman status: " + stato;
+}
+
 
 /*
 {
@@ -106,4 +114,5 @@ function updateDashboard(message) {
     adapterTavoliLiberi(message.teatable1State, message.teatable2State);
     updateTheServiti(message.teaServed);
     updateMap(message.yRobot, message.xRobot);
+    //updateBarmanStatus(message.serviceDeskState);
 }
