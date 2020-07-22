@@ -91,6 +91,16 @@ function updateBarmanStatus(stato) {
     document.getElementById("barmanStatus").innerText = "Barman status: " + stato;
 }
 
+/*
+ * Questa funzione serve per aggiornare lo stato corrente dei client,
+ * clientNumber = numero intero che identifica il client
+ */
+function updateClientStatus(clientNumber, stato) {
+    var clientName = "clientButton"+clientNumber;
+    document.getElementById(clientName).innerText = "Client "+clientNumber+" : " + stato;
+}
+
+
 
 /*
 {
@@ -115,4 +125,5 @@ function updateDashboard(message) {
     updateTheServiti(message.teaServed);
     updateMap(message.yRobot, message.xRobot);
     //updateBarmanStatus(message.serviceDeskState);
+    //updateClientStatus(clientNumber, stato);
 }
