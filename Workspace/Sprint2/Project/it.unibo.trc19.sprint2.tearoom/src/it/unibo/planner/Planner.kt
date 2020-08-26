@@ -89,7 +89,7 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 
 						     		val X = itunibo.planner.plannerUtil.getPosX()
 						     		val Y = itunibo.planner.plannerUtil.getPosY()
-						emit("waiterCurrentPosition", "waiterCurrentPosition($X,$Y)" ) 
+						forward("waiterCurrentPosition", "waiterCurrentPosition($X,$Y)" ,"resourcemodel" ) 
 					}
 					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitch() )
 				}	 

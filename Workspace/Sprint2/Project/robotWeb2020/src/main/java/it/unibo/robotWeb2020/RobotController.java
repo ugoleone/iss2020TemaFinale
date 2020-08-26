@@ -172,6 +172,20 @@ public class RobotController {
 		return getWebPageRep();
  	}
 	
+	@MessageMapping("/client")
+ 	@SendTo("/topic/display")
+ 	public void backtocliente(RequestMessageOnSock message) throws Exception {
+// 		ApplMessage msg = MsgUtil.buildDispatch("web", "cmd", "cmd("+message.getName()+")", "basicrobot" );
+		
+		ApplMessage msg = MsgUtil.buildEvent("web", "nextState", "nextState()" );
+		connQakSupport.emit( msg );
+		System.out.println("------------------- RobotController emit=" + msg  );
+//		doBusinessJob(message.getName(), null);
+//		//WAIT for command completion ...
+		Thread.sleep(400);
+		//return getWebPageRep();
+ 	}
+	
 	@MessageMapping("/update")
 	@SendTo("/topic/display")
 	public ResourceRep updateTheMap(@Payload String message) {

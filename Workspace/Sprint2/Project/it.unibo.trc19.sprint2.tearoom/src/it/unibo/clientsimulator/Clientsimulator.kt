@@ -25,14 +25,14 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 						discardMessages = false
 						delay(10000) 
 					}
-					 transition( edgeName="goto",targetState="askToEnter", cond=doswitch() )
+					 transition(edgeName="t029",targetState="askToEnter",cond=whenEvent("nextState"))
 				}	 
 				state("askToEnter") { //this:State
 					action { //it:State
 						println("[CLIENT] Knock Knock, I'm here")
 						request("notify", "notify" ,"smartbell" )  
 					}
-					 transition(edgeName="t029",targetState="handleReply",cond=whenReply("tempResult"))
+					 transition(edgeName="t030",targetState="handleReply",cond=whenReply("tempResult"))
 				}	 
 				state("handleReply") { //this:State
 					action { //it:State
@@ -49,8 +49,8 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				state("waitToEnter") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t130",targetState="wait",cond=whenDispatch("inform"))
-					transition(edgeName="t131",targetState="enter",cond=whenDispatch("accept"))
+					 transition(edgeName="t131",targetState="wait",cond=whenDispatch("inform"))
+					transition(edgeName="t132",targetState="enter",cond=whenDispatch("accept"))
 				}	 
 				state("wait") { //this:State
 					action { //it:State
@@ -69,39 +69,42 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								delay(20000) 
 								println("[CLIENT] Choosing a drink")
-								delay(30000) 
-								forward("readyToOrder", "readyToOrder(1)" ,"waiter" ) 
 						}
 					}
-					 transition(edgeName="t032",targetState="makeOrder",cond=whenRequest("take"))
+					 transition(edgeName="t033",targetState="askForWaiter",cond=whenEvent("nextState"))
+				}	 
+				state("askForWaiter") { //this:State
+					action { //it:State
+						forward("readyToOrder", "readyToOrder(1)" ,"waiter" ) 
+					}
+					 transition(edgeName="t034",targetState="makeOrder",cond=whenRequest("take"))
 				}	 
 				state("makeOrder") { //this:State
 					action { //it:State
 						println("[CLIENT] A Na-tea-li please")
 						answer("take", "order", "order(tea)"   )  
 					}
-					 transition(edgeName="t033",targetState="drink",cond=whenDispatch("serveDrink"))
+					 transition(edgeName="t035",targetState="drink",cond=whenDispatch("serveDrink"))
 				}	 
 				state("drink") { //this:State
 					action { //it:State
 						println("[CLIENT] *sip sip* Delicious tea")
-						delay(50000) 
 					}
-					 transition( edgeName="goto",targetState="askToPay", cond=doswitch() )
+					 transition(edgeName="t036",targetState="askToPay",cond=whenEvent("nextState"))
 				}	 
 				state("askToPay") { //this:State
 					action { //it:State
 						println("[CLIENT] I want to pay")
 						forward("exitReq", "exitReq(1)" ,"waiter" ) 
 					}
-					 transition(edgeName="t034",targetState="pay",cond=whenRequest("collect"))
+					 transition(edgeName="t037",targetState="pay",cond=whenRequest("collect"))
 				}	 
 				state("pay") { //this:State
 					action { //it:State
 						println("[CLIENT] Paying")
 						answer("collect", "payment", "payment(10)"   )  
 					}
-					 transition( edgeName="goto",targetState="exit", cond=doswitch() )
+					 transition(edgeName="t038",targetState="exit",cond=whenEvent("nextState"))
 				}	 
 				state("exit") { //this:State
 					action { //it:State

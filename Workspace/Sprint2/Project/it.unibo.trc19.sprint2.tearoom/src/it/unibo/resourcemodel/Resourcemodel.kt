@@ -35,7 +35,7 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					transition(edgeName="t02",targetState="informChanges",cond=whenDispatch("ready"))
 					transition(edgeName="t03",targetState="informChanges",cond=whenDispatch("orderReq"))
 					transition(edgeName="t04",targetState="informChanges",cond=whenDispatch("teatableCleaned"))
-					transition(edgeName="t05",targetState="informChanges",cond=whenEvent("waiterCurrentPosition"))
+					transition(edgeName="t05",targetState="informChanges",cond=whenDispatch("waiterCurrentPosition"))
 					transition(edgeName="t06",targetState="findLocation",cond=whenRequest("askWhere"))
 				}	 
 				state("informChanges") { //this:State

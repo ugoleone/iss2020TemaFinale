@@ -3,7 +3,7 @@ var hostAddr = "http://localhost:8080/move";
 
 //SIMULA UNA FORM che invia comandi POST
 function sendRequestData( params, method) {
-    method = method || "post"; // il metodo POST è usato di default
+    method = method || "post"; // il metodo POST ï¿½ usato di default
     //console.log(" sendRequestData  params=" + params + " method=" + method);
     var form = document.createElement("form");
     form.setAttribute("method", method);
@@ -88,6 +88,40 @@ function sendMove() {
 }
 */
 
+function emitClientChange(id){
+	var button = document.getElementById(id);
+    stompClient.send("/app/client", {}, JSON.stringify({'name': '' }));
+    var res = button.innerHTML.split(" ");
+    var firstPart= res[0] + " " + res[1] + " " + res[2]+ " ";
+    var newState = "";
+    console.log("CURRENT STATE: "+res[3]);
+    switch (res[3]) {
+	  case "Arrive":
+	  	newState = firstPart + "WaitingToOrder";
+	    console.log("New state ---> "+ newState);
+	    button.innerHTML = newState;
+	    break;
+	  case "WaitingToOrder":
+	  	newState = firstPart + "WaitingToPay";
+	    console.log("New state ---> "+ newState);
+	    button.innerHTML = newState;
+	    break;
+	  case "WaitingToPay":
+	  	newState = firstPart + "WaitingToExit";
+	    console.log("New state ---> "+ newState);
+	    button.innerHTML = newState;
+	    break;
+	  case "WaitingToExit":
+	  	newState = firstPart + "Exited";
+	    console.log("New state ---> "+ newState);
+	    button.innerHTML = newState;
+	    button.disabled = true;
+	    break;
+	  default:
+	    console.log("Spiacenti, lo stato del valore " + res[3] + "non e' supportato.");	 
+	}
+}
+
 function sendTheMove(move){
 	console.log("sendTheMove " + move);
     stompClient.send("/app/move", {}, JSON.stringify({'name': move }));
@@ -142,6 +176,16 @@ $(function () {
     $( "#stop" ).click(function()  { sendRequestData( "h") });
 
 	$( "#update" ).click(function() { sendUpdateRequest(  ) });
+	
+	
+//CLIENT BUTTONS
+/*    $( "#clientButton1" ).click(function() {  emitClientChange("clientButton1") });
+    $( "#clientButton2" ).click(function() {  emitClientChange("clientButton2") });
+    $( "#clientButton3" ).click(function() {  emitClientChange("clientButton3") });
+    $( "#clientButton4" ).click(function() {  emitClientChange("clientButton4") });
+    $( "#clientButton5" ).click(function() {  emitClientChange("clientButton5") });
+    $( "#clientButton6" ).click(function() {  emitClientChange("clientButton6") });
+*/	
 });
 
 

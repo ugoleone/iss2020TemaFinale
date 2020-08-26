@@ -39,10 +39,10 @@ class connQakCoap( )  {
 	}
 	
 	 fun emit( msg: ApplMessage){
-//		val url = "coap://$hostIP:$port/ctx$destName"		//TODO
-//		client = CoapClient( url )
+		val url = "coap://${configurator.hostAddr}:${configurator.port}/${configurator.ctxqadest}"		//TODO
+		val clientEmit    : CoapClient = CoapClient( url )
         //println("PUT emit url=${url} ")		
-         val respPut = client.put(msg.toString(), MediaTypeRegistry.TEXT_PLAIN)
+         val respPut = clientEmit.put(msg.toString(), MediaTypeRegistry.TEXT_PLAIN)
          System.out.println("connQakCoap | PUT emit ${msg} RESPONSE CODE=  ${respPut.code}")		
 		
 	}
