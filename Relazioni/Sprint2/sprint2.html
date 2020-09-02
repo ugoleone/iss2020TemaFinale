@@ -165,28 +165,29 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
         <h2>Sprint review del 17/7/2020</h2>
         <div>
             <ul>
-                <li>aggiungere tasto per far progredire la storia del clientsimulator</li>
-                <li>possibilità di avere il controllo manuale</li>
+                Rispetto alla demo presentata il 17/7/2020 è emerso necessario aggiungere alla interfaccia grafica le funzionalità di:
+                <ul>
+                    <li>Far progredire manualmente gli stati del <bc>clientsimulator</bc> tramite un tasto.</li>
+                    <li>Aggiungere un controllo manuale del robot.</li></br>
+                    <center><img src="img/nuova_gui.png" alt="nuova_gui.png" width="90%" height="52%" /></center></br>                   
+                </ul>
             </ul>
         </div>
 
         <h2>Sprint retrospective del 17/7/2020</h2>
         <div>
-            <ul>
-                <li>noi ragioniamo per macro stati (reach, convoy, collect ...)</li>
-                <li>il modello mantiene lo stato (task) corrente del waiter</li>
-                <li>il movimento che il waiter fa è indotto dal task che deve svolgere</li>
-                <li>il waiter portato a termine un task ne da la conferma al modello</li>
-                <li>il modello lancia il task successivo del waiter</li>
-                <li>(la successione dei task sarà nel modello e non più nel waiter</li>
-                <li>il planner non è un semplice attuatore, ma è in grado di fornire anche la conferma che uno step sia avvenuto</li>
-                <li>Il modello si relaziona con il waiter attraverso i task, il planner fa parte del waiter</li>
-                <li>Il planner comunica, per avere informazioni aggiuntive, con un dispatch (e non più un evento) la posizione corrente del waiter al modello</li>
-            </ul>
+            Dopo un confronto con il committente sono stati attuati i seguenti cambiamenti:
+            <ul>    
+                <li>Il modello è stato pensato seguendo un ragionamento a macrostati: si prevede che il <bc>waiter</bc> comunichi al modello la fine di ogni <b>task</b>(<em>reach</em>, <em>convoy</em>,..), tramite <b>taskDone</b>.</li>
+                <li>Data la considerazione precedente, dobbiamo quindi prevedere che il modello mantenga persistentemente il <b>task</b> corrente del robot.</li>
+                <li>Le uniche azioni consentite al <bc>robot</bc> sono quelle previste dettate dai cambiamenti di stato del modello.</li>
+                <li>Il cambiamento di stato del modello determina il nuovo <b>task</b> del waiter.</li>
+                <li>Il <bc>planner</bc> fornisce al modello posizione e direzione corrente del robot ogni volta che una di esse o entrambe cambiano tramite <b>waiterCurrentPositionDirection</b>.</li>
 
-            <ul>
-                <li>Considerazioni sulle interazioni con il dominio, in particolare specificare (riguardo a quando sono sicuro di poter aggiornare lo stato) le eventuali assunzioni: quando ricevo, ad esempio, uno stepdone assumo di averlo fatto</li>
             </ul>
+            <b>Di seguito è riportato il modello aggiornato, indicando il rosso i nuovi attori/messaggi introdotti nel modello.</b>
+            <center><img src="img/iss2020Sprint2-sprint_retrospective.png" alt="sprintretrospective.png" width="75%" height="52%" /></center></br>
+            Quando comandiamo il movimento del robot assumiamo che basicrobot (già fornito dalla nostra software-house) compia i comandi con successo.
         </div>
 
         <!-- TEAM -->
@@ -198,7 +199,6 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
                 <div class="w3-third">
                     <img src="../HTMLResources/img/ugo3.jpg" style="width:45%" class="w3-circle">
                     <h3>Ugo Leone Cavalcanti</br>
-                        <i>Analista</i>
                     </h3>
                     <p style="font-size: 70%;"><a href="MAILTO:ugoleone.cavalcanti@studio.unibo.it">ugoleone.cavalcanti@studio.unibo.it</a>
                     </p>
@@ -207,7 +207,6 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
                 <div class="w3-third">
                     <img src="../HTMLResources/img/amir.jpg" style="width:45%" class="w3-circle">
                     <h3>Amir Al Sadi</br>
-                        <i>Tester</i>
                     </h3>
                     <p style="font-size: 70%;"><a href="MAILTO:amir.alsadi@studio.unibo.it">amir.alsadi@studio.unibo.it</a></p>
                 </div>
@@ -215,7 +214,6 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
                 <div class="w3-third">
                     <img src="../HTMLResources/img/nik2.jpeg" style="width:45%" class="w3-circle">
                     <h3>Nicolò Romandini</br>
-                        <i>Progettista</i>
                     </h3>
                     <p style="font-size: 70%;"><a href="MAILTO:nicolo.romandini@studio.unibo.it">nicolo.romandini@studio.unibo.it</a></p>
                 </div>
