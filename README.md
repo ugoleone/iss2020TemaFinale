@@ -43,20 +43,8 @@ Dalla analisi preliminare del sistema risulta necessario pianificare un piano di
 
 ## Our Team
 
-
-
-<img src="Relazioni/HTMLResources/img/ugo3.jpg" alt="img" style="width:25%; border-radius:50%" />
-
 **Ugo Leone Cavalcanti** ( [ugoleone.cavalcanti@studio.unibo.it](MAILTO:ugoleone.cavalcanti@studio.unibo.it) )
 
-
-
-<img src="Relazioni/HTMLResources/img/amir.jpg" alt="img" style="width:25%; border-radius:50%" />
-
 **Amir Al Sadi** ( [amir.alsadi@studio.unibo.it](MAILTO:amir.alsadi@studio.unibo.it) )
-
-
-
-<img src="Relazioni/HTMLResources/img/nik2.jpeg" alt="img" style="width:25%; border-radius:50%" />
 
 **Nicolò Romandini** ( [nicolo.romandini@studio.unibo.it](MAILTO:nicolo.romandini@studio.unibo.it) )
