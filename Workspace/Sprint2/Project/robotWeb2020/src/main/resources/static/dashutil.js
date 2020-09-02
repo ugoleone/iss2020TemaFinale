@@ -95,12 +95,25 @@ function updateBarmanStatus(stato) {
 }
 
 /*
- * Questa funzione serve per aggiornare lo stato corrente dei client,
+ * Questa funzione serve per aggiornare lo stato corrente di un singolo cliente,
  * clientNumber = numero intero che identifica il client
  */
-function updateClientStatus(clientNumber, stato) {
+function updateAClientStatus(item, index) {
+    var clientNumber = index+1;
     var clientName = "clientButton"+clientNumber;
-    document.getElementById(clientName).innerText = "Client "+clientNumber+" : " + stato;
+    document.getElementById(clientName).innerText = "Client "+clientNumber+" : " + item;
+    if (item == "WaitingToExit") {
+        document.getElementById(clientName).disabled = true;
+    } else {
+        document.getElementById(clientName).disabled = false;
+    }
+}
+/*
+ * Questa funzione serve per aggiornare lo stato corrente dei clienti,
+ * clientsStatus = array con lo stato dei clienti
+ */
+function updateClientsStatus(clientsStatus) {
+    clientsStatus.forEach(updateAClientStatus);
 }
 
 
@@ -130,5 +143,5 @@ function updateDashboard(message) {
     updateTheServiti(message.teaServed);
     updateMap(message.yRobot, message.xRobot, message.direction);
     updateBarmanStatus(message.serviceDeskState);
-    //updateClientStatus(clientNumber, stato);
+    updateClientsStatus(message.clientsState);
 }

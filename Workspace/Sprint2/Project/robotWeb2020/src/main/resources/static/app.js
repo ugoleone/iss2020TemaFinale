@@ -89,7 +89,7 @@ function sendMove() {
     stompClient.send("/app/move", {}, JSON.stringify({'name': $("#name").val()}));
 }
 */
-
+/*
 function emitClientChange(id){
 	var button = document.getElementById(id);
     stompClient.send("/app/client", {}, JSON.stringify({'name': '' }));
@@ -122,6 +122,12 @@ function emitClientChange(id){
 	  default:
 	    console.log("Spiacenti, lo stato del valore " + res[3] + "non e' supportato.");	 
 	}
+}
+*/
+
+function emitClientChange(id){
+	console.log("emitClientChange " + id);
+    stompClient.send("/app/client", {}, JSON.stringify({'name': '' }));
 }
 
 function sendTheMove(move){
