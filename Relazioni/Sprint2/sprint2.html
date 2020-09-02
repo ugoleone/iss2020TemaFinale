@@ -176,6 +176,12 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
 
         <h2>Sprint retrospective del 17/7/2020</h2>
         <div>
+            <b>Considerazioni sul cliente</b></br>
+            Nell'aggiungere i tasti per simulare il comportamento dei clienti, è sorta l'utilità di tracciare il loro stato corrente all'interno della base di conoscenza.
+            La pressione del tasto sulla interfaccia web genera un evento che viene recepito dal <bc>clientsimulator</bc>, il quale notifica tramite <b>updateClientState</b> la volontà del cambiare lo stato del cliente.</br>
+            Sebbene ora sia l'interfaccia web (per necessità di demo) a propagare i cambiamenti di stato del cliente, in un futuro questa logica potrebbe essere riutilizzata nel prodotto finale tramite delle interfacce come tablet o simili.</br> 
+        </br>
+            <b>Revisione</b></br>
             Dopo un confronto con il committente sono stati attuati i seguenti cambiamenti:
             <ul>    
                 <li>Il modello è stato pensato seguendo un ragionamento a macrostati: si prevede che il <bc>waiter</bc> comunichi al modello la fine di ogni <b>task</b>(<em>reach</em>, <em>convoy</em>,..), tramite <b>taskDone</b>.</li>
@@ -183,8 +189,8 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
                 <li>Le uniche azioni consentite al <bc>robot</bc> sono quelle previste dettate dai cambiamenti di stato del modello.</li>
                 <li>Il cambiamento di stato del modello determina il nuovo <b>task</b> del waiter.</li>
                 <li>Il <bc>planner</bc> fornisce al modello posizione e direzione corrente del robot ogni volta che una di esse o entrambe cambiano tramite <b>waiterCurrentPositionDirection</b>.</li>
-
             </ul>
+            Congruentemente ai cambiamenti svolti, la base di conoscenza è stata cambiata come segue: <a href="../../Workspace/Sprint2/Project/it.unibo.trc19.sprint2.tearoom/tearoomkb.pl">tearoomkb.pl</a></br>
             <b>Di seguito è riportato il modello aggiornato, indicando il rosso i nuovi attori/messaggi introdotti nel modello.</b>
             <center><img src="img/iss2020Sprint2-sprint_retrospective.png" alt="sprintretrospective.png" width="75%" height="52%" /></center></br>
             Quando comandiamo il movimento del robot assumiamo che basicrobot (già fornito dalla nostra software-house) compia i comandi con successo.
