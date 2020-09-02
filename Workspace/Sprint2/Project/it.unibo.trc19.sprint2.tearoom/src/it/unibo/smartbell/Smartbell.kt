@@ -29,7 +29,7 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("[SMARTBELL] Waiting for a new client...")
 					}
-					 transition(edgeName="t026",targetState="checkTemp",cond=whenRequest("notify"))
+					 transition(edgeName="t027",targetState="checkTemp",cond=whenRequest("notify"))
 				}	 
 				state("checkTemp") { //this:State
 					action { //it:State
@@ -59,19 +59,19 @@ class Smartbell ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						println("[SMARTBELL] Checking table situation... ")
 						forward("newClient", "newClient(0)" ,"resourcemodel" ) 
 					}
-					 transition(edgeName="t127",targetState="informClient",cond=whenEvent("waitingTimeEvent"))
+					 transition(edgeName="t128",targetState="informClient",cond=whenEvent("waitingTimeEvent"))
 				}	 
 				state("informClient") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("waitingTimeEvent(X)"), Term.createTerm("waitingTimeEvent(X)"), 
+						if( checkMsgContent( Term.createTerm("waitingTimeEvent(ID,X)"), Term.createTerm("waitingTimeEvent(ID,X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								if(  payloadArg(0).toDouble() == 0.0 	 
+								if(  payloadArg(1).toDouble() == 0.0 	 
 								 ){println("[SMARTBELL] A waiter is coming... ")
-								forward("accept", "accept(1)" ,"clientsimulator" ) 
+								forward("accept", "accept(${payloadArg(0)})" ,"clientsimulator" ) 
 								}
 								else
 								 {println("[SMARTBELL] You have to wait... ")
-								 forward("inform", "inform(${payloadArg(0)})" ,"clientsimulator" ) 
+								 forward("inform", "inform(${payloadArg(0)},${payloadArg(1)})" ,"clientsimulator" ) 
 								 }
 						}
 					}

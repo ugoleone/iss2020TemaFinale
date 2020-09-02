@@ -32,7 +32,7 @@ h1, h2, h3, h4, h5, h6 {
 
 </style>
 
-<script>connect()</script>
+<script>connect();</script>
 
 <body>
 
@@ -49,7 +49,7 @@ h1, h2, h3, h4, h5, h6 {
       <img src="img/manager.png" class="w3-circle w3-margin-left" style="width:46px">
     </div>
     <div class="w3-col s8 w3-bar">
-      <span>Buongiorno, <strong>Pippo</strong></span><br>
+      <span>Buongiorno, <strong>Antonio</strong></span><br>
       <a href="#" class="w3-bar-item w3-button w3-round-small"><i class="fa fa-envelope"></i></a>
       <a href="#" class="w3-bar-item w3-button w3-round-small"><i class="fa fa-user"></i></a>
       <a href="#" class="w3-bar-item w3-button w3-round-small"><i class="fa fa-cog"></i></a>
@@ -135,7 +135,7 @@ h1, h2, h3, h4, h5, h6 {
         <!--<img src="img/sampleMap.png" style="width:100%" alt="Mappa della sala" class="w3-round-small">-->
         <table class="my-table  w3-white w3-round-small w3-bordered" id="mappa">
           <tr>
-            <td id="cell00" class="w3-pale-green"><strong>R</strong></td>
+            <td id="cell00" class="w3-pale-green"><strong>R</strong> <i class="fa fa-long-arrow-down"></i></td>
             <td id="cell10"></td>
             <td id="cell20"></td>
             <td id="cell30"></td>
@@ -227,6 +227,10 @@ h1, h2, h3, h4, h5, h6 {
             <td><i class="fa fa-street-view w3-center w3-large"></i></td>
             <td>Returning home</td>
           </tr>
+          <tr class="w3-round-small;" id="movingAround">
+            <td><i class="fa fa-arrows-alt w3-center w3-large"></i></td>
+            <td>Moving around</td>
+          </tr>
         </table>
       </div>
     </div>
@@ -255,11 +259,11 @@ h1, h2, h3, h4, h5, h6 {
       <div class="w3-half">
         <div class="grid-container">
           <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('p')">p</div>
-          <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('w')">w</div>
+          <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('stepAhead')">Step Ahead <i class="fa fa-arrow-up w3-center w3-large"></i></div>
           <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('h')">h</div>  
-          <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('l')">l</div>
-          <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('s')">s</div>
-          <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('r')">r</div>  
+          <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('turnLeft')"><i class="fa fa-arrow-left w3-center w3-large"></i> Turn Left</div>
+          <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('returnHome')"><i class="fa fa-home w3-center w3-large"></i> Return Home</div>
+          <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('turnRight')">Turn Right <i class="fa fa-arrow-right w3-center w3-large"></i></div>  
           <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('z')">z</div>
           <div class="grid-item w3-blue-gray w3-button w3-round-small hided"></div>
           <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('x')">x</div> 

@@ -31,12 +31,14 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						println("[RESOURCE MODEL] LISTENING...")
 					}
 					 transition(edgeName="t00",targetState="informChanges",cond=whenDispatch("newClient"))
-					transition(edgeName="t01",targetState="informChanges",cond=whenDispatch("taskUpdate"))
-					transition(edgeName="t02",targetState="informChanges",cond=whenDispatch("ready"))
-					transition(edgeName="t03",targetState="informChanges",cond=whenDispatch("orderReq"))
-					transition(edgeName="t04",targetState="informChanges",cond=whenDispatch("teatableCleaned"))
-					transition(edgeName="t05",targetState="informChanges",cond=whenDispatch("waiterCurrentPosition"))
+					transition(edgeName="t01",targetState="informChanges",cond=whenDispatch("ready"))
+					transition(edgeName="t02",targetState="informChanges",cond=whenDispatch("orderReq"))
+					transition(edgeName="t03",targetState="informChanges",cond=whenDispatch("waiterCurrentPositionDirection"))
+					transition(edgeName="t04",targetState="informChanges",cond=whenDispatch("updateClientState"))
+					transition(edgeName="t05",targetState="informChanges",cond=whenDispatch("taskDone"))
 					transition(edgeName="t06",targetState="findLocation",cond=whenRequest("askWhere"))
+					transition(edgeName="t07",targetState="informChanges",cond=whenDispatch("move"))
+					transition(edgeName="t08",targetState="informChanges",cond=whenDispatch("state"))
 				}	 
 				state("informChanges") { //this:State
 					action { //it:State
@@ -46,16 +48,20 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						if( checkMsgContent( Term.createTerm("newClient(X)"), Term.createTerm("newClient(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								println("[RESOURCE MODEL] New Client")
-								solve("newClient","") //set resVar	
+								solve("newClient(ID)","") //set resVar	
+								
+												val ID = getCurSol("ID").toString()
 								solve("teatable(X,available)","") //set resVar	
 								if( currentSolution.isSuccess() ) {println("[RESOURCE MODEL] A table is free!")
 								 
 												TeatableNumber = getCurSol("X").toString()
 												Teatable = "teatable"+TeatableNumber
 								solve("replaceRule(teatable($TeatableNumber,_),teatable($TeatableNumber,busy))","") //set resVar	
+								solve("assignTable($TeatableNumber,$ID)","") //set resVar	
+								solve("replaceRule(client($ID,_),client($ID,entering))","") //set resVar	
 								println("[RESOURCE MODEL] Waiter task updated: reachEntranceDoor")
 								solve("replaceRule(waiter(_),waiter(reachEntranceDoor))","") //set resVar	
-								emit("waitingTimeEvent", "waitingTimeEvent(0)" ) 
+								emit("waitingTimeEvent", "waitingTimeEvent($ID,0)" ) 
 								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(reachEntranceDoor,$Teatable)" ) 
 								}
 								else
@@ -63,31 +69,26 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								emit("waitingTimeEvent", "waitingTimeEvent(5000)" ) 
 								}
 						}
-						if( checkMsgContent( Term.createTerm("taskUpdate(X)"), Term.createTerm("taskUpdate(Task)"), 
+						if( checkMsgContent( Term.createTerm("updateClientState(ID,R)"), Term.createTerm("updateClientState(ID,R)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 val Task = payloadArg(0) 
-								println("[RESOURCE MODEL] Waiter task updated: $Task")
-								solve("replaceRule(waiter(_),waiter($Task))","") //set resVar	
-								if( Task == "servingDrinkToClient" 
-								 ){solve("serveTea","") //set resVar	
+								
+												val ID = payloadArg(0)
+												val R = payloadArg(1)
+												when(R) {
+													"readyToOrder" -> { 
+								solve("replaceRule(client($ID,_),client($ID,ordering))","") //set resVar	
+								solve("replaceRule(waiter(_),waiter(takingOrder))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(takingOrder,0)" ) 
 								}
-								if( Task == "convoyExit" 
-								 ){solve("replaceRule(teatable(1,_),teatable(1,dirty))","") //set resVar	
+													"pay" -> { 
+								solve("replaceRule(client($ID,_),client($ID,paying))","") //set resVar	
+								solve("replaceRule(waiter(_),waiter(collectingPayment))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(collectingPayment,0)" ) 
 								}
-								if( Task == "returnHomeFromExit" 
-								 ){solve("exitClient","") //set resVar	
+													"exit" -> { 
+								solve("exitClient($ID)","") //set resVar	
 								}
-								if( Task == "athome" 
-								 ){solve("teatable(TeatableNumber,dirty)","") //set resVar	
-								if( currentSolution.isSuccess() ) { 
-														TeatableNumber = getCurSol("TeatableNumber").toString()
-														Teatable = "teatable" + TeatableNumber
-								solve("replaceRule(waiter(_),waiter(sanitizing))","") //set resVar	
-								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(sanitizing,$Teatable)" ) 
-								}
-								else
-								{}
-								}
+												}
 						}
 						if( checkMsgContent( Term.createTerm("orderReq(X)"), Term.createTerm("orderReq(T)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
@@ -104,17 +105,63 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								solve("replaceRule(waiter(_),waiter(collectingDrink))","") //set resVar	
 								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(collectingDrink,$T)" ) 
 						}
-						if( checkMsgContent( Term.createTerm("waiterCurrentPosition(X,Y)"), Term.createTerm("waiterCurrentPosition(X,Y)"), 
+						if( checkMsgContent( Term.createTerm("waiterCurrentPositionDirection(X,Y,D)"), Term.createTerm("waiterCurrentPositionDirection(X,Y,D)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 
 												val X = payloadArg(0)
 												val Y = payloadArg(1)
-								solve("replaceRule(currentWaiterPos(_,_),currentWaiterPos($X,$Y))","") //set resVar	
+												val D = payloadArg(2)
+								solve("replaceRule(currentWaiterPosDir(_,_,_),currentWaiterPosDir($X,$Y,$D))","") //set resVar	
 						}
-						if( checkMsgContent( Term.createTerm("teatableCleaned(T)"), Term.createTerm("teatableCleaned(T)"), 
+						if( checkMsgContent( Term.createTerm("taskDone(T,X)"), Term.createTerm("taskDone(T,X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
+								 val Task = payloadArg(0)  
+								 when(Task) {
+												"reachEntranceDoor" ->  {  
+								solve("replaceRule(waiter(_),waiter(convoyTable))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(convoyTable,0)" ) 
+								 } 
+												"convoyTable" ->  {
+								solve("replaceRule(waiter(_),waiter(returnHome))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(returnHome,0)" ) 
+								 } 
+												"returnHome" ->  {
+								solve("replaceRule(waiter(_),waiter(athome))","") //set resVar	
+								solve("teatable(TeatableNumber,dirty)","") //set resVar	
+								if( currentSolution.isSuccess() ) { 
+														TeatableNumber = getCurSol("TeatableNumber").toString()
+														Teatable = "teatable" + TeatableNumber
+								solve("replaceRule(waiter(_),waiter(sanitizing))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(sanitizing,$Teatable)" ) 
+								}
+								else
+								{}
+								 } 
+												"takingOrder" ->  {
+								solve("replaceRule(waiter(_),waiter(returnHome))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(returnHome,0)" ) 
+								 } 
+												"collectingDrink" ->  {
+								solve("replaceRule(waiter(_),waiter(bringingDrinkToClient))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(bringingDrinkToClient,0)" ) 
+								 } 
+												"bringingDrinkToClient" ->  {
+								solve("replaceRule(waiter(_),waiter(returnHome))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(returnHome,0)" ) 
+								solve("serveTea","") //set resVar	
+								 } 
+												"collectingPayment" ->  {
+								solve("replaceRule(teatable(1,_),teatable(1,dirty))","") //set resVar	
+								solve("replaceRule(waiter(_),waiter(convoyExit))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(convoyExit,0)" ) 
+								 } 
+												"convoyExit" ->  {
+								solve("replaceRule(waiter(_),waiter(returnHome))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(returnHome,0)" ) 
+								 } 
+												"sanitizing" ->  {
 								
-												Teatable = payloadArg(0)
+												Teatable = payloadArg(1)
 								if( Teatable == "teatable1" 
 								 ){TeatableNumber = "1" 
 								}
@@ -122,21 +169,50 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								 {TeatableNumber = "2" 
 								 }
 								solve("replaceRule(teatable($TeatableNumber,_),teatable($TeatableNumber,available))","") //set resVar	
+								solve("replaceRule(waiter(_),waiter(returnHome))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(returnHome,0)" ) 
+								}
+											} 
 						}
-						solve("roomstate(waiter(S),currentWaiterPos(Y,X),stateOfTeatables(T1,T2),servicedesk(D),teaServed(TS),totalNumberOfClients(NC),clientsInTheRoom(CR))","") //set resVar	
+						if( checkMsgContent( Term.createTerm("move(X)"), Term.createTerm("move(X)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 
+												val Task = payloadArg(0)
+												when(Task) {
+													"stepAhead" -> { 
+								solve("replaceRule(waiter(_),waiter(stepAhead))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(stepAhead,0)" ) 
+								}
+													"turnLeft" -> { 
+								solve("replaceRule(waiter(_),waiter(turnLeft))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(turnLeft,0)" ) 
+								}
+													"turnRight" -> { 
+								solve("replaceRule(waiter(_),waiter(turnRight))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(turnRight,0)" ) 
+								}
+													"returnHome" -> { 
+								solve("replaceRule(waiter(_),waiter(returnHome))","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(returnHome,0)" ) 
+								}
+												}
+						}
+						solve("roomstate(waiter(S),currentWaiterPosDir(Y,X,D),stateOfTeatables(T1,T2),servicedesk(SD),getClientsState(CS),teaServed(TS),totalNumberOfClients(NC),clientsInTheRoom(CR))","") //set resVar	
 						 	
 									val S = getCurSol("S").toString()
 									val X = getCurSol("X").toString()
 									val Y = getCurSol("Y").toString()
+									val D = getCurSol("D").toString()
 									val T1 = getCurSol("T1").toString()
 									val T2 = getCurSol("T2").toString()
-									val D = getCurSol("D").toString()
+									val SD = getCurSol("SD").toString()
+									val CS = getCurSol("CS").toString()
 									val TS = getCurSol("TS").toString()
 									val NC = getCurSol("NC").toString()
 									val CR = getCurSol("CR").toString()
 									
 									
-									val JsonState : String = itunibo.formatter.formatterUtil.formatJson(S,X,Y,T1,T2,D,TS,NC,CR)
+									val JsonState : String = itunibo.formatter.formatterUtil.formatJson(S,X,Y,D,T1,T2,SD,CS,TS,NC,CR)
 						updateResourceRep( JsonState  
 						)
 					}

@@ -71,8 +71,10 @@ function connect() {
         stompClient.subscribe('/topic/display', function (msg) {
              updateDashboard(JSON.parse(JSON.parse(msg.body).content));
         });
+        stompClient.send("/app/state", {}, JSON.stringify({'name': '' }));
     });
 }
+
 
 function disconnect() {
     if (stompClient !== null) {

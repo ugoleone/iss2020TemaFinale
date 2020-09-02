@@ -38,7 +38,7 @@ function adapterTavoliLiberi(table1, table2) {
  * Questa funzione serve per aggiornare la posizione del robot sulla mappa.
  * Disegna una R in grassetto alle coordinate passate con cols e rows.
  */
-function updateMap(cols, rows) {
+function updateMap(cols, rows, direction) {
     var table = document.getElementById("mappa");
     var nomeCella = "cell"+cols+rows;
     for (var i = 0, row; row = table.rows[i]; i++) {
@@ -48,7 +48,8 @@ function updateMap(cols, rows) {
             col.textContent = "";
         }  
     }
-    document.getElementById(nomeCella).innerHTML = "<strong>R</strong>";
+    direction = direction.replace("Dir", "");
+    document.getElementById(nomeCella).innerHTML = "<strong>R</strong> <i class='fa fa-long-arrow-"+direction+"'></i>";
 }
 
 
@@ -78,6 +79,8 @@ function updateStatus(stato) {
         stato = "serving"
     } else if(stato == "returnHomeFromExit") {
     	stato = "returnHome"
+    } else if(stato == "stepAhead" || stato == "turnLeft" || stato == "turnRight") {
+    	stato = "movingAround"
     }
 
     document.getElementById(stato).style.backgroundColor = coloreSelezionato;
@@ -109,21 +112,23 @@ function updateClientStatus(clientNumber, stato) {
     "robotState":"a",
     "xRobot":"r",
     "yRobot":"c",
+    "direction" : "g",
     "totalNumberOfClients":"e",
     "clientsInTheRoom":"f",
     "teatable2State":"c",
-    "teatable1State":"b"
+    "teatable1State":"b",
+    "clientsState" : "[stato1,stato2,...]" 
 }
 */
 function updateDashboard(message) {
     console.log(message);
-    
+
     updateStatus(message.robotState);
     updateClientiServiti(message.totalNumberOfClients);
     updateClientiInSala(message.clientsInTheRoom);
     adapterTavoliLiberi(message.teatable1State, message.teatable2State);
     updateTheServiti(message.teaServed);
-    updateMap(message.yRobot, message.xRobot);
-    //updateBarmanStatus(message.serviceDeskState);
+    updateMap(message.yRobot, message.xRobot, message.direction);
+    updateBarmanStatus(message.serviceDeskState);
     //updateClientStatus(clientNumber, stato);
 }

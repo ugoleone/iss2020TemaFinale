@@ -21,14 +21,43 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 			var YT = "0"
 			var CurrentPlannedMove = ""
 			var StepTime    	   = 100L
+			var Configured = false
+			var SingleMove = false
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
+						if(  !Configured  
+						 ){ Configured = true  
 						itunibo.planner.plannerUtil.initAI(  )
 						itunibo.planner.plannerUtil.loadRoomMap( "teaRoomExplored"  )
 						discardMessages = false
+						}
+						 SingleMove = false  
 					}
 					 transition(edgeName="t021",targetState="walk",cond=whenRequest("movetoCell"))
+					transition(edgeName="t022",targetState="execSingleMove",cond=whenDispatch("doMove"))
+				}	 
+				state("execSingleMove") { //this:State
+					action { //it:State
+						 SingleMove = true  
+						if( checkMsgContent( Term.createTerm("doMove(V)"), Term.createTerm("doMove(M)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								if(  payloadArg(0) == "w"  
+								 ){request("step", "step(370)" ,"basicrobot" )  
+								}
+								else
+								 {forward("cmd", "cmd(${payloadArg(0)})" ,"basicrobot" ) 
+								 delay(500) 
+								 }
+						}
+						 
+						  			val move = payloadArg(0)
+						  			itunibo.planner.plannerUtil.updateMap(move,"")
+					}
+					 transition( edgeName="goto",targetState="updateCurrentWaiterPosDir", cond=doswitchGuarded({ payloadArg(0) != "w"  
+					}) )
+					transition( edgeName="goto",targetState="waitStepDoneFail", cond=doswitchGuarded({! ( payloadArg(0) != "w"  
+					) }) )
 				}	 
 				state("walk") { //this:State
 					action { //it:State
@@ -53,8 +82,8 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 answer("movetoCell", "atcell", "atcell($XT,$YT)"   )  
 						 }
 					}
-					 transition(edgeName="t022",targetState="execTheMove",cond=whenDispatch("doMove"))
-					transition(edgeName="t023",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
+					 transition(edgeName="t023",targetState="execTheMove",cond=whenDispatch("doMove"))
+					transition(edgeName="t024",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
 					}))
 				}	 
 				state("execTheMove") { //this:State
@@ -73,7 +102,7 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						  			val move = payloadArg(0)
 						  			itunibo.planner.plannerUtil.updateMap(move,"")
 					}
-					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitchGuarded({ payloadArg(0) != "w"  
+					 transition( edgeName="goto",targetState="updateCurrentWaiterPosDir", cond=doswitchGuarded({ payloadArg(0) != "w"  
 					}) )
 					transition( edgeName="goto",targetState="waitStepDoneFail", cond=doswitchGuarded({! ( payloadArg(0) != "w"  
 					) }) )
@@ -81,17 +110,21 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("waitStepDoneFail") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t124",targetState="updateCurrentPos",cond=whenReply("stepdone"))
-					transition(edgeName="t125",targetState="updateCurrentPos",cond=whenReply("stepfail"))
+					 transition(edgeName="t125",targetState="updateCurrentWaiterPosDir",cond=whenReply("stepdone"))
+					transition(edgeName="t126",targetState="updateCurrentWaiterPosDir",cond=whenReply("stepfail"))
 				}	 
-				state("updateCurrentPos") { //this:State
+				state("updateCurrentWaiterPosDir") { //this:State
 					action { //it:State
 						 
 						     		val X = itunibo.planner.plannerUtil.getPosX()
 						     		val Y = itunibo.planner.plannerUtil.getPosY()
-						forward("waiterCurrentPosition", "waiterCurrentPosition($X,$Y)" ,"resourcemodel" ) 
+						     		val Direction = itunibo.planner.plannerUtil.getDirection()
+						forward("waiterCurrentPositionDirection", "waiterCurrentPositionDirection($X,$Y,$Direction)" ,"resourcemodel" ) 
 					}
-					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitch() )
+					 transition( edgeName="goto",targetState="execPlannedMoves", cond=doswitchGuarded({ !SingleMove  
+					}) )
+					transition( edgeName="goto",targetState="s0", cond=doswitchGuarded({! ( !SingleMove  
+					) }) )
 				}	 
 			}
 		}

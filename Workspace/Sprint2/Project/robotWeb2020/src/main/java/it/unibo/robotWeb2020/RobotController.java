@@ -159,17 +159,29 @@ public class RobotController {
 //		Thread.sleep(1000); // simulated delay
 //		return new ResourceRep("Hello by AN, " + HtmlUtils.htmlEscape(message.getName()) + "!");
 //	}
+    
+	@MessageMapping("/state")
+ 	@SendTo("/topic/display")
+ 	public void getRoomState(RequestMessageOnSock message) throws Exception {
+ 		ApplMessage msg = MsgUtil.buildDispatch("web", "state", "state()", "resourcemodel" );
+		connQakSupport.forward( msg );
+		System.out.println("------------------- RobotController forward=" + msg  );
+//		doBusinessJob(message.getName(), null);
+//		//WAIT for command completion ...
+		Thread.sleep(400);
+//		return getWebPageRep();
+ 	}
 	
 	@MessageMapping("/move")
  	@SendTo("/topic/display")
- 	public ResourceRep backtoclient(RequestMessageOnSock message) throws Exception {
-// 		ApplMessage msg = MsgUtil.buildDispatch("web", "cmd", "cmd("+message.getName()+")", "basicrobot" );
-//		connQakSupport.forward( msg );
-//		System.out.println("------------------- RobotController forward=" + msg  );
-		doBusinessJob(message.getName(), null);
+ 	public void backtoclient(RequestMessageOnSock message) throws Exception {
+ 		ApplMessage msg = MsgUtil.buildDispatch("web", "move", "move("+message.getName()+")", "resourcemodel" );
+		connQakSupport.forward( msg );
+		System.out.println("------------------- RobotController forward=" + msg  );
+//		doBusinessJob(message.getName(), null);
 //		//WAIT for command completion ...
-//		Thread.sleep(400);
-		return getWebPageRep();
+		Thread.sleep(400);
+//		return getWebPageRep();
  	}
 	
 	@MessageMapping("/client")

@@ -18,21 +18,21 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		 
 				var tempResult = "no"	
+				var ID = ""
 		return { //this:ActionBasciFsm
 				state("init") { //this:State
 					action { //it:State
 						println("[CLIENT] Client STARTED")
 						discardMessages = false
-						delay(10000) 
 					}
-					 transition(edgeName="t029",targetState="askToEnter",cond=whenEvent("nextState"))
+					 transition(edgeName="t030",targetState="askToEnter",cond=whenEvent("nextState"))
 				}	 
 				state("askToEnter") { //this:State
 					action { //it:State
 						println("[CLIENT] Knock Knock, I'm here")
 						request("notify", "notify" ,"smartbell" )  
 					}
-					 transition(edgeName="t030",targetState="handleReply",cond=whenReply("tempResult"))
+					 transition(edgeName="t031",targetState="handleReply",cond=whenReply("tempResult"))
 				}	 
 				state("handleReply") { //this:State
 					action { //it:State
@@ -49,15 +49,16 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				state("waitToEnter") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t131",targetState="wait",cond=whenDispatch("inform"))
-					transition(edgeName="t132",targetState="enter",cond=whenDispatch("accept"))
+					 transition(edgeName="t132",targetState="wait",cond=whenDispatch("inform"))
+					transition(edgeName="t133",targetState="enter",cond=whenDispatch("accept"))
 				}	 
 				state("wait") { //this:State
 					action { //it:State
 						println("[CLIENT] I have to wait")
-						if( checkMsgContent( Term.createTerm("inform(X)"), Term.createTerm("inform(TIME)"), 
+						if( checkMsgContent( Term.createTerm("inform(ID,X)"), Term.createTerm("inform(ID,TIME)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 var Time = payloadArg(0).toLong() 
+								 var Time = payloadArg(1).toLong() 
+												ID = payloadArg(0)
 								delay(Time)
 						}
 					}
@@ -65,50 +66,52 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				}	 
 				state("enter") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("accept(ID)"), Term.createTerm("accept(X)"), 
+						if( checkMsgContent( Term.createTerm("accept(ID)"), Term.createTerm("accept(ID)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								delay(20000) 
+								 
+												ID = payloadArg(0)
 								println("[CLIENT] Choosing a drink")
 						}
 					}
-					 transition(edgeName="t033",targetState="askForWaiter",cond=whenEvent("nextState"))
+					 transition(edgeName="t034",targetState="askForWaiter",cond=whenEvent("nextState"))
 				}	 
 				state("askForWaiter") { //this:State
 					action { //it:State
-						forward("readyToOrder", "readyToOrder(1)" ,"waiter" ) 
+						forward("updateClientState", "updateClientState($ID,readyToOrder)" ,"resourcemodel" ) 
 					}
-					 transition(edgeName="t034",targetState="makeOrder",cond=whenRequest("take"))
+					 transition(edgeName="t035",targetState="makeOrder",cond=whenRequest("take"))
 				}	 
 				state("makeOrder") { //this:State
 					action { //it:State
 						println("[CLIENT] A Na-tea-li please")
 						answer("take", "order", "order(tea)"   )  
 					}
-					 transition(edgeName="t035",targetState="drink",cond=whenDispatch("serveDrink"))
+					 transition(edgeName="t036",targetState="drink",cond=whenDispatch("serveDrink"))
 				}	 
 				state("drink") { //this:State
 					action { //it:State
 						println("[CLIENT] *sip sip* Delicious tea")
 					}
-					 transition(edgeName="t036",targetState="askToPay",cond=whenEvent("nextState"))
+					 transition(edgeName="t037",targetState="askToPay",cond=whenEvent("nextState"))
 				}	 
 				state("askToPay") { //this:State
 					action { //it:State
 						println("[CLIENT] I want to pay")
-						forward("exitReq", "exitReq(1)" ,"waiter" ) 
+						forward("updateClientState", "updateClientState($ID,pay)" ,"resourcemodel" ) 
 					}
-					 transition(edgeName="t037",targetState="pay",cond=whenRequest("collect"))
+					 transition(edgeName="t038",targetState="pay",cond=whenRequest("collect"))
 				}	 
 				state("pay") { //this:State
 					action { //it:State
 						println("[CLIENT] Paying")
 						answer("collect", "payment", "payment(10)"   )  
 					}
-					 transition(edgeName="t038",targetState="exit",cond=whenEvent("nextState"))
+					 transition(edgeName="t039",targetState="exit",cond=whenEvent("nextState"))
 				}	 
 				state("exit") { //this:State
 					action { //it:State
 						println("[CLIENT] Client EXIT Byeeee!")
+						forward("updateClientState", "updateClientState($ID,exit)" ,"resourcemodel" ) 
 						terminate(1)
 					}
 				}	 

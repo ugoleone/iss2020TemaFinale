@@ -28,7 +28,7 @@ class Barman ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("[BARMAN] Waiting for a new order...")
 					}
-					 transition(edgeName="t028",targetState="makeTea",cond=whenEvent("newOrderEvent"))
+					 transition(edgeName="t029",targetState="makeTea",cond=whenEvent("newOrderEvent"))
 				}	 
 				state("makeTea") { //this:State
 					action { //it:State
@@ -36,7 +36,7 @@ class Barman ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								Table = payloadArg(0) 
 								println("[BARMAN] Making some delicious tea...")
-								delay(30000) 
+								delay(10000) 
 						}
 					}
 					 transition( edgeName="goto",targetState="teaReady", cond=doswitch() )
