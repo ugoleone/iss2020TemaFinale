@@ -18,7 +18,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		 
 				var WhatImDoing = "athome" 
-				var Table = ""
+				var TeatableNumber = ""
+				var Teatable = ""
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -38,28 +39,32 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("waiterTaskChangedEvent(X,T)"), Term.createTerm("waiterTaskChangedEvent(T,X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 WhatImDoing = payloadArg(0) 
+								 
+								 				WhatImDoing = payloadArg(0)
+								 				if(payloadArg(1) == "1" || payloadArg(1) == "2") {
+								 					TeatableNumber = payloadArg(1)
+								 					Teatable = "teatable" + TeatableNumber
+								 				}
 								println("[WAITER] New task: $WhatImDoing")
 								
 											when(WhatImDoing) {
 												"reachEntranceDoor" -> { 
-								Table = payloadArg(1) 
 								forward("moveTo", "moveTo(entrancedoor)" ,"waiter" ) 
 								}
 												"convoyTable" -> { 
-								forward("moveTo", "moveTo(teatable1)" ,"waiter" ) 
+								forward("moveTo", "moveTo($Teatable)" ,"waiter" ) 
 								}
 												"takingOrder" -> { 
-								forward("moveTo", "moveTo(teatable1)" ,"waiter" ) 
+								forward("moveTo", "moveTo($Teatable)" ,"waiter" ) 
 								}
 												"collectingDrink" -> { 
 								forward("moveTo", "moveTo(barman)" ,"waiter" ) 
 								}
 												"bringingDrinkToClient" -> { 
-								forward("moveTo", "moveTo(teatable1)" ,"waiter" ) 
+								forward("moveTo", "moveTo($Teatable)" ,"waiter" ) 
 								}
 												"collectingPayment" -> { 
-								forward("moveTo", "moveTo(teatable1)" ,"waiter" ) 
+								forward("moveTo", "moveTo($Teatable)" ,"waiter" ) 
 								}
 												"convoyExit" -> { 
 								forward("moveTo", "moveTo(exitdoor)" ,"waiter" ) 
@@ -68,8 +73,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								forward("moveTo", "moveTo(home)" ,"waiter" ) 
 								}	
 												"sanitizing" -> { 
-								Table = payloadArg(1) 
-								forward("moveTo", "moveTo($Table)" ,"waiter" ) 
+								forward("moveTo", "moveTo($Teatable)" ,"waiter" ) 
 								}
 									
 												"stepAhead" -> { 
@@ -130,12 +134,12 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("cleaningTable") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("cleanTable(T)"), Term.createTerm("cleanTable(Table)"), 
+						if( checkMsgContent( Term.createTerm("cleanTable(T)"), Term.createTerm("cleanTable(T)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								Table = payloadArg(0) 
-								println("[WAITER] Cleaning $Table!")
+								TeatableNumber = payloadArg(0) 
+								println("[WAITER] Cleaning $Teatable!")
 								delay(5000) 
-								forward("taskDone", "taskDone($WhatImDoing,$Table)" ,"resourcemodel" ) 
+								forward("taskDone", "taskDone($WhatImDoing,$TeatableNumber)" ,"resourcemodel" ) 
 						}
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
@@ -173,7 +177,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								forward("pay", "pay(A)" ,"waiter" ) 
 								 } 
 												"sanitizing" ->  {
-								forward("cleanTable", "cleanTable(teatable1)" ,"waiter" ) 
+								forward("cleanTable", "cleanTable($TeatableNumber)" ,"waiter" ) 
 								}
 												else -> {
 								forward("listenRequests", "listenRequests(1)" ,"waiter" ) 

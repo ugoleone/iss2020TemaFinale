@@ -77,7 +77,7 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				}	 
 				state("askForWaiter") { //this:State
 					action { //it:State
-						forward("updateClientState", "updateClientState($ID,readyToOrder)" ,"resourcemodel" ) 
+						forward("updateClientState", "updateClientState($ID,ordering)" ,"resourcemodel" ) 
 					}
 					 transition(edgeName="t035",targetState="makeOrder",cond=whenRequest("take"))
 				}	 
@@ -97,7 +97,7 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				state("askToPay") { //this:State
 					action { //it:State
 						println("[CLIENT] I want to pay")
-						forward("updateClientState", "updateClientState($ID,pay)" ,"resourcemodel" ) 
+						forward("updateClientState", "updateClientState($ID,paying)" ,"resourcemodel" ) 
 					}
 					 transition(edgeName="t038",targetState="pay",cond=whenRequest("collect"))
 				}	 
@@ -111,7 +111,7 @@ class Clientsimulator ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( 
 				state("exit") { //this:State
 					action { //it:State
 						println("[CLIENT] Client EXIT Byeeee!")
-						forward("updateClientState", "updateClientState($ID,exit)" ,"resourcemodel" ) 
+						forward("updateClientState", "updateClientState($ID,exiting)" ,"resourcemodel" ) 
 						terminate(1)
 					}
 				}	 

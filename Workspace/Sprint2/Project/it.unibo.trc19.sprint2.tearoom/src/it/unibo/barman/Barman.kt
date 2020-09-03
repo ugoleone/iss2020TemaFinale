@@ -16,7 +16,7 @@ class Barman ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		var Table = "" 
+		var ClientID = "" 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -32,9 +32,9 @@ class Barman ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("makeTea") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("newOrderEvent(X)"), Term.createTerm("newOrderEvent(T)"), 
+						if( checkMsgContent( Term.createTerm("newOrderEvent(X)"), Term.createTerm("newOrderEvent(ClientID)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								Table = payloadArg(0) 
+								ClientID = payloadArg(0) 
 								println("[BARMAN] Making some delicious tea...")
 								delay(10000) 
 						}
@@ -44,7 +44,7 @@ class Barman ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("teaReady") { //this:State
 					action { //it:State
 						println("[BARMAN] The tea is ready!")
-						forward("ready", "ready($Table)" ,"resourcemodel" ) 
+						forward("ready", "ready($ClientID)" ,"resourcemodel" ) 
 					}
 					 transition( edgeName="goto",targetState="waitingForOrder", cond=doswitch() )
 				}	 

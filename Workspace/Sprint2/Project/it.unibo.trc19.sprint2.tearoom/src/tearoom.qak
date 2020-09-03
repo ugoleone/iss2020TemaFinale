@@ -84,6 +84,10 @@ ExternalQActor basicrobot context ctxbasicrobot
 
 
 QActor resourcemodel context ctxtearoom{
+	[#
+		var TeatableNumber = ""
+		var Teatable = ""
+	#]
 	State s0 initial{
 		println("[RESOURCE MODEL] STARTING, I will be soon ready to listen to changes!")
 		solve( consult("sysRules.pl")	 ) 
@@ -106,22 +110,18 @@ QActor resourcemodel context ctxtearoom{
 			whenMsg state -> informChanges
 	
 	State informChanges{
-		[#
-			var TeatableNumber = ""
-			var Teatable = ""
-		#]
+
 		onMsg(newClient : newClient(X)) {
 			println("[RESOURCE MODEL] New Client")
 			solve(newClient(ID))
 			[#
 				val ID = getCurSol("ID").toString()
 			#]
-			solve(teatable(X,available))
+			solve(teatable(TeatableNumber,available))
 	 		ifSolved {
 	 			println("[RESOURCE MODEL] A table is free!")
 	 			[# 
-				TeatableNumber = getCurSol("X").toString()
-				Teatable = "teatable"+TeatableNumber
+				TeatableNumber = getCurSol("TeatableNumber").toString()
 				#]
 				solve(replaceRule(teatable($TeatableNumber,_),teatable($TeatableNumber,busy)))
 				solve(assignTable($TeatableNumber,$ID))
@@ -129,7 +129,7 @@ QActor resourcemodel context ctxtearoom{
 				println("[RESOURCE MODEL] Waiter task updated: reachEntranceDoor")
 				solve(replaceRule(waiter(_),waiter(reachEntranceDoor)))
 				emit waitingTimeEvent : waitingTimeEvent($ID,0)
-				emit waiterTaskChangedEvent : waiterTaskChangedEvent(reachEntranceDoor,$Teatable)
+				emit waiterTaskChangedEvent : waiterTaskChangedEvent(reachEntranceDoor,$TeatableNumber)
 	 		} else {
 	 			println("[RESOURCE MODEL] All tables is busy")
 				emit waitingTimeEvent : waitingTimeEvent(5000) //maxstaytime
@@ -140,34 +140,57 @@ QActor resourcemodel context ctxtearoom{
 				val ID = payloadArg(0)
 				val R = payloadArg(1)
 				when(R) {
-					"readyToOrder" -> {#]
+					"ordering" -> {#]
 						solve(replaceRule(client($ID,_),client($ID,ordering)))
 						solve(replaceRule(waiter(_),waiter(takingOrder)))
-						emit waiterTaskChangedEvent : waiterTaskChangedEvent(takingOrder,0)
+						solve(teatableClientID(TeatableNumber,$ID))
+						[# TeatableNumber = getCurSol("TeatableNumber").toString() #]
+						emit waiterTaskChangedEvent : waiterTaskChangedEvent(takingOrder,$TeatableNumber)
 					[#}
-					"pay" -> {#]
+					"paying" -> {#]
 						solve(replaceRule(client($ID,_),client($ID,paying)))
 						solve(replaceRule(waiter(_),waiter(collectingPayment)))
 						emit waiterTaskChangedEvent : waiterTaskChangedEvent(collectingPayment,0)
 					[#}
-					"exit" -> {#]
+					"exiting" -> {#]
+						solve(replaceRule(client($ID,_),client($ID,exiting)))
+						solve(roomstate( waiter(S),currentWaiterPosDir(Y,X,D) , stateOfTeatables(T1,T2), servicedesk(SD), getClientsState(CS), teaServed(TS), totalNumberOfClients(NC), clientsInTheRoom(CR)))
+						[# 	
+							val S = getCurSol("S").toString()
+							val X = getCurSol("X").toString()
+							val Y = getCurSol("Y").toString()
+							val D = getCurSol("D").toString()
+							val T1 = getCurSol("T1").toString()
+							val T2 = getCurSol("T2").toString()
+							val SD = getCurSol("SD").toString()
+							val CS = getCurSol("CS").toString()
+							val TS = getCurSol("TS").toString()
+							val NC = getCurSol("NC").toString()
+							val CR = getCurSol("CR").toString()
+							
+							
+							val JsonState : String = itunibo.formatter.formatterUtil.formatJson(S,X,Y,D,T1,T2,SD,CS,TS,NC,CR)
+						#]
+						updateResource [# JsonState #]
 						solve(exitClient($ID))
 					[#}
 				}
 			#]
 		}
-		onMsg(orderReq : orderReq(T)){
-			[# val T = payloadArg(0)#]
-			println("[RESOURCE MODEL] New order for teatable$T")
-			solve(replaceRule(servicedesk(_),servicedesk(preparing($T))))
-			emit newOrderEvent : newOrderEvent($T)
+		onMsg(orderReq : orderReq(ID)){
+			[# val ID = payloadArg(0)#]
+			println("[RESOURCE MODEL] New order for client $ID")
+			solve(replaceRule(servicedesk(_),servicedesk(preparing($ID))))
+			emit newOrderEvent : newOrderEvent($ID)
 		}
-		onMsg(ready : ready(T)){
-			[# val T = payloadArg(0)#]
-			println("[RESOURCE MODEL] Order is ready for teatable$T")
-			solve(replaceRule(servicedesk(_),servicedesk(ready($T))))
+		onMsg(ready : ready(ID)){
+			[# val ID = payloadArg(0)#]
+			println("[RESOURCE MODEL] Order is ready for client $ID")
+			solve(replaceRule(servicedesk(_),servicedesk(ready($ID))))
+			solve(teatableClientID(TeatableNumber,$ID))
+			[# TeatableNumber = getCurSol("TeatableNumber").toString() #]
 			solve(replaceRule(waiter(_),waiter(collectingDrink)))
-			emit waiterTaskChangedEvent : waiterTaskChangedEvent(collectingDrink,$T)
+			emit waiterTaskChangedEvent : waiterTaskChangedEvent(collectingDrink,$TeatableNumber)
 		}
 		onMsg(waiterCurrentPositionDirection : waiterCurrentPositionDirection(X,Y,D)) {
 			[# 
@@ -195,12 +218,8 @@ QActor resourcemodel context ctxtearoom{
 				solve(replaceRule(waiter(_),waiter(athome)))
 				solve(teatable(TeatableNumber,dirty))
 				ifSolved {
-					[# 
-						TeatableNumber = getCurSol("TeatableNumber").toString()
-						Teatable = "teatable" + TeatableNumber
-					#]
 					solve(replaceRule(waiter(_),waiter(sanitizing)))
-					emit waiterTaskChangedEvent : waiterTaskChangedEvent(sanitizing,$Teatable)
+					emit waiterTaskChangedEvent : waiterTaskChangedEvent(sanitizing,$TeatableNumber)
 				}
 
 			[# } 
@@ -211,6 +230,7 @@ QActor resourcemodel context ctxtearoom{
 			[# } 
 				"collectingDrink" ->  {
 			#] 
+				solve(replaceRule(servicedesk(_),servicedesk(idle)))
 				solve(replaceRule(waiter(_),waiter(bringingDrinkToClient)))
 				emit waiterTaskChangedEvent : waiterTaskChangedEvent(bringingDrinkToClient,0)
 			[# } 
@@ -235,13 +255,8 @@ QActor resourcemodel context ctxtearoom{
 				"sanitizing" ->  {
 			#]  
 				[#
-				Teatable = payloadArg(1)
+				TeatableNumber = payloadArg(1)
 				#]
-				if [#Teatable == "teatable1"#] {
-					[#TeatableNumber = "1"#]
-				} else {
-					[#TeatableNumber = "2"#]
-				}
 				solve(replaceRule(teatable($TeatableNumber,_),teatable($TeatableNumber,available)))
 				solve(replaceRule(waiter(_),waiter(returnHome)))
 				emit waiterTaskChangedEvent : waiterTaskChangedEvent(returnHome,0)
@@ -311,7 +326,8 @@ QActor waiter context ctxtearoom{
 	
 	[# 
 		var WhatImDoing = "athome" 
-		var Table = ""
+		var TeatableNumber = ""
+		var Teatable = ""
 	#]
 	
 	State s0 initial{ 
@@ -329,28 +345,33 @@ QActor waiter context ctxtearoom{
  		
  	State handleChange {
  		onMsg(waiterTaskChangedEvent : waiterTaskChangedEvent(T,X)) {
- 			[# WhatImDoing = payloadArg(0)#]
+ 			[# 
+ 				WhatImDoing = payloadArg(0)
+ 				if(payloadArg(1) == "1" || payloadArg(1) == "2") {
+ 					TeatableNumber = payloadArg(1)
+ 					Teatable = "teatable" + TeatableNumber
+ 				}
+ 			#]
  			println("[WAITER] New task: $WhatImDoing")
  			[#
 			when(WhatImDoing) {
 				"reachEntranceDoor" -> {#]
-					[#Table = payloadArg(1)#]
 					forward waiter -m moveTo : moveTo(entrancedoor)
 				[#}
 				"convoyTable" -> {#]
-					forward waiter -m moveTo : moveTo(teatable1)
+					forward waiter -m moveTo : moveTo($Teatable)
 				[#}
 				"takingOrder" -> {#]
-					forward waiter -m moveTo : moveTo(teatable1)
+					forward waiter -m moveTo : moveTo($Teatable)
 				[#}
 				"collectingDrink" -> {#]
 					 forward waiter -m moveTo : moveTo(barman)
 				[#}
 				"bringingDrinkToClient" -> {#]
-					forward waiter -m moveTo : moveTo(teatable1)
+					forward waiter -m moveTo : moveTo($Teatable)
 				[#}
 				"collectingPayment" -> {#]
-					forward waiter -m moveTo : moveTo(teatable1)
+					forward waiter -m moveTo : moveTo($Teatable)
 				[#}
 				"convoyExit" -> {#]
 					forward waiter -m moveTo : moveTo(exitdoor)
@@ -359,8 +380,7 @@ QActor waiter context ctxtearoom{
 					forward waiter -m moveTo : moveTo(home)
 				[#}	
 				"sanitizing" -> {#]
-					[#Table = payloadArg(1)#]
-					forward waiter -m moveTo : moveTo($Table)
+					forward waiter -m moveTo : moveTo($Teatable)
 				[#}
 	
 				"stepAhead" -> {#]
@@ -412,11 +432,11 @@ QActor waiter context ctxtearoom{
 	Goto reqHandler
 	
 	State cleaningTable{
-		onMsg(cleanTable : cleanTable(Table)) {
-			[#Table = payloadArg(0)#]
-			println("[WAITER] Cleaning $Table!")
+		onMsg(cleanTable : cleanTable(T)) {
+			[#TeatableNumber = payloadArg(0)#]
+			println("[WAITER] Cleaning $Teatable!")
 			delay 5000
-			forward resourcemodel -m taskDone : taskDone($WhatImDoing,$Table)
+			forward resourcemodel -m taskDone : taskDone($WhatImDoing,$TeatableNumber)
 		}
 	}Goto reqHandler
 	
@@ -456,7 +476,7 @@ QActor waiter context ctxtearoom{
 			[# } 
 				"sanitizing" ->  {
 			#]  
-				forward waiter -m cleanTable : cleanTable(teatable1)
+				forward waiter -m cleanTable : cleanTable($TeatableNumber)
 			[#}
 				else -> {
 			#]
@@ -642,7 +662,7 @@ QActor smartbell context ctxtearoom{
 
 QActor barman context ctxtearoom{  
 	
-	[#var Table = ""#]
+	[#var ClientID = ""#]
 	  	  
 	State s0 initial {	     
  		discardMsg Off
@@ -655,8 +675,8 @@ QActor barman context ctxtearoom{
 	Transition t0 whenEvent newOrderEvent -> makeTea
 
 	State makeTea{ 
-		onMsg(newOrderEvent : newOrderEvent(T)) {
-			[#Table = payloadArg(0)#]
+		onMsg(newOrderEvent : newOrderEvent(ClientID)) {
+			[#ClientID = payloadArg(0)#]
 	 		println("[BARMAN] Making some delicious tea...")
 	 		delay 10000
  		}
@@ -665,7 +685,7 @@ QActor barman context ctxtearoom{
  
  	State teaReady{   
 		println("[BARMAN] The tea is ready!")
-   		forward resourcemodel -m ready : ready($Table)
+   		forward resourcemodel -m ready : ready($ClientID)
   	}
 	Goto waitingForOrder
 		 	
@@ -718,7 +738,7 @@ QActor clientsimulator context ctxtearoom {
 	}Transition t0 whenEvent nextState -> askForWaiter
 	
 	State askForWaiter{
-		forward resourcemodel -m updateClientState : updateClientState($ID,readyToOrder)
+		forward resourcemodel -m updateClientState : updateClientState($ID,ordering)
 		//forward waiter -m readyToOrder : readyToOrder(1)
 	}Transition t0 whenRequest take -> makeOrder
 	
@@ -734,7 +754,7 @@ QActor clientsimulator context ctxtearoom {
 	
 	State askToPay {
 		println("[CLIENT] I want to pay")
-		forward resourcemodel -m updateClientState : updateClientState($ID,pay)
+		forward resourcemodel -m updateClientState : updateClientState($ID,paying)
 		//forward waiter -m exitReq	: exitReq(1)
 	}Transition t0 whenRequest collect -> pay
 	
@@ -745,7 +765,7 @@ QActor clientsimulator context ctxtearoom {
 	
 	State exit {
 		println("[CLIENT] Client EXIT Byeeee!")
-		forward resourcemodel -m updateClientState : updateClientState($ID,exit)
+		forward resourcemodel -m updateClientState : updateClientState($ID,exiting)
 		terminate 1
 	}
 	

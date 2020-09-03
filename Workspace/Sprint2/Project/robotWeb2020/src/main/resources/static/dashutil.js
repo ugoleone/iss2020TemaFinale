@@ -101,11 +101,9 @@ function updateBarmanStatus(stato) {
 function updateAClientStatus(item, index) {
     var clientNumber = index+1;
     var clientName = "clientButton"+clientNumber;
-    document.getElementById(clientName).innerText = "Client "+clientNumber+" : " + item;
-    if (item == "WaitingToExit") {
+    document.getElementById(clientName).innerText = "Client "+clientNumber+" : " + item + " - Next State";
+    if (item == "exiting") {
         document.getElementById(clientName).disabled = true;
-    } else {
-        document.getElementById(clientName).disabled = false;
     }
 }
 /*
