@@ -253,45 +253,63 @@ h1, h2, h3, h4, h5, h6 {
   </div>
 -->
 
-  <div class="w3-panel">
-    <div class="w3-row-padding" style="margin:0 -16px">
-      <h5>Controllo simulazione</h5>
-      <div class="w3-half">
-        <div class="grid-container">
-          <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('p')">p</div>
-          <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('stepAhead')">Step Ahead <i class="fa fa-arrow-up w3-center w3-large"></i></div>
-          <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('h')">h</div>  
-          <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('turnLeft')"><i class="fa fa-arrow-left w3-center w3-large"></i> Turn Left</div>
-          <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('returnHome')"><i class="fa fa-home w3-center w3-large"></i> Return Home</div>
-          <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('turnRight')">Turn Right <i class="fa fa-arrow-right w3-center w3-large"></i></div>  
-          <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('z')">z</div>
-          <div class="grid-item w3-blue-gray w3-button w3-round-small hided"></div>
-          <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('x')">x</div> 
-        </div>
-      </div>
-
-      <div class="w3-half">
-        <div class="w3-bar">
-          <button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton1')" id="clientButton1" type="submit">Client 1 : Arrive</button>
-          <button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton2')" id="clientButton2" disabled>Client 2 : Arrive</button>
-          <button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton3')" id="clientButton3" disabled>Client 3 : Arrive</button>
-        </div>
-      </br>
-        <div class="w3-bar">
-          <button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton4')" id="clientButton4" disabled>Client 4 : Arrive</button>
-          <button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton5')" id="clientButton5" disabled>Client 5 : Arrive</button>
-          <button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton6')" id="clientButton6" disabled>Client 6 : Arrive</button>
-        </div> 
-      </br>
-        <div class="w3-bar">
-          <button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton7')" id="clientButton7" disabled>Client 7 : Arrive</button>
-          <button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton8')" id="clientButton8" disabled>Client 8 : Arrive</button>
-          <button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton9')" id="clientButton9" disabled>Client 9 : Arrive</button>
-        </div> 
-        
+<div class="w3-panel">
+  <div class="w3-row-padding" style="margin:0 -16px">
+    <h5>Controllo simulazione</h5>
+    <div class="w3-half">
+    </br>
+    </br>
+      <div class="grid-container">
+        <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('p')">p</div>
+        <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('stepAhead')">Step Ahead <i class="fa fa-arrow-up w3-center w3-large"></i></div>
+        <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('h')">h</div>  
+        <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('turnLeft')"><i class="fa fa-arrow-left w3-center w3-large"></i> Turn Left</div>
+        <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('returnHome')"><i class="fa fa-home w3-center w3-large"></i> Return Home</div>
+        <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('turnRight')">Turn Right <i class="fa fa-arrow-right w3-center w3-large"></i></div>  
+        <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('z')">z</div>
+        <div class="grid-item w3-blue-gray w3-button w3-round-small hided"></div>
+        <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('x')">x</div> 
       </div>
     </div>
+
+    <div class="w3-half" style="height: 200px; overflow: scroll">
+      <table class="w3-table /*w3-striped*/ w3-white w3-round-small w3-bordered" id="stati">
+        <tr class="w3-round-small;" id="home">
+          <td>Client 1:</td>
+          <td id="clientState1">Waiting to arrive</td>
+          <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton1')" id="clientButton1" type="submit">Next State</button></td>
+        </tr>
+        <tr class="w3-round-small;" id="home">
+          <td>Client 2:</td>
+          <td id="clientState2">Waiting to arrive</td>
+          <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton2')" id="clientButton2" type="submit">Next State</button></td>
+        </tr>
+        <tr class="w3-round-small;" id="home">
+          <td>Client 3:</td>
+          <td id="clientState3">Waiting to arrive</td>
+          <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton3')" id="clientButton3" type="submit">Next State</button></td>
+        </tr>
+        <tr class="w3-round-small;" id="home">
+          <td>Client 4:</td>
+          <td id="clientState4">Waiting to arrive</td>
+          <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton4')" id="clientButton4" type="submit">Next State</button></td>
+        </tr>
+        <tr class="w3-round-small;" id="home">
+          <td>Client 5:</td>
+          <td id="clientState5">Waiting to arrive</td>
+          <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton5')" id="clientButton5" type="submit">Next State</button></td>
+        </tr>
+        <tr class="w3-round-small;" id="home">
+          <td>Client 6:</td>
+          <td id="clientState6">Waiting to arrive</td>
+          <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton6')" id="clientButton6" type="submit">Next State</button></td>
+        </tr>
+      </table>
+      
+    </div>
   </div>
+</div>
+
 
   
   <div class="w3-container">

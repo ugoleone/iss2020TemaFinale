@@ -100,8 +100,8 @@ function updateBarmanStatus(stato) {
  */
 function updateAClientStatus(item, index) {
     var clientNumber = index+1;
-    var clientName = "clientButton"+clientNumber;
-    document.getElementById(clientName).innerText = "Client "+clientNumber+" : " + item + " - Next State";
+    var clientName = "clientState"+clientNumber;
+    document.getElementById(clientName).innerText = item;
     if (item == "exiting") {
         document.getElementById(clientName).disabled = true;
     }
