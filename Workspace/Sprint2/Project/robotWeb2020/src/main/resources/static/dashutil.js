@@ -23,7 +23,7 @@ function updateClientiServiti(data) {
 }
 
 /*
- * Questa funzione è un adapter per mostrare il numero totale di tavoli liberi
+ * Questa funzione Ã¨ un adapter per mostrare il numero totale di tavoli liberi
  */
 function adapterTavoliLiberi(table1, table2) {
     var tavoliLiberi = 0;
@@ -101,9 +101,10 @@ function updateBarmanStatus(stato) {
 function updateAClientStatus(item, index) {
     var clientNumber = index+1;
     var clientName = "clientState"+clientNumber;
+    var clientButton = "clientButton" + clientNumber;
     document.getElementById(clientName).innerText = item;
     if (item == "exiting") {
-        document.getElementById(clientName).disabled = true;
+        document.getElementById(clientButton).disabled = true;
     }
 }
 /*
@@ -128,7 +129,7 @@ function updateClientsStatus(clientsStatus) {
     "clientsInTheRoom":"f",
     "teatable2State":"c",
     "teatable1State":"b",
-    "clientsState" : "[stato1,stato2,...]" 
+    "clientsState" : [ { "id" : "1", "state" : "stato1"},  { "id" : "2", "state" : "stato1"} ] 
 }
 */
 function updateDashboard(message) {
