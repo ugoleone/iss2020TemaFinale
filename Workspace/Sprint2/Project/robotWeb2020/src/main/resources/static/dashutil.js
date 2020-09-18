@@ -95,26 +95,51 @@ function updateBarmanStatus(stato) {
 }
 
 /*
- * Questa funzione serve per aggiornare lo stato corrente di un singolo cliente,
+ * Questa funzione serve per il pannello di controllo di un singolo cliente
  * clientNumber = numero intero che identifica il client
  */
-function updateAClientStatus(item, index) {
-    var clientNumber = index+1;
+//[ { "id" : "1", "state" : "stato1"},  { "id" : "2", "state" : "stato2"} ]
+function addAClient(item, index) {
+    var clientNumber = item.id;
     var clientName = "clientState"+clientNumber;
     var clientButton = "clientButton" + clientNumber;
-    document.getElementById(clientName).innerText = item;
+    var generated = "<tr class=\"w3-round-small;\"><td>Client "+clientNumber+":</td><td id=\""+clientName+"\">"+item.state+"</td><td><button class=\"w3-button w3-blue-gray w3-round-small\" onclick=\"emitClientChange(\'"+clientButton+"\')\"id=\""+clientButton+"\" type=\"submit\">Next State</button></td></tr>";
+    document.getElementById("statiClienti").innerHTML += generated;
     if (item == "exiting") {
         document.getElementById(clientButton).disabled = true;
     }
 }
 /*
+ * OUTPUT:
+ *
+ * <tr class="w3-round-small;">
+ *      <td>Client 1:</td>
+ *      <td id="clientState1">Waiting to arrive</td>
+ *      <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton1')" id="clientButton1" type="submit">Next State</button></td>
+ * </tr>
+*/
+
+
+/*
  * Questa funzione serve per aggiornare lo stato corrente dei clienti,
  * clientsStatus = array con lo stato dei clienti
  */
 function updateClientsStatus(clientsStatus) {
-    clientsStatus.forEach(updateAClientStatus);
+    document.getElementById("statiClienti").innerHTML = "";
+    if(clientsStatus && Array.isArray(clientsStatus) && clientsStatus.length)
+        clientsStatus.forEach(addAClient);
+    else {
+        var generated = "<tr class=\"w3-round-small;\"><td style=\"text-align: center;\">There are no clients yet</td></tr>";
+        document.getElementById("statiClienti").innerHTML = generated;
+    }
 }
-
+/*
+ * OUTPUT nel caso in cui l'array sia vuoto/non ci siano clienti
+ *
+ * <tr class="w3-round-small;">            
+ *      <td style="text-align: center;">There are no clients yet</td>                
+ * </tr>
+ */
 
 
 /*
@@ -148,7 +173,7 @@ function updateDashboard(message) {
 
 
 /*
- * Queste due funzioni servono a cambiare pagina
+ * Queste due funzioni servono a cambiare pagina\vista
  */
 function resetButtons(buttonName) {
     var pulsanti = document.getElementById("viewSelector").children;
