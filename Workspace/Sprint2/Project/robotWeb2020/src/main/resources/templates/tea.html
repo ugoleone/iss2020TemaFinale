@@ -36,207 +36,221 @@ h1, h2, h3, h4, h5, h6 {
 
 <body>
 
-<!-- Top container -->
-<div class="w3-bar w3-top w3-blue-grey w3-large w3-round-small" style="z-index:4">
-  <button class="w3-bar-item w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey" onclick="w3_open();"><i class="fa fa-bars"></i>  Menu</button>
-  <span class="w3-bar-item w3-right">Tearoom Controller</span>
-</div>
-
-<!-- Sidebar/menu -->
-<nav class="w3-sidebar w3-collapse w3-sand w3-animate-left w3-round-small" style="z-index:3;width:300px;" id="mySidebar"><br>
-  <div class="w3-container w3-row">
-    <div class="w3-col s4">
-      <img src="img/manager.png" class="w3-circle w3-margin-left" style="width:46px">
-    </div>
-    <div class="w3-col s8 w3-bar">
-      <span>Buongiorno, <strong>Antonio</strong></span><br>
-      <a href="#" class="w3-bar-item w3-button w3-round-small"><i class="fa fa-envelope"></i></a>
-      <a href="#" class="w3-bar-item w3-button w3-round-small"><i class="fa fa-user"></i></a>
-      <a href="#" class="w3-bar-item w3-button w3-round-small"><i class="fa fa-cog"></i></a>
-    </div>
-  </div>
-  <hr style="border-width: 3px; border-color: white; width: 90%; margin-left: 5%; border-radius: 4%;">
-  <div class="w3-container w3-round-small">
-    <h5>Dashboard</h5>
-  </div>
-  <div class="w3-bar-block">
-    
-    <a href="#" class="w3-bar-item w3-button w3-padding w3-blue-gray w3-round-small"><i class="fa fa-users fa-fw"></i>  Panoramica</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding w3-round-small"><i class="fa fa-coffee "></i>  Ordini</a>
-    <a href="#" class="w3-bar-item w3-button w3-padding w3-round-small"><i class="fa fa-cog fa-fw"></i>  Impostazioni</a><br><br>
+  <!-- Top container -->
+  <div class="w3-bar w3-top w3-blue-grey w3-large w3-round-small" style="z-index:4">
+    <button class="w3-bar-item w3-button w3-hide-large w3-hover-none w3-hover-text-light-grey" onclick="w3_open();"><i
+        class="fa fa-bars"></i>  Menu</button>
+    <span class="w3-bar-item w3-right">Tearoom Controller</span>
   </div>
 
-  <div class="w3-container w3-row">
-    <div class="w3-col w3-center">
+  <!-- Sidebar/menu -->
+  <nav class="w3-sidebar w3-collapse w3-sand w3-animate-left w3-round-small" style="z-index:3;width:300px;"
+    id="mySidebar"><br>
+    <div class="w3-container w3-row">
+      <div class="w3-col s4">
+        <img src="img/manager.png" class="w3-circle w3-margin-left" style="width:46px">
+      </div>
+      <div class="w3-col s8 w3-bar">
+        <span>Buongiorno, <strong>Antonio</strong></span><br>
+        <a href="#" class="w3-bar-item w3-button w3-round-small"><i class="fa fa-envelope"></i></a>
+        <a href="#" class="w3-bar-item w3-button w3-round-small"><i class="fa fa-user"></i></a>
+        <a href="#" class="w3-bar-item w3-button w3-round-small"><i class="fa fa-cog"></i></a>
+      </div>
+    </div>
+    <hr style="border-width: 3px; border-color: white; width: 90%; margin-left: 5%; border-radius: 4%;">
+    <div class="w3-container w3-round-small">
+      <h5>Dashboard</h5>
+    </div>
+    <div class="w3-bar-block" id="viewSelector">
+
+      <a class="w3-bar-item w3-button w3-padding w3-round-small w3-blue-gray" id="buttonPanoramica"
+        onclick="selectPage('containerPANORAMICA', 'buttonPanoramica')"><i class="fa fa-users fa-fw"></i> 
+        Panoramica</a>
+      <a class="w3-bar-item w3-button w3-padding w3-round-small" id="buttonOrdini"
+        onclick="selectPage('containerORDINI', 'buttonOrdini')"><i class="fa fa-coffee "></i>  Ordini</a>
+      <a class="w3-bar-item w3-button w3-padding w3-round-small" id="buttonVirtual"
+        onclick="selectPage('containerVIRTUAL', 'buttonVirtual')"><i class="fa fa-map" aria-hidden="true"></i>  Virtual
+        Robot</a>
+      <a class="w3-bar-item w3-button w3-padding w3-round-small" id="buttonReal"
+        onclick="selectPage('containerREAL', 'buttonReal')"><i class="fa fa-map-o" aria-hidden="true"></i>  Real
+        Robot</a>
+      <!--<a class="w3-bar-item w3-button w3-padding w3-round-small" id="buttonImpostazioni" onclick=""><i class="fa fa-cog fa-fw"></i>  Impostazioni</a><br><br>-->
+    </div>
+
+    <div class="w3-container w3-row">
+      <div class="w3-col w3-center">
         <img src="img/teapot.png" style="width:50%; margin-top: 60%">
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
 
-<!-- Overlay effect when opening sidebar on small screens -->
-<div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer" title="close side menu" id="myOverlay"></div>
+  <!-- Overlay effect when opening sidebar on small screens -->
+  <div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="w3_close()" style="cursor:pointer"
+    title="close side menu" id="myOverlay"></div>
 
-<!-- !PAGE CONTENT! -->
-<div class="w3-main" style="margin-left:300px;margin-top:43px;">
+  <!-- !PAGE CONTENT! -->
+  <div class="w3-main" id="pageContainer" style="margin-left:300px;margin-top:43px;">
 
-  <!-- Header -->
-  <header class="w3-container" style="padding-top:22px">
-    <h4><b> Panoramica del sistema</b></h4>
-  </header>
+    <!-- PANORAMICA -->
+    <div id="containerPANORAMICA">
+      <!-- Header -->
+      <header class="w3-container" style="padding-top:22px">
+        <h4><b> Panoramica del sistema</b></h4>
+      </header>
 
-  <div class="w3-row-padding w3-margin-bottom">
-    <div class="w3-quarter">
-      <div class="w3-container w3-pale-red w3-padding-16 w3-round-small">
-        <div class="w3-left"><i class="fa fa-user w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3 id="clientiInSala">0/2</h3>
+      <div class="w3-row-padding w3-margin-bottom">
+        <div class="w3-quarter">
+          <div class="w3-container w3-pale-red w3-padding-16 w3-round-small">
+            <div class="w3-left"><i class="fa fa-user w3-xxxlarge"></i></div>
+            <div class="w3-right">
+              <h3 id="clientiInSala">0/2</h3>
+            </div>
+            <div class="w3-clear"></div>
+            <h4>Clienti in sala</h4>
+          </div>
         </div>
-        <div class="w3-clear"></div>
-        <h4>Clienti in sala</h4>
-      </div>
-    </div>
-    <div class="w3-quarter">
-      <div class="w3-container w3-pale-blue w3-padding-16 w3-round-small">
-        <div class="w3-left"><i class="fa fa-cutlery w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3 id="tavoliLiberi">2/2</h3>
+        <div class="w3-quarter">
+          <div class="w3-container w3-pale-blue w3-padding-16 w3-round-small">
+            <div class="w3-left"><i class="fa fa-cutlery w3-xxxlarge"></i></div>
+            <div class="w3-right">
+              <h3 id="tavoliLiberi">2/2</h3>
+            </div>
+            <div class="w3-clear"></div>
+            <h4>Tavoli liberi</h4>
+          </div>
         </div>
-        <div class="w3-clear"></div>
-        <h4>Tavoli liberi</h4>
-      </div>
-    </div>
-    <div class="w3-quarter">
-      <div class="w3-container w3-pale-yellow w3-padding-16 w3-round-small">
-        <div class="w3-left"><i class="fa fa-coffee w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3 id="theServiti">0</h3>
+        <div class="w3-quarter">
+          <div class="w3-container w3-pale-yellow w3-padding-16 w3-round-small">
+            <div class="w3-left"><i class="fa fa-coffee w3-xxxlarge"></i></div>
+            <div class="w3-right">
+              <h3 id="theServiti">0</h3>
+            </div>
+            <div class="w3-clear"></div>
+            <h4>The serviti</h4>
+          </div>
         </div>
-        <div class="w3-clear"></div>
-        <h4>The serviti</h4>
-      </div>
-    </div>
-    <div class="w3-quarter">
-      <div class="w3-container w3-pale-green w3-padding-16 w3-round-small">
-        <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
-        <div class="w3-right">
-          <h3 id="clientiServiti">0</h3>
+        <div class="w3-quarter">
+          <div class="w3-container w3-pale-green w3-padding-16 w3-round-small">
+            <div class="w3-left"><i class="fa fa-users w3-xxxlarge"></i></div>
+            <div class="w3-right">
+              <h3 id="clientiServiti">0</h3>
+            </div>
+            <div class="w3-clear"></div>
+            <h4>Clienti serviti</h4>
+          </div>
         </div>
-        <div class="w3-clear"></div>
-        <h4>Clienti serviti</h4>
       </div>
-    </div>
-  </div>
 
-  <div class="w3-panel">
-    <div class="w3-row-padding" style="margin:0 -16px">
-      <div class="w3-third">
-        <h5>Mappa della sala</h5>
-        <!--<img src="img/sampleMap.png" style="width:100%" alt="Mappa della sala" class="w3-round-small">-->
-        <table class="my-table  w3-white w3-round-small w3-bordered" id="mappa">
-          <tr>
-            <td id="cell00" class="w3-pale-green"><strong>R</strong> <i class="fa fa-long-arrow-down"></i></td>
-            <td id="cell10"></td>
-            <td id="cell20"></td>
-            <td id="cell30"></td>
-            <td id="cell40"></td>
-            <td id="cell50" class="w3-pale-blue"></td>
-            <td id="cell60"></td>
-          </tr>
-          <tr>
-            <td id="cell01"></td>
-            <td id="cell11"></td>
-            <td id="cell21"></td>
-            <td id="cell31"></td>
-            <td id="cell41"></td>
-            <td id="cell51"></td>
-            <td id="cell61"></td>
-          </tr>
-          <tr>
-            <td id="cell02"></td>
-            <td id="cell12"></td>
-            <td id="cell22"></td>
-            <td id="cell32"></td>
-            <td id="cell42"></td>
-            <td id="cell52"></td>
-            <td id="cell62"></td>
-          </tr>
-          <tr>
-              <td id="cell03"></td>
-              <td id="cell13"></td>
-              <td id="cell23" class="w3-pale-red"></td>
-              <td id="cell33"></td>
-              <td id="cell43" class="w3-pale-red"></td>
-              <td id="cell53"></td>
-              <td id="cell63"></td>
-          </tr>
-          <tr>
-            <td id="cell04"></td>
-            <td id="cell14"></td>
-            <td id="cell24"></td>
-            <td id="cell34"></td>
-            <td id="cell44"></td>
-            <td id="cell54"></td>
-            <td id="cell64"></td>
-          </tr>
-          <tr>
-            <td id="cell05"></td>
-            <td id="cell15" class="w3-pale-yellow"></td>
-            <td id="cell25"></td>
-            <td id="cell35"></td>
-            <td id="cell45"></td>
-            <td id="cell55"></td>
-            <td id="cell65" class="w3-pale-yellow"></td>
-          </tr>
-        </table>
-        </br>
-        <div id="barmanStatus">Barman status: waiting</div>
+      <div class="w3-panel">
+        <div class="w3-row-padding" style="margin:0 -16px">
+          <div class="w3-third">
+            <h5>Mappa della sala</h5>
+            <!--<img src="img/sampleMap.png" style="width:100%" alt="Mappa della sala" class="w3-round-small">-->
+            <table class="my-table  w3-white w3-round-small w3-bordered" id="mappa">
+              <tr>
+                <td id="cell00" class="w3-pale-green"><strong>R</strong> <i class="fa fa-long-arrow-down"></i></td>
+                <td id="cell10"></td>
+                <td id="cell20"></td>
+                <td id="cell30"></td>
+                <td id="cell40"></td>
+                <td id="cell50" class="w3-pale-blue"></td>
+                <td id="cell60"></td>
+              </tr>
+              <tr>
+                <td id="cell01"></td>
+                <td id="cell11"></td>
+                <td id="cell21"></td>
+                <td id="cell31"></td>
+                <td id="cell41"></td>
+                <td id="cell51"></td>
+                <td id="cell61"></td>
+              </tr>
+              <tr>
+                <td id="cell02"></td>
+                <td id="cell12"></td>
+                <td id="cell22"></td>
+                <td id="cell32"></td>
+                <td id="cell42"></td>
+                <td id="cell52"></td>
+                <td id="cell62"></td>
+              </tr>
+              <tr>
+                <td id="cell03"></td>
+                <td id="cell13"></td>
+                <td id="cell23" class="w3-pale-red"></td>
+                <td id="cell33"></td>
+                <td id="cell43" class="w3-pale-red"></td>
+                <td id="cell53"></td>
+                <td id="cell63"></td>
+              </tr>
+              <tr>
+                <td id="cell04"></td>
+                <td id="cell14"></td>
+                <td id="cell24"></td>
+                <td id="cell34"></td>
+                <td id="cell44"></td>
+                <td id="cell54"></td>
+                <td id="cell64"></td>
+              </tr>
+              <tr>
+                <td id="cell05"></td>
+                <td id="cell15" class="w3-pale-yellow"></td>
+                <td id="cell25"></td>
+                <td id="cell35"></td>
+                <td id="cell45"></td>
+                <td id="cell55"></td>
+                <td id="cell65" class="w3-pale-yellow"></td>
+              </tr>
+            </table>
+            </br>
+            <div id="barmanStatus">Barman status: waiting</div>
+          </div>
+          <div class="w3-twothird">
+            <h5>Stato del waiter</h5>
+            <table class="w3-table /*w3-striped*/ w3-white w3-round-small w3-bordered" id="stati">
+              <tr class="w3-round-small;" style="background-color: #ddffdd;" id="athome">
+                <td><i class="fa fa-home w3-center w3-large "></i></td>
+                <td>Waiting at home</td>
+              </tr>
+              <tr class="w3-round-small;" id="reachEntranceDoor">
+                <td><i class="fa fa-sign-in w3-center w3-large"></i></td>
+                <td>Reach</td>
+              </tr>
+              <tr class="w3-round-small;" id="convoy">
+                <td><i class="fa fa-location-arrow w3-center w3-large"></i></td>
+                <td>Convoy</td>
+              </tr>
+              <tr class="w3-round-small" id="takingOrder">
+                <td><i class="fa fa-pencil-square-o w3-center w3-large"></i></td>
+                <td>Taking order</td>
+              </tr>
+              <tr class="w3-round-small;" id="serving">
+                <td><i class="fa fa-coffee w3-center w3-large"></i></td>
+                <td>Serving tea</td>
+              </tr>
+              <tr class="w3-round-small;" id="collectingPayment">
+                <td><i class="fa fa-credit-card-alt w3-center w3-large"></i></td>
+                <td>Collecting payment</td>
+              </tr>
+              <tr class="w3-round-small;" id="sanitizing">
+                <td><i class="fa fa-plus-square w3-center w3-large"></i></td>
+                <td>Sanitizing table</td>
+              </tr>
+              <tr class="w3-round-small;" id="returnHome">
+                <td><i class="fa fa-street-view w3-center w3-large"></i></td>
+                <td>Returning home</td>
+              </tr>
+              <tr class="w3-round-small;" id="movingAround">
+                <td><i class="fa fa-arrows-alt w3-center w3-large"></i></td>
+                <td>Moving around</td>
+              </tr>
+            </table>
+          </div>
+        </div>
       </div>
-      <div class="w3-twothird">
-        <h5>Stato del waiter</h5>
-        <table class="w3-table /*w3-striped*/ w3-white w3-round-small w3-bordered" id="stati">
-          <tr class="w3-round-small;" style="background-color: #ddffdd;" id="athome">
-            <td><i class="fa fa-home w3-center w3-large "></i></td>
-            <td>Waiting at home</td>
-          </tr>
-          <tr class="w3-round-small;" id="reachEntranceDoor">
-            <td><i class="fa fa-sign-in w3-center w3-large"></i></td>
-            <td>Reach</td>
-          </tr>
-          <tr class="w3-round-small;" id="convoy">
-            <td><i class="fa fa-location-arrow w3-center w3-large"></i></td>
-            <td>Convoy</td>
-          </tr>
-          <tr class="w3-round-small" id="takingOrder">
-            <td><i class="fa fa-pencil-square-o w3-center w3-large"></i></td>
-            <td>Taking order</td>
-          </tr>
-          <tr class="w3-round-small;" id="serving">
-            <td><i class="fa fa-coffee w3-center w3-large"></i></td>
-            <td>Serving tea</td>
-          </tr>
-          <tr class="w3-round-small;" id="collectingPayment">
-            <td><i class="fa fa-credit-card-alt w3-center w3-large"></i></td>
-            <td>Collecting payment</td>
-          </tr>
-          <tr class="w3-round-small;" id="sanitizing">
-            <td><i class="fa fa-plus-square w3-center w3-large"></i></td>
-            <td>Sanitizing table</td>
-          </tr>
-          <tr class="w3-round-small;" id="returnHome">
-            <td><i class="fa fa-street-view w3-center w3-large"></i></td>
-            <td>Returning home</td>
-          </tr>
-          <tr class="w3-round-small;" id="movingAround">
-            <td><i class="fa fa-arrows-alt w3-center w3-large"></i></td>
-            <td>Moving around</td>
-          </tr>
-        </table>
-      </div>
-    </div>
-  </div>
 
-<!--
+      <!--
   <div class="w3-container">
   </br>
     <div class="w3-row-padding w3-center">
@@ -253,145 +267,186 @@ h1, h2, h3, h4, h5, h6 {
   </div>
 -->
 
-<div class="w3-panel">
-  <div class="w3-row-padding" style="margin:0 -16px">
-    <h5>Controllo simulazione</h5>
-    <div class="w3-half">
-    </br>
-    </br>
-      <div class="grid-container">
-        <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('p')">p</div>
-        <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('stepAhead')">Step Ahead <i class="fa fa-arrow-up w3-center w3-large"></i></div>
-        <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('h')">h</div>  
-        <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('turnLeft')"><i class="fa fa-arrow-left w3-center w3-large"></i> Turn Left</div>
-        <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('returnHome')"><i class="fa fa-home w3-center w3-large"></i> Return Home</div>
-        <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('turnRight')">Turn Right <i class="fa fa-arrow-right w3-center w3-large"></i></div>  
-        <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('z')">z</div>
-        <div class="grid-item w3-blue-gray w3-button w3-round-small hided"></div>
-        <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('x')">x</div> 
+      <div class="w3-panel">
+        <div class="w3-row-padding" style="margin:0 -16px">
+          <h5>Controllo simulazione</h5>
+          <div class="w3-half">
+            </br>
+            </br>
+            <div class="grid-container">
+              <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('p')">p</div>
+              <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('stepAhead')">Step Ahead
+                <i class="fa fa-arrow-up w3-center w3-large"></i></div>
+              <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('h')">h</div>
+              <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('turnLeft')"><i
+                  class="fa fa-arrow-left w3-center w3-large"></i> Turn Left</div>
+              <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('returnHome')"><i
+                  class="fa fa-home w3-center w3-large"></i> Return Home</div>
+              <div class="grid-item w3-blue-gray w3-button w3-round-small" onclick="sendTheMove('turnRight')">Turn Right
+                <i class="fa fa-arrow-right w3-center w3-large"></i></div>
+              <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('z')">z</div>
+              <div class="grid-item w3-blue-gray w3-button w3-round-small hided"></div>
+              <div class="grid-item w3-blue-gray w3-button w3-round-small hided" onclick="sendTheMove('x')">x</div>
+            </div>
+          </div>
+
+          <div class="w3-half" style="height: 200px; overflow: scroll">
+            <table class="w3-table /*w3-striped*/ w3-white w3-round-small w3-bordered" id="stati">
+              <tr class="w3-round-small;" id="home">
+                <td>Client 1:</td>
+                <td id="clientState1">Waiting to arrive</td>
+                <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton1')"
+                    id="clientButton1" type="submit">Next State</button></td>
+              </tr>
+              <tr class="w3-round-small;" id="home">
+                <td>Client 2:</td>
+                <td id="clientState2">Waiting to arrive</td>
+                <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton2')"
+                    id="clientButton2" type="submit">Next State</button></td>
+              </tr>
+              <tr class="w3-round-small;" id="home">
+                <td>Client 3:</td>
+                <td id="clientState3">Waiting to arrive</td>
+                <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton3')"
+                    id="clientButton3" type="submit">Next State</button></td>
+              </tr>
+              <tr class="w3-round-small;" id="home">
+                <td>Client 4:</td>
+                <td id="clientState4">Waiting to arrive</td>
+                <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton4')"
+                    id="clientButton4" type="submit">Next State</button></td>
+              </tr>
+              <tr class="w3-round-small;" id="home">
+                <td>Client 5:</td>
+                <td id="clientState5">Waiting to arrive</td>
+                <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton5')"
+                    id="clientButton5" type="submit">Next State</button></td>
+              </tr>
+              <tr class="w3-round-small;" id="home">
+                <td>Client 6:</td>
+                <td id="clientState6">Waiting to arrive</td>
+                <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton6')"
+                    id="clientButton6" type="submit">Next State</button></td>
+              </tr>
+            </table>
+
+          </div>
+        </div>
       </div>
+
+
+
+      <div class="w3-container">
+        <h5>Statistiche generali</h5>
+        <p>Nuovi visitatori</p>
+        <div class="w3-light-grey w3-round-small">
+          <div class="w3-container w3-center w3-padding w3-pale-green w3-round-small" style="width:25%">+25%</div>
+        </div>
+
+        <p>Clienti respinti</p>
+        <div class="w3-light-grey w3-round-small">
+          <div class="w3-container w3-center w3-padding w3-pale-yellow w3-round-small" style="width:50%">50%</div>
+        </div>
+
+        <p>ABCD</p>
+        <div class="w3-light-grey w3-round-small">
+          <div class="w3-container w3-center w3-padding w3-pale-red w3-round-small" style="width:75%">75%</div>
+        </div>
+      </div>
+
+
+
+
+      <div class="w3-container">
+
+      </div>
+      <br>
     </div>
+    <!-- FINE PANORAMICA-->
 
-    <div class="w3-half" style="height: 200px; overflow: scroll">
-      <table class="w3-table /*w3-striped*/ w3-white w3-round-small w3-bordered" id="stati">
-        <tr class="w3-round-small;" id="home">
-          <td>Client 1:</td>
-          <td id="clientState1">Waiting to arrive</td>
-          <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton1')" id="clientButton1" type="submit">Next State</button></td>
-        </tr>
-        <tr class="w3-round-small;" id="home">
-          <td>Client 2:</td>
-          <td id="clientState2">Waiting to arrive</td>
-          <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton2')" id="clientButton2" type="submit">Next State</button></td>
-        </tr>
-        <tr class="w3-round-small;" id="home">
-          <td>Client 3:</td>
-          <td id="clientState3">Waiting to arrive</td>
-          <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton3')" id="clientButton3" type="submit">Next State</button></td>
-        </tr>
-        <tr class="w3-round-small;" id="home">
-          <td>Client 4:</td>
-          <td id="clientState4">Waiting to arrive</td>
-          <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton4')" id="clientButton4" type="submit">Next State</button></td>
-        </tr>
-        <tr class="w3-round-small;" id="home">
-          <td>Client 5:</td>
-          <td id="clientState5">Waiting to arrive</td>
-          <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton5')" id="clientButton5" type="submit">Next State</button></td>
-        </tr>
-        <tr class="w3-round-small;" id="home">
-          <td>Client 6:</td>
-          <td id="clientState6">Waiting to arrive</td>
-          <td><button class="w3-button w3-blue-gray w3-round-small" onclick="emitClientChange('clientButton6')" id="clientButton6" type="submit">Next State</button></td>
-        </tr>
-      </table>
-      
+    <!-- ORDINI -->
+    <div id="containerORDINI" style="display: none;">
+      <!-- Header -->
+      <header class="w3-container" style="padding-top:22px">
+        <h4><b>Ordini</b></h4>
+      </header>
     </div>
-  </div>
-</div>
+    <!-- FINE ORDINI -->
 
-
-  
-  <div class="w3-container">
-    <h5>Statistiche generali</h5>
-    <p>Nuovi visitatori</p>
-    <div class="w3-light-grey w3-round-small">
-      <div class="w3-container w3-center w3-padding w3-pale-green w3-round-small" style="width:25%">+25%</div>
+    <!-- VIRTUAL ROBOT -->
+    <div id="containerVIRTUAL" style="display: none;">
+      <!-- Header -->
+      <header class="w3-container" style="padding-top:22px">
+        <h4><b>Virtual robot</b></h4>
+      </header>
     </div>
+    <!-- FINE VIRTUAL ROBOT -->
 
-    <p>Clienti respinti</p>
-    <div class="w3-light-grey w3-round-small">
-      <div class="w3-container w3-center w3-padding w3-pale-yellow w3-round-small" style="width:50%">50%</div>
+    <!-- REAL ROBOT -->
+    <div id="containerREAL" style="display: none;">
+      <!-- Header -->
+      <header class="w3-container" style="padding-top:22px">
+        <h4><b>Real robot</b></h4>
+      </header>
     </div>
+    <!-- FINE REAL ROBOT -->
 
-    <p>ABCD</p>
-    <div class="w3-light-grey w3-round-small">
-      <div class="w3-container w3-center w3-padding w3-pale-red w3-round-small" style="width:75%">75%</div>
-    </div>
-  </div>
-  
 
-  
-
-  <div class="w3-container">
-    
-  </div>
-  <br>
-
-  <div class="w3-container w3-blue-grey w3-padding-32 w3-round-small">
-    <div class="w3-row">
+    <div class="w3-container w3-blue-grey w3-padding-32 w3-round-small" id="crediti">
+      <div class="w3-row">
         <h4>Crediti</h4>
-        
+
+      </div>
+
+      <div class="w3-row">
+        <div class="w3-container w3-third w3-center">
+          <img class="w3-circle w3-center" src="img/ugo3.jpg" style="width:45%">
+          <p>Ugo Leone Cavalcanti</p>
+          <a href="MAILTO:ugoleone.cavalcanti@studio.unibo.it">ugoleone.cavalcanti@studio.unibo.it</a>
+        </div>
+        <div class="w3-container w3-third w3-center">
+          <img class="w3-circle w3-center" src="img/amir.jpg" style="width:45%">
+          <p>Amir Al Sadi</p>
+          <a href="MAILTO:amir.alsadi@studio.unibo.it">amir.alsadi@studio.unibo.it</a>
+        </div>
+        <div class="w3-container w3-third w3-center">
+          <img class="w3-circle w3-center" src="img/nik2.jpeg" style="width:45%">
+          <p>Nicol&ograve Romandini</p>
+          <a href="MAILTO:nicolo.romandini@studio.unibo.it">nicolo.romandini@studio.unibo.it</a>
+        </div>
+      </div>
     </div>
-    
-    <div class="w3-row">
-      <div class="w3-container w3-third w3-center">
-        <img class="w3-circle w3-center" src="img/ugo3.jpg" style="width:45%">
-        <p>Ugo Leone Cavalcanti</p>
-        <a href="MAILTO:ugoleone.cavalcanti@studio.unibo.it">ugoleone.cavalcanti@studio.unibo.it</a>
-      </div>
-      <div class="w3-container w3-third w3-center">
-        <img class="w3-circle w3-center" src="img/amir.jpg" style="width:45%">
-        <p>Amir Al Sadi</p>
-        <a href="MAILTO:amir.alsadi@studio.unibo.it">amir.alsadi@studio.unibo.it</a>
-      </div>
-      <div class="w3-container w3-third w3-center">
-        <img class="w3-circle w3-center" src="img/nik2.jpeg" style="width:45%">
-        <p>Nicol&ograve Romandini</p>
-        <a href="MAILTO:nicolo.romandini@studio.unibo.it">nicolo.romandini@studio.unibo.it</a>
-      </div>
-    </div>
+
+
+
+    <!-- End page content -->
   </div>
 
-  
+  <script>
+    // Get the Sidebar
+    var mySidebar = document.getElementById("mySidebar");
 
-  <!-- End page content -->
-</div>
+    // Get the DIV with overlay effect
+    var overlayBg = document.getElementById("myOverlay");
 
-<script>
-// Get the Sidebar
-var mySidebar = document.getElementById("mySidebar");
+    // Toggle between showing and hiding the sidebar, and add overlay effect
+    function w3_open() {
+      if (mySidebar.style.display === 'block') {
+        mySidebar.style.display = 'none';
+        overlayBg.style.display = "none";
+      } else {
+        mySidebar.style.display = 'block';
+        overlayBg.style.display = "block";
+      }
+    }
 
-// Get the DIV with overlay effect
-var overlayBg = document.getElementById("myOverlay");
-
-// Toggle between showing and hiding the sidebar, and add overlay effect
-function w3_open() {
-  if (mySidebar.style.display === 'block') {
-    mySidebar.style.display = 'none';
-    overlayBg.style.display = "none";
-  } else {
-    mySidebar.style.display = 'block';
-    overlayBg.style.display = "block";
-  }
-}
-
-// Close the sidebar with the close button
-function w3_close() {
-  mySidebar.style.display = "none";
-  overlayBg.style.display = "none";
-}
-</script>
+    // Close the sidebar with the close button
+    function w3_close() {
+      mySidebar.style.display = "none";
+      overlayBg.style.display = "none";
+    }
+  </script>
 
 </body>
+
 </html>

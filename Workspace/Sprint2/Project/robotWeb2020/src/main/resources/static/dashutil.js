@@ -144,3 +144,27 @@ function updateDashboard(message) {
     updateBarmanStatus(message.serviceDeskState);
     updateClientsStatus(message.clientsState);
 }
+
+
+
+/*
+ * Queste due funzioni servono a cambiare pagina
+ */
+function resetButtons(buttonName) {
+    var pulsanti = document.getElementById("viewSelector").children;
+    var i;
+    for (i = 0; i < pulsanti.length; i++) {
+        pulsanti[i].classList.remove("w3-blue-gray")
+    }
+    document.getElementById(buttonName).classList.add("w3-blue-gray");
+}
+
+function selectPage(pageName, buttonName) {
+    resetButtons(buttonName);
+    var pagine = document.getElementById("pageContainer").children;
+    for (i = 0; i < pagine.length; i++) {
+        pagine[i].style.display = "none";
+    }
+    document.getElementById(pageName).style.display = "block";
+    document.getElementById("crediti").style.display = "block";
+}
