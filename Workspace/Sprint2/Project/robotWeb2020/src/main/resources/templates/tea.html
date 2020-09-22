@@ -145,70 +145,88 @@ h1, h2, h3, h4, h5, h6 {
       <div class="w3-panel">
         <div class="w3-row-padding" style="margin:0 -16px">
           <div class="w3-third">
-            <h5>Mappa della sala</h5>
+            <!--<h5>Mappa della sala</h5>-->
             <!--<img src="img/sampleMap.png" style="width:100%" alt="Mappa della sala" class="w3-round-small">-->
-            <table class="my-table  w3-white w3-round-small w3-bordered" id="mappa">
-              <tr>
-                <td id="cell00" class="w3-pale-green"><strong>R</strong> <i class="fa fa-long-arrow-down"></i></td>
-                <td id="cell10"></td>
-                <td id="cell20"></td>
-                <td id="cell30"></td>
-                <td id="cell40"></td>
-                <td id="cell50" class="w3-pale-blue"></td>
-                <td id="cell60"></td>
-              </tr>
-              <tr>
-                <td id="cell01"></td>
-                <td id="cell11"></td>
-                <td id="cell21"></td>
-                <td id="cell31"></td>
-                <td id="cell41"></td>
-                <td id="cell51"></td>
-                <td id="cell61"></td>
-              </tr>
-              <tr>
-                <td id="cell02"></td>
-                <td id="cell12"></td>
-                <td id="cell22"></td>
-                <td id="cell32"></td>
-                <td id="cell42"></td>
-                <td id="cell52"></td>
-                <td id="cell62"></td>
-              </tr>
-              <tr>
-                <td id="cell03"></td>
-                <td id="cell13"></td>
-                <td id="cell23" class="w3-pale-red"></td>
-                <td id="cell33"></td>
-                <td id="cell43" class="w3-pale-red"></td>
-                <td id="cell53"></td>
-                <td id="cell63"></td>
-              </tr>
-              <tr>
-                <td id="cell04"></td>
-                <td id="cell14"></td>
-                <td id="cell24"></td>
-                <td id="cell34"></td>
-                <td id="cell44"></td>
-                <td id="cell54"></td>
-                <td id="cell64"></td>
-              </tr>
-              <tr>
-                <td id="cell05"></td>
-                <td id="cell15" class="w3-pale-yellow"></td>
-                <td id="cell25"></td>
-                <td id="cell35"></td>
-                <td id="cell45"></td>
-                <td id="cell55"></td>
-                <td id="cell65" class="w3-pale-yellow"></td>
-              </tr>
-            </table>
+            <div class="w3-bar">
+              <button class="w3-bar-item w3-button tablink w3-blue-gray w3-round-small" onclick="openTab(event, 'Mappa')" id="defaultOpen">Mappa</button>
+              <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'Virtual')">Virtual</button>
+              <button class="w3-bar-item w3-button tablink" onclick="openTab(event, 'Webcam')">Webcam</button>
+            </div>
+            <br />
+            
+            <div id="Mappa" class="w3-container tabView">
+              <table class="my-table  w3-white w3-round-small w3-bordered" id="mappa">
+                <tr>
+                  <td id="cell00" class="w3-pale-green"><strong>R</strong> <i class="fa fa-long-arrow-down"></i></td>
+                  <td id="cell10"></td>
+                  <td id="cell20"></td>
+                  <td id="cell30"></td>
+                  <td id="cell40"></td>
+                  <td id="cell50" class="w3-pale-blue"></td>
+                  <td id="cell60"></td>
+                </tr>
+                <tr>
+                  <td id="cell01"></td>
+                  <td id="cell11"></td>
+                  <td id="cell21"></td>
+                  <td id="cell31"></td>
+                  <td id="cell41"></td>
+                  <td id="cell51"></td>
+                  <td id="cell61"></td>
+                </tr>
+                <tr>
+                  <td id="cell02"></td>
+                  <td id="cell12"></td>
+                  <td id="cell22"></td>
+                  <td id="cell32"></td>
+                  <td id="cell42"></td>
+                  <td id="cell52"></td>
+                  <td id="cell62"></td>
+                </tr>
+                <tr>
+                  <td id="cell03"></td>
+                  <td id="cell13"></td>
+                  <td id="cell23" class="w3-pale-red"></td>
+                  <td id="cell33"></td>
+                  <td id="cell43" class="w3-pale-red"></td>
+                  <td id="cell53"></td>
+                  <td id="cell63"></td>
+                </tr>
+                <tr>
+                  <td id="cell04"></td>
+                  <td id="cell14"></td>
+                  <td id="cell24"></td>
+                  <td id="cell34"></td>
+                  <td id="cell44"></td>
+                  <td id="cell54"></td>
+                  <td id="cell64"></td>
+                </tr>
+                <tr>
+                  <td id="cell05"></td>
+                  <td id="cell15" class="w3-pale-yellow"></td>
+                  <td id="cell25"></td>
+                  <td id="cell35"></td>
+                  <td id="cell45"></td>
+                  <td id="cell55"></td>
+                  <td id="cell65" class="w3-pale-yellow"></td>
+                </tr>
+              </table>
+            </div>
+
+            <div id="Virtual" class="w3-container tabView" style="display:none">
+              <iframe style="border-spacing: 0; width: 100%; height: 300px; border: none;" src="http://localhost:8090"></iframe>
+            </div>
+
+            <div id="Webcam" class="w3-container tabView" style="display:none">
+              <p>Ciao sono la webcam</p>
+            </div>
+
             </br>
             <div id="barmanStatus">Barman status: waiting</div>
           </div>
           <div class="w3-twothird">
             <h5>Stato del waiter</h5>
-            <table class="w3-table /*w3-striped*/ w3-white w3-round-small w3-bordered" id="stati">
+            <table class="w3-table /*w3-striped*/ w3-white w3-round-small w3-bordered" id="stati" style="margin-top: 23px">
               <tr class="w3-round-small;" style="background-color: #ddffdd;" id="athome">
                 <td><i class="fa fa-home w3-center w3-large "></i></td>
                 <td>Waiting at home</td>
@@ -250,22 +268,6 @@ h1, h2, h3, h4, h5, h6 {
         </div>
       </div>
 
-      <!--
-  <div class="w3-container">
-  </br>
-    <div class="w3-row-padding w3-center">
-      <div class="w3-bar">
-        <button onclick="emitClientChange('clientButton1')" class="w3-button w3-blue-gray w3-round-small" id="clientButton1" type="submit">Client 1 : Arrive</button>
-        <button onclick="myFunction()" class="w3-button w3-blue-gray w3-round-small" id="clientButton2" disabled>Client 2 : Arrive</button>
-        <button onclick="myFunction()" class="w3-button w3-blue-gray w3-round-small" id="clientButton3" disabled>Client 3 : Arrive</button>
-        <button onclick="myFunction()" class="w3-button w3-blue-gray w3-round-small" id="clientButton4" disabled>Client 4 : Arrive</button>
-        <button onclick="myFunction()" class="w3-button w3-blue-gray w3-round-small" id="clientButton5" disabled>Client 5 : Arrive</button>
-        <button onclick="myFunction()" class="w3-button w3-blue-gray w3-round-small" id="clientButton6" disabled>Client 6 : Arrive</button>
-      </div>
-    </div>
-  </br>
-  </div>
--->
 
       <div class="w3-panel">
         <div class="w3-row-padding" style="margin:0 -16px">
@@ -290,19 +292,30 @@ h1, h2, h3, h4, h5, h6 {
             </div>
           </div>
 
-          <div class="w3-half" style="height: 200px; overflow: scroll">
-            <button class="w3-button w3-blue-gray w3-round-small" onclick="newClient()">New Client</button>
-            <table class="w3-table /*w3-striped*/ w3-white w3-round-small w3-bordered" id="statiClienti">
+          <div class="w3-half">
+            <div  style="height: 220px; overflow: scroll" id="divStatiClienti">
+              <table class="w3-table /*w3-striped*/ w3-white w3-round-small w3-bordered" id="statiClienti">
 
-              <tr class="w3-round-small;">
+                <tr class="w3-round-small;">
+                  
+                  <td style="text-align: center;">There are no clients yet</td>
+                  
+                </tr>
                 
-                <td style="text-align: center;">There are no clients yet</td>
                 
-              </tr>
-              
-              
-            </table>
-
+              </table>
+              <div class="w3-center" id="addClientButtonInternal">
+                <button class="w3-button w3-blue-gray w3-round-small w3-center" style="margin-top: 20px;" onclick="newClient()">
+                  <i class="fa fa-plus w3-center w3-large"></i> Add A New Client</button>
+              </div>
+            </div>
+           
+            <div class="w3-center" style="width: 100%; display: none;" id="addClientButtonExternal">
+              <button class="w3-button w3-blue-gray w3-round-small w3-center" style="margin-top: 20px; "  onclick="newClient()">
+                <i class="fa fa-plus w3-center w3-large"></i> Add A New Client
+              </button>
+            </div>
+            
           </div>
         </div>
       </div>
@@ -352,7 +365,8 @@ h1, h2, h3, h4, h5, h6 {
       <header class="w3-container" style="padding-top:22px">
         <h4><b>Virtual robot</b></h4>
       </header>
-      <iframe width="1215" height="600" src="http://localhost:8090"></iframe>
+      <iframe width="100%" height="600" style="border: none;" src="http://localhost:8090"></iframe>
+      
     </div>
     <!-- FINE VIRTUAL ROBOT -->
 

@@ -126,11 +126,17 @@ function addAClient(item, index) {
  */
 function updateClientsStatus(clientsStatus) {
     document.getElementById("statiClienti").innerHTML = "";
-    if(clientsStatus && Array.isArray(clientsStatus) && clientsStatus.length)
+    if(clientsStatus && Array.isArray(clientsStatus) && clientsStatus.length) {
         clientsStatus.forEach(addAClient);
+        document.getElementById("addClientButtonInternal").style.display = "none";
+        document.getElementById("addClientButtonExternal").style.display = "block";
+    }
     else {
         var generated = "<tr class=\"w3-round-small;\"><td style=\"text-align: center;\">There are no clients yet</td></tr>";
         document.getElementById("statiClienti").innerHTML = generated;
+        //Aggiungo il pulsante per istanziare nuovi clienti
+        document.getElementById("addClientButtonInternal").style.display = "block";
+        document.getElementById("addClientButtonExternal").style.display = "none";
     }
 }
 /*
@@ -140,6 +146,8 @@ function updateClientsStatus(clientsStatus) {
  *      <td style="text-align: center;">There are no clients yet</td>                
  * </tr>
  */
+
+
 
 
 /*
@@ -172,6 +180,7 @@ function updateDashboard(message) {
 
 
 
+
 /*
  * Queste due funzioni servono a cambiare pagina\vista
  */
@@ -192,4 +201,22 @@ function selectPage(pageName, buttonName) {
     }
     document.getElementById(pageName).style.display = "block";
     document.getElementById("crediti").style.display = "block";
+}
+
+
+/*
+ * Questa funzione permette di passare da un tab all'altro
+ */
+function openTab(evt, tabName) {
+    var i, x, tablinks;
+  x = document.getElementsByClassName("tabView");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" w3-blue-gray", "");
+  }
+  document.getElementById(tabName).style.display = "block";
+  evt.currentTarget.className += " w3-blue-gray";
 }
