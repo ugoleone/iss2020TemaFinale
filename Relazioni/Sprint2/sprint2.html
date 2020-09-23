@@ -179,7 +179,12 @@ QActor <k>resourcemodel</k> context ctxresourcemodel{
             <b>Considerazioni sul cliente</b></br>
             Nell'aggiungere i tasti per simulare il comportamento dei clienti, è sorta l'utilità di tracciare il loro stato corrente all'interno della base di conoscenza.
             La pressione del tasto sulla interfaccia web genera un evento che viene recepito dal <bc>clientsimulator</bc>, il quale notifica tramite <b>updateClientState</b> la volontà del cambiare lo stato del cliente.</br>
-            Sebbene ora sia l'interfaccia web (per necessità di demo) a propagare i cambiamenti di stato del cliente, in un futuro questa logica potrebbe essere riutilizzata nel prodotto finale tramite delle interfacce come tablet o simili.</br> 
+           
+            <br />
+            Sebbene ora sia l'interfaccia web (per necessità di demo) a propagare i cambiamenti di stato del cliente, in un futuro questa logica potrebbe essere riutilizzata nel prodotto finale tramite delle interfacce come tablet o simili.
+            <br />
+            Dal <bc>clientsimulator</bc> si potrà infatti rimuovere la parte relativa al "comportamento autonomo" di un cliente (necessaria ora per simulare il sistema) lasciando soltanto la logica necessaria ad interfacciare un cliente reale con il resto del sistema, ovvero comunicare al modello le attività di un cliente.
+            <br /> 
         </br>
             <b>Revisione</b></br>
             Dopo un confronto con il committente sono stati attuati i seguenti cambiamenti:
