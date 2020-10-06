@@ -217,8 +217,17 @@ h1, h2, h3, h4, h5, h6 {
               <iframe style="border-spacing: 0; width: 100%; height: 300px; border: none;" src="http://localhost:8090"></iframe>
             </div>
 
-            <div id="Webcam" class="w3-container tabView" style="display:none">
-              <p>Ciao sono la webcam</p>
+            <div id="Webcam" class="w3-container tabView" style="display:none"> 			 
+				<img src=""  id="img_src" alt=""  style="border-spacing: 0; width: 100%; height: 250px; border: none;">
+				
+				<script type="text/javascript">
+					 var url = "192.168.1.111:8080" //RASPI IP
+			 	     var len = url.length;
+				     var n   = url.indexOf(":");
+				     var j   = url.substring(n+1,len); 
+					 var ip = "http://" + url + "/?action=stream";
+				     document.getElementById("img_src").src = ip;	
+				</script>
             </div>
 
             </br>
@@ -376,6 +385,18 @@ h1, h2, h3, h4, h5, h6 {
       <header class="w3-container" style="padding-top:22px">
         <h4><b>Real robot</b></h4>
       </header>
+      	<div>
+      		<img src=""  id="img_src2" alt=""  style="border-spacing: 0; width: 100%; height: 600px; border: none;">
+				
+			<script type="text/javascript">
+				 var url = "192.168.1.111:8080" //RASPI IP
+		 	     var len = url.length;
+			     var n   = url.indexOf(":");
+			     var j   = url.substring(n+1,len); 
+				 var ip = "http://" + url + "/?action=stream";
+			     document.getElementById("img_src2").src = ip;	
+			</script>
+		</div>
     </div>
     <!-- FINE REAL ROBOT -->
 
