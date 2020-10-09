@@ -85,15 +85,27 @@
                 La base di conoscenza non richiede modifiche per introdurre più <bc>client</bc> <b>concorrenti</b> dal momento che per come è stata progettata negli sprint precedenti essa risulta già in grado di scalare a seconda del numero dei <bc>client</bc>.
                 <h5><b>Gestione del tempo</b></h5>
                 Dai requisiti 5, 5bis, 6 e 7 risulta necessario introdurre dei meccanismi che possano tenere traccia dello scorrimento del tempo e poter verificare che un <bc>client</bc> non stia più di un certo tempo nella stanza.
+                    <pre>
+QActor timersmanager context ctxtearoom {
+
+    State s0 initial {
+        discardMsg Off
+    }Goto waitingRequests
+
+    State waitingRequests{ println("[TIMER] Waiting for new requests")}
+    Transition t0 whenMsg startTimer -> timer
+    
+    State timer {
+        onMsg(startTimer : startTimer(P)) {
+            // init timer
+        }
+    }Goto waitingRequests
+
+}                   </pre>
                 <h5><b>Simulazione di più clienti</b></h5>
                 Anche se non è previsto nei requisiti, è necessario poter simulare più <bc>client</bc> per fornire una demo al committente. Pertanto sarà necessario modificare il <bc>clientsimulator</bc>.
                 <h5><b>Concorrenza dei client</b></h5>
                 In sede di sprint retrospective dello sprint 2 nel realizzare un'interfaccia per fornire una demo del sistema si è raggiunto un livello già da ritenersi sufficiente per il committente.
-            </div>
-            <div>
-                <pre>
-                    
-                </pre>
             </div>
 
             <h2>Test plans</h2>
@@ -160,19 +172,6 @@ clientsIDs([]).
                 
             </div>
 
-            <h2>Testing</h2>
-            <div>
-                <ks>GOAL</ks>: complete the <k>functional TestPlans</k> according to the project code and execute them.
-            </div>
-
-
-            <table style="width:100%" border="1">
-                <tr>
-                    <td style="width:50%">
-                    </td>
-                    <td></td>
-                </tr>
-            </table>
 
             <br /><br />
 
