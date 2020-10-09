@@ -57,13 +57,13 @@
                 
                 <tr><td>5</td><td>WAITER</td> 
                 <td>
-                Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter rispondere che il <bc>client</bc> può entrare, se ci sono <bc>table</bc> CLEANED
+                Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter rispondere che il <bc>client</bc> può entrare, se ci sono <bc>table</bc> AVAILABLE
                 <td><em>waitingTime(0)</em></td>
                 </tr>
                 
                 <tr><td>5bis</td><td>WAITER</td> 
                 <td>
-                Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter rispondere che il <bc>client</bc> deve aspettare un certo tempo prima che vi sia un <bc>table</bc> CLEANED
+                Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter rispondere che il <bc>client</bc> deve aspettare un certo tempo prima che vi sia un <bc>table</bc> AVAILABLE
                 <td><em>waitingTime(TIME>0)</em></td>
                 </tr>
                 
@@ -75,7 +75,7 @@
                 
                 <tr><td>7</td><td>WAITER</td> 
                 <td>
-                Qualora non ci siano tavoli puliti disponibili (<em>cleaned</em>) il <bc>waiter</bc> deve poter stimare il massimo tempo di attesa per averne uno
+                Qualora non ci siano tavoli puliti disponibili (<em>AVAILABLE</em>) il <bc>waiter</bc> deve poter stimare il massimo tempo di attesa per averne uno
                 <td><em>calcWaitingTime</em></td>
                 </tr>
                 
@@ -141,14 +141,14 @@
 
                 <tr><td>18</td><td>TABLE</td> 
                     <td>
-                        Un <bc>table</bc> ha tre stati diversi: CLEANED, BUSY, DIRTY
+                        Un <bc>table</bc> ha tre stati diversi: AVAILABLE, BUSY, DIRTY
                     </td>
                     <td></td>
                     </tr>  
                     
                     <tr><td>19</td><td>TABLE</td> 
                     <td>
-                        Un <bc>table</bc> quando è CLEANED può essere occupato da un <bc>client</bc> diventando BUSY
+                        Un <bc>table</bc> quando è AVAILABLE può essere occupato da un <bc>client</bc> diventando BUSY
                     <td></td>
                     </tr>
                     
@@ -160,14 +160,14 @@
                     
                     <tr><td>21</td><td>TABLE</td> 
                     <td>
-                        Dopo che un <bc>waiter</bc> pulisce <bc>teatable</bc> questo risulterà CLEANED
+                        Dopo che un <bc>waiter</bc> pulisce <bc>teatable</bc> questo risulterà AVAILABLE
                     <td></td>
                     </tr>
 
-                    <tr><td>22</td><td>TABLE</td> 
+                    <tr><td><del>22</del>*</td><td><del>TABLE</del></td> 
                         <td>
-                            Un <bc>teatable</bc> deve poter comunicare il suo stato dopo che un <bc>waiter</bc> glielo ha chiesto
-                        <td><em>tabState</em></td>
+                            <del>Un <bc>teatable</bc> deve poter comunicare il suo stato dopo che un <bc>waiter</bc> glielo ha chiesto</del>
+                        <td><del><em>tabState</em></del></td>
                         </tr>
                     
                     <tr><td>23</td><td>SMARTBELL</td> 
@@ -217,10 +217,10 @@
                             Bisogna rendere disponibile un'interfaccia web da cui il <bc>manager</bc> deve poter controllare lo stato corrente della <em>tearoom</em>: deve essere infatti possibile in ogni momento conoscere lo stato corrente della stanza
                         <td></td>
                     </tr>
-
+                    
 
             </table>
-        
+        *Requisito eliminato
         </div>
 
         <!-- TEAM -->
