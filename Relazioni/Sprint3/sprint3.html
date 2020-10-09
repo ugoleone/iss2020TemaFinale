@@ -29,13 +29,13 @@
 
                     <tr><td>5</td><td>WAITER</td> 
                     <td>
-                    Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter rispondere che il <bc>client</bc> può entrare, se ci sono <bc>table</bc> CLEANED
+                    Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter rispondere che il <bc>client</bc> può entrare, se ci sono <bc>table</bc> AVAILABLE
                     <td><em>waitingTime(0)</em></td>
                     </tr>
                     
                     <tr><td>5bis</td><td>WAITER</td> 
                     <td>
-                    Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter rispondere che il <bc>client</bc> deve aspettare un certo tempo prima che vi sia un <bc>table</bc> CLEANED
+                    Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter rispondere che il <bc>client</bc> deve aspettare un certo tempo prima che vi sia un <bc>table</bc> AVAILABLE
                     <td><em>waitingTime(TIME>0)</em></td>
                     </tr>
                     
@@ -47,7 +47,7 @@
                     
                     <tr><td>7</td><td>WAITER</td> 
                     <td>
-                        Qualora non ci siano tavoli puliti disponibili (<em>cleaned</em>) il <bc>waiter</bc> deve poter stimare il massimo tempo di attesa per averne uno
+                        Qualora non ci siano tavoli puliti disponibili (<em>AVAILABLE</em>) il <bc>waiter</bc> deve poter stimare il massimo tempo di attesa per averne uno
                     <td><em>calcWaitingTime</em></td>
                     </tr>
                     
@@ -74,7 +74,7 @@
             <div>
                 <ul>
                     <li>Per <em>maxstaytime</em> si intende il massimo tempo di permanenza all'interno della <em>tearoom</em> consentito al cliente.</li>
-                    <li>Per <em>waitingTime</em> si intende una indicazione del tempo che il cliente dovrà attendere prima di entrare in sala. In caso di superamento, il cliente abbandonerà il sistema.</li>
+                    <li>Per <em>waitingTime</em> si intende la quantità di tempo che il cliente dovrà attendere prima di entrare in sala. In caso di superamento, il cliente abbandonerà il sistema.</li>
                 </ul>
 
             </div>
@@ -82,11 +82,18 @@
             <h2>Problem analysis</h2>
             <div>
                 <h5><b>Concorrenza dei client</b></h5>
-                La base di conoscenza non richiede modifiche per introdurre più <bc>client</bc> <b>concorrenti</b> dal momento che è stata progettata negli sprint precedente con lo scopo di scalare a seconda del numero dei <bc>client</bc>.
+                La base di conoscenza non richiede modifiche per introdurre più <bc>client</bc> <b>concorrenti</b> dal momento che per come è stata progettata negli sprint precedenti essa risulta già in grado di scalare a seconda del numero dei <bc>client</bc>.
                 <h5><b>Gestione del tempo</b></h5>
                 Dai requisiti 5, 5bis, 6 e 7 risulta necessario introdurre dei meccanismi che possano tenere traccia dello scorrimento del tempo e poter verificare che un <bc>client</bc> non stia più di un certo tempo nella stanza.
                 <h5><b>Simulazione di più clienti</b></h5>
                 Anche se non è previsto nei requisiti, è necessario poter simulare più <bc>client</bc> per fornire una demo al committente. Pertanto sarà necessario modificare il <bc>clientsimulator</bc>.
+                <h5><b>Concorrenza dei client</b></h5>
+                In sede di sprint retrospective dello sprint 2 nel realizzare un'interfaccia per fornire una demo del sistema si è raggiunto un livello già da ritenersi sufficiente per il committente.
+            </div>
+            <div>
+                <pre>
+                    
+                </pre>
             </div>
 
             <h2>Test plans</h2>
@@ -109,6 +116,46 @@
             </div>
 
             <h2>Project</h2>
+
+                <h5><b>Concorrenza dei client</b></h5>
+                <p>
+                    Dal momento che ci sono più client concorrenti è stato necessario introdurre nel payload di alcuni messaggi l'id specifico del cliente a cui ci si riferisce.
+                    Ogni nuovo cliente viene aggiunto come una nuova regola prolog con un id e uno stato corrente, che all'inizio è sempre "waiting".
+                </p>
+                <pre>
+%% ------------------------------------------ 
+%% Clients State
+%% ------------------------------------------ 
+ 
+client(1,waiting).
+
+clientsIDs([]).
+                </pre>
+                <p>Per una visione più approfondita si rimanda a <a href="../../Workspace/Sprint3/it.unibo.trc19.sprint3.tearoom/tearoomkb.pl">tearoomkb.pl</a>.</p>
+
+                <h5><b>Gestione del tempo</b></h5>
+                <p>
+                    Dovendo misutare lo scorrere di una certa quantità di tempo è risultato utile introdurre un timer, si è pensato ad un attore: <bc>timersmanager</bc>.<br/>
+                    Il quale ricevuto un dispatch (<em>startTimer</em>) che ha come paylod quattro elementi 
+                    <ul>
+                        <li>L'attore a cui notificare lo scadere del tempo</li>
+                        <li>Il nome del messaggio che dovrà mandare allo scadere del tempo</li>
+                        <li>Payload del messaggio che dovrà mandare</li>
+                        <li>Il tempo che deve trascorrere prima dell'invio del messaggio</li>
+                    </ul>
+                    lancia una coroutine che una volta scaduto il tempo manderà il messaggio all'attore richiesto.
+                    In questo modo si possono gestire facilmente più scadenze temporali contemporaneamente, senza che serva un attore-timer per ogni timer.
+
+                    <center><img src="img/interazione_timersmanager.png" alt="sprintretrospective.png" width="50%" height="52%" /></center></br>
+                </p>
+
+                <h5><b>Simulazione di più clienti</b></h5>
+                <p>
+                    È stato introdotto un unico attore (<bc>clientsmanager</bc>) che riceve (e risponde a) tutti gli eventi e messaggi destinati ai clienti, aggiornando di volta in volta lo stato relativo allo specifico cliente nella base di conoscenza, impersonificandolo nelle eventuali risposte.
+                </p>
+
+                <br/>
+                <p>Per una visione più approfondita si rimanda a <a href="../../Workspace/Sprint3/it.unibo.trc19.sprint3.tearoom/src/tearoom.qak">tearoom.qak</a>.</p>
             <div>
                 
             </div>
