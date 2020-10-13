@@ -28,7 +28,7 @@ function updateRinunce(data) {
 }
 
 /*
- * Questa funzione Ã¨ un adapter per mostrare il numero totale di tavoli liberi
+ * Questa funzione ÃƒÂ¨ un adapter per mostrare il numero totale di tavoli liberi
  */
 function adapterTavoliLiberi(table1, table2) {
     var tavoliLiberi = 0;
@@ -69,6 +69,7 @@ function updateMap(cols, rows, direction) {
  * id="collectingPayment"
  * id="sanitizing"
  * id="returnHome"
+ * id="movingAround"
  */
 function updateStatus(stato) {
     var table = document.getElementById("stati");
@@ -129,16 +130,16 @@ function updateBarmanStatus(stato) {
  * Questa funzione serve per il pannello di controllo di un singolo cliente
  * clientNumber = numero intero che identifica il client
  */
-//[ { "id" : "1", "state" : "stato1"},  { "id" : "2", "state" : "stato2"} ]
+//[ { "id" : "1", "currentState" : "stato1", "nextState" : "state2", "lock" : "true"},  { "id" : "2", "currentState" : "stato3", "nextState" : "state4", "lock" : "true"} ]
 function addAClient(item) {
     var clientNumber = item.id;
     var clientName = "clientState"+clientNumber;
     var clientButton = "clientButton" + clientNumber;
     var disabled = ""
-    if(item.state == "waiting"){
+    if(item.currentState == "waiting"){
     	disabled = "disabled"
     }
-    var generated = "<tr class=\"w3-round-small;\"><td style='text-align:center;vertical-align:middle'>Client "+clientNumber+":</td><td id=\""+clientName+"\" style='text-align:center;vertical-align:middle' >"+item.state+"</td><td style='text-align:center;vertical-align:middle'><button class=\"w3-button w3-blue-gray w3-round-small\" onclick=\"emitClientChange(\'"+clientNumber+"\')\"id=\""+clientButton+"\" type=\"submit\" "+disabled+">Next State</button></td></tr>";
+    var generated = "<tr class=\"w3-round-small;\"><td style='text-align:center;vertical-align:middle'>Client "+clientNumber+":</td><td id=\""+clientName+"\" style='text-align:center;vertical-align:middle' >"+item.currentState+"</td><td style='text-align:center;vertical-align:middle'><button class=\"w3-button w3-blue-gray w3-round-small\" onclick=\"emitClientChange(\'"+clientNumber+"\')\"id=\""+clientButton+"\" type=\"submit\" "+disabled+">Next State</button></td></tr>";
     document.getElementById("statiClienti").innerHTML += generated;
     if (item == "gone") {
         document.getElementById(clientButton).disabled = true;
@@ -197,7 +198,8 @@ function updateClientsStatus(clientsStatus) {
     "clientsInTheRoom":"f",
     "teatable2State":"c",
     "teatable1State":"b",
-    "clientsState" : [ { "id" : "1", "state" : "stato1"},  { "id" : "2", "state" : "stato1"} ] 
+    "withdraws" : "w",
+    "clientsState" : [ { "id" : "1", "currentState" : "stato1", "nextState" : "state2", "lock" : "true"},  { "id" : "2", "currentState" : "stato1", "nextState" : "state2", "lock" : "true"} ] 
 }
 */
 function updateDashboard(message) {
