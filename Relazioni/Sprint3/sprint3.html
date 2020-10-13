@@ -102,9 +102,10 @@ QActor timersmanager context ctxtearoom {
     }Goto waitingRequests
 
 }                   </pre>
+Nel caso in cui il <em>maxstaytime</em> sia scaduto, se il cliente ha consumato l'ordine dovrà saldare il conto prima di uscire, in caso contrario uscirà direttamente.
                 <h5><b>Simulazione di più clienti</b></h5>
                 Anche se non è previsto nei requisiti, è necessario poter simulare più <bc>client</bc> per fornire una demo al committente. Pertanto sarà necessario modificare il <bc>clientsimulator</bc>.
-                <h5><b>Concorrenza dei client</b></h5>
+                <h5><b>View del manager</b></h5>
                 In sede di sprint retrospective dello sprint 2 nel realizzare un'interfaccia per fornire una demo del sistema si è raggiunto un livello già da ritenersi sufficiente per il committente.
             </div>
 
@@ -141,7 +142,7 @@ QActor timersmanager context ctxtearoom {
  
 client(1,waiting).
 
-clientsIDs([]).
+clientsIDs([1]).
                 </pre>
                 <p>Per una visione più approfondita si rimanda a <a href="../../Workspace/Sprint3/it.unibo.trc19.sprint3.tearoom/tearoomkb.pl">tearoomkb.pl</a>.</p>
 
