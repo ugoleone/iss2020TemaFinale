@@ -196,9 +196,11 @@ h1, h2, h3, h4, h5, h6 {
                 <tr>
                   <td id="cell03"></td>
                   <td id="cell13"></td>
-                  <td id="cell23" class="w3-pale-red"></td>
+                  <td id="cell23" class="w3-pale-red" style="padding: 0;">
+                    <!-- <object data="clean.svg" type="image/svg+xml" style="margin-top: 5px; margin-bottom: -2px; height: 99%;"></object>-->
+                  </td>
                   <td id="cell33"></td>
-                  <td id="cell43" class="w3-pale-red"></td>
+                  <td id="cell43" class="w3-pale-red" style="padding: 0;"></td>
                   <td id="cell53"></td>
                   <td id="cell63"></td>
                 </tr>
@@ -228,7 +230,16 @@ h1, h2, h3, h4, h5, h6 {
             </div>
 
             <div id="Webcam" class="w3-container tabView" style="display:none">
-              <p>Ciao sono la webcam</p>
+              <img src=""  id="img_src" alt=""  style="border-spacing: 0; width: 100%; height: 250px; border: none;">
+				
+              <script type="text/javascript">
+                var url = "192.168.1.111:8080" //RASPI IP
+                  var len = url.length;
+                  var n   = url.indexOf(":");
+                  var j   = url.substring(n+1,len); 
+                var ip = "http://" + url + "/?action=stream";
+                  document.getElementById("img_src").src = ip;	
+              </script>
             </div>
 
             </br>
@@ -318,13 +329,13 @@ h1, h2, h3, h4, h5, h6 {
 
           <div class="w3-half">
           <div class="w3-center" id="addClientButtonInternal">
-                <button class="w3-button w3-blue-gray w3-round-small w3-center" /*style="margin-top: 20px;"*/ onclick="newClient()">
+                <button class="w3-button w3-blue-gray w3-round-small w3-center" style="margin-top: 20px;" onclick="newClient()">
                   <i class="fa fa-plus w3-center w3-large"></i> Add A New Client</button>
               </div>
             <div  style="height: 220px; overflow: scroll" id="divStatiClienti">
             	
               <table class="w3-table /*w3-striped*/ w3-white w3-round-small w3-bordered" id="statiClienti">
-
+                
                 <tr class="w3-round-small;">
                   
                   <td style="text-align: center;">There are no clients yet</td>
@@ -402,6 +413,18 @@ h1, h2, h3, h4, h5, h6 {
       <header class="w3-container" style="padding-top:22px">
         <h4><b>Real robot</b></h4>
       </header>
+      <div>
+        <img src=""  id="img_src2" alt=""  style="border-spacing: 0; width: 100%; height: 600px; border: none;">
+      
+        <script type="text/javascript">
+          var url = "192.168.1.111:8080" //RASPI IP
+            var len = url.length;
+            var n   = url.indexOf(":");
+            var j   = url.substring(n+1,len); 
+          var ip = "http://" + url + "/?action=stream";
+            document.getElementById("img_src2").src = ip;	
+        </script>
+		  </div>
     </div>
     <!-- FINE REAL ROBOT -->
 

@@ -28,7 +28,7 @@ function updateRinunce(data) {
 }
 
 /*
- * Questa funzione Ã¨ un adapter per mostrare il numero totale di tavoli liberi
+ * Questa funzione implementa un adapter per mostrare il numero totale di tavoli liberi
  */
 function adapterTavoliLiberi(table1, table2) {
     var tavoliLiberi = 0;
@@ -130,19 +130,20 @@ function updateBarmanStatus(stato) {
  * Questa funzione serve per il pannello di controllo di un singolo cliente
  * clientNumber = numero intero che identifica il client
  */
-//[ { "id" : "1", "currentState" : "stato1", "nextState" : "state2", "lock" : "true"},  { "id" : "2", "currentState" : "stato3", "nextState" : "state4", "lock" : "true"} ]
+//[ { "id" : "1", "currentState" : "stato1", "nextState" : "state2", "lock" : "true"},  { "id" : "2", "currentState" : "stato1", "nextState" : "state2", "lock" : "true"} ]
 function addAClient(item) {
     var clientNumber = item.id;
     var clientName = "clientState"+clientNumber;
-    var clientButton = "clientButton" + clientNumber;
+    var clientButtonID = "clientButton" + clientNumber;
+    var clientButtonText = "<i class=\"fa fa-arrow-right w3-center w3-large\"></i>&nbsp; &nbsp;" + item.nextState;
     var disabled = ""
     if(item.currentState == "waiting"){
     	disabled = "disabled"
     }
-    var generated = "<tr class=\"w3-round-small;\"><td style='text-align:center;vertical-align:middle'>Client "+clientNumber+":</td><td id=\""+clientName+"\" style='text-align:center;vertical-align:middle' >"+item.currentState+"</td><td style='text-align:center;vertical-align:middle'><button class=\"w3-button w3-blue-gray w3-round-small\" onclick=\"emitClientChange(\'"+clientNumber+"\')\"id=\""+clientButton+"\" type=\"submit\" "+disabled+">Next State</button></td></tr>";
+    var generated = "<tr class=\"w3-round-small;\"><td style='text-align:center;vertical-align:middle'>Client "+clientNumber+":</td><td id=\""+clientName+"\" style='text-align:center;vertical-align:middle' >"+item.currentState+"</td><td style='text-align:center;vertical-align:middle'><button class=\"w3-button w3-blue-gray w3-round-small\" onclick=\"emitClientChange(\'"+clientNumber+"\')\"id=\""+clientButtonID+"\" type=\"submit\" "+disabled+">"+clientButtonText+"</button></td></tr>";
     document.getElementById("statiClienti").innerHTML += generated;
-    if (item == "gone") {
-        document.getElementById(clientButton).disabled = true;
+    if (item.lock == "true") {
+        document.getElementById(clientButtonID).disabled = true;
     }
 }
 /*
@@ -184,6 +185,18 @@ function updateClientsStatus(clientsStatus) {
  */
 
 
+function updateClientsInTable(teatable1ClientID, teatable2ClientID){
+    if(teatable1ClientID != "-1") {
+        var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\" style=\"margin-top: 10px; margin-bottom: -2px; height: 120%;\"></i>&nbsp;"+teatable1ClientID;
+        document.getElementById("cell23").innerHTML = generated; 
+    }
+    if(teatable2ClientID != "-1") {
+        var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\"></i>&nbsp;"+teatable2ClientID;
+        document.getElementById("cell43").innerHTML = generated; 
+    }
+}
+
+
 
 
 /*
@@ -217,7 +230,7 @@ function updateDashboard(message) {
     updateBarmanStatus(message.serviceDeskState);
     updateOrders(message.orders)
     updateClientsStatus(message.clientsState);
-    
+    updateClientsInTable(message.teatable1ClientID, message.teatable2ClientID)
 }
 
 
