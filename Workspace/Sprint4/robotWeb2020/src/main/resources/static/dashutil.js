@@ -198,6 +198,8 @@ function updateClientsStatus(clientsStatus) {
     "clientsInTheRoom":"f",
     "teatable2State":"c",
     "teatable1State":"b",
+    "teatable1ClientID": "id1", -> -1 = no client
+    "teatable2ClientID": "id2", -> -1 = no client
     "withdraws" : "w",
     "clientsState" : [ { "id" : "1", "currentState" : "stato1", "nextState" : "state2", "lock" : "true"},  { "id" : "2", "currentState" : "stato1", "nextState" : "state2", "lock" : "true"} ] 
 }
