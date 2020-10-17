@@ -257,17 +257,24 @@ QActor resourcemodel context ctxtearoom{
 		}
 		onMsg(ready : ready(ID)){
 			[# ID = payloadArg(0)#]
-			println("[RESOURCE MODEL] Order is ready for client $ID")
-			solve(replaceRule(servicedesk(_),servicedesk(ready($ID))))
-			solve(deleteOrder($ID,_))
-			solve(teatableClientID(TeatableNumber,$ID))
-			[# TeatableNumber = getCurSol("TeatableNumber").toString() #]
-			if [#busy#] {
-				solve(addTask(collectingDrink,$TeatableNumber))
+			solve(client($ID,_))
+			ifSolved {
+				println("[RESOURCE MODEL] Order is ready for client $ID")
+				solve(replaceRule(servicedesk(_),servicedesk(ready($ID))))
+				solve(deleteOrder($ID,_))
+				solve(teatableClientID(TeatableNumber,$ID))
+				[# TeatableNumber = getCurSol("TeatableNumber").toString() #]
+				if [#busy#] {
+					solve(addTask(collectingDrink,$TeatableNumber))
+				} else {
+					[# busy = true #]
+					solve(replaceRule(waiter(_),waiter(collectingDrink)))
+					emit waiterTaskChangedEvent : waiterTaskChangedEvent(collectingDrink,$TeatableNumber)
+				}
 			} else {
-				[# busy = true #]
-				solve(replaceRule(waiter(_),waiter(collectingDrink)))
-				emit waiterTaskChangedEvent : waiterTaskChangedEvent(collectingDrink,$TeatableNumber)
+				println("[RESOURCE MODEL] Order is ready for client $ID but is gone")
+				solve(replaceRule(servicedesk(_),servicedesk(idle)))
+				solve(deleteOrder($ID,_))
 			}
 		}
 		onMsg(waiterCurrentPositionDirection : waiterCurrentPositionDirection(X,Y,D)) {
