@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<link rel="stylesheet" type="text/css" href="../HTMLResources/css/main.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<!-- <script type="text/javascript" src="../css/issStyle.js"></script> -->
+
+
+<head>
+
+    <title>Sprint 4 </title>
+</head>
+
+<body>
+    <div class="content">
+        <div id="top">
+            <h1>LABORATORIO DI SISTEMI SOFTWARE <font size="5"></font>
+            </h1>
+        </div>
+        <div class="body">
+            <h2>Requirements</h2>
+            Questo sprint si occupa del deployment dei <bc>DDR</bc> fisici e della possibilità da parte del <bc>waiter</bc> di interrompere un task in favore di un altro.
+            In particolare, i seguenti punti della <a href="../Requisiti/Requisiti.html">tabella dei requisiti</a>:
+            <table style="width:100%" border="1">
+            <tr><td><bc>NUMERO REQUISITO</bc></td><td><bc>ELEMENTO REQUISITO</bc></td><td><bc>DESCRIZIONE REQUISITO</bc></td><td><bc>TAG REQUISITO</bc></td></tr>    
+
+                <tr><td>31</td><td>SISTEMA</td> 
+                    <td>
+                        E' richiesto il deployment della tearoom su <bc>DDR</bc> robot, oltre che su robot virtuale.
+                    <td></td>
+                </tr>
+                </table>
+
+            <h3>Requisiti emersi dal confronto col cliente</h3>
+            <table style="width:100%" border="1">
+
+                <tr><td><bc>NUMERO REQUISITO</bc></td><td><bc>ELEMENTO REQUISITO</bc></td><td><bc>DESCRIZIONE REQUISITO</bc></td><td><bc>TAG REQUISITO</bc></td></tr>    
+
+                <tr><td>32</td><td>WAITER</td> 
+                <td>
+                    Si richiede che il <bc>waiter</bc> possa interrompere un task in esecuzione a favore di un altro più urgente.
+                <td></td>
+                </tr>
+            </table>
+
+            <h2>Requirement analysis</h2>
+            <div>
+                <ul>
+                    <li>Per <bc>DDR</bc> robot si intende un robot dotato di due ruote motrici montate sullo stesso asse. Ogni ruota può essere azionata, in maniera indipendentemente, in avanti o indietro.</li>
+                    <li>Con interruzione di un task si intende la possibilità di sospendere un task attualmente in esecuzione per svolgerne un secondo, per poi successivamente riprendere quello interrotto.</li>
+                </ul>
+            </div>
+
+            <h2>Problem analysis</h2>
+            <div>
+                <h5><b>Interrompibilità dei task in esecuzione</b></h5>
+                Da questo nuovo requisito risulta necessario introdurre una nuova semantica di esecuzione dei task.
+                Nelle precedenti versioni infatti i task venivano eseguiti in maniera atomica mentre ora è richiesto di potersi fermare durante l'esecuzione, per eseguire
+                un'altra mansione, e riprendere in seguito quella bloccata.
+            </div>
+
+            <h2>Test plans</h2>
+            <div>
+                Risulta necessario verificare che il robot abbandoni il task corrente nel momento in cui riceve la richiesta di svolgere un
+                task più urgente, verificandone la transizione di stato.
+            </div>
+
+            <h2>Project</h2>
+            <div>
+                Gli unici task interrompibili scelti sono:
+                <ul>
+                    <li>La pulizia del tavolo (<em>sanitizing</em>), in quanto risulta di maggiore urgenza servire il cliente.</li>
+                    <li>Il ritorno alla home (<em>returnHome</em>), in quanto non è un task relativo al servizio del cliente ma una semplice azione di spostamento.</li>
+                </ul>
+                
+                <h5><b>Pulizia del tavolo</b></h5>
+                <h6 class="w3-center"><b>Timersmanager</b></h6>
+                E' stato riutilizzato il <bc>timersmanager</bc> implementato nello sprint precedente introducendo la possibilità di 
+                annullare un conteggio attivo. Per fare ciò si è assegnato ad ogni timer un <b>identificativo</b> univoco, che consente di poter
+                identificare ed eventualmente cancellare la Coroutine corrispondente a uno specifico timer.
+                <h6 class="w3-center"><b>Base di conoscenza</b></h6>
+                E' stata modificata la base di conoscenza relativa ai table aggiungendo per ognuno il tempo rimanente di pulizia (<em>remainingTime</em>).
+                <h6 class="w3-center"><b>Waiter</b></h6>
+                Quando il waiter arriva al tavolo per sanificarlo, fa partire un timer con il tempo rimanente di pulizia e salva l'identificativo (ID). 
+                Successivamente si possono verificare 2 situazioni distinte:
+                <ul>
+                    <li>Se il timer conclude il conteggio del tempo della pulizia del tavolo, il <bc>waiter</bc> notificherà la fine della pulizia al <bc>resourcemodel</bc>.</li>
+                    <li>Se il <bc>waiter</bc> riceve un nuovo task da eseguire:
+                        <ol>
+                            <li>Interrompe la pulizia, cancellando il timer avente identificativo ID (cancelTimer(ID) a <bc>timersmanager</bc>).</li>
+                            <li>Notifica al <bc>resourcemodel</bc> comunicando il tempo rimanente per il completamento della pulizia del tavolo. (cleaningInterrupted(remainingTime) a <bc>resourcemodel</bc>).</li>
+                            <li>Esegue il nuovo task.</li>
+                        </ol>
+                    </li>
+                </ul>
+
+                <h5><b>Ritorno alla home</b></h5>
+                <h6 class="w3-center"><b>Waiter</b></h6>
+                Quando il waiter riceve come nuovo task il <em>returnHome</em>, va in uno stato che è in grado di gestire 2 diverse
+                situazioni:
+                <ul>
+                    <li>L'effettivo raggiungimento della home (notificatogli dal <bc>planner</bc>), in questo caso il <bc>waiter</bc> notifica al <bc>resourcemodel</bc> di aver concluso i task.</li>
+                    <li>La ricezione di un nuovo task da eseguire, che comporta:
+                        <ol>
+                            <li>Interruzione del movimento verso la home, inviando al <bc>planner</bc> un messaggio stopTask().</li>
+                            <li>L'esecuzione del nuovo task.</li>
+                        </ol>
+                    </li>
+                </ul>
+                <h6 class="w3-center"><b>Planner</b></h6>
+                E' stato modificato per recepire il messaggio di stopTask e per annullare le mosse pianificate nel caso di ricezione di esso.
+            </div>
+
+
+            <br /><br />
+
+        </div>
+
+        <!-- TEAM -->
+        <div class="w3-container w3-padding-64 w3-center" id="team">
+            <h2>Our Team</h2>
+
+            <div class="w3-row"><br>
+
+                <div class="w3-third">
+                    <img src="../HTMLResources/img/ugo3.jpg" style="width:45%" class="w3-circle">
+                    <h3>Ugo Leone Cavalcanti</h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:ugoleone.cavalcanti@studio.unibo.it">ugoleone.cavalcanti@studio.unibo.it</a>
+                    </p>
+                </div>
+
+                <div class="w3-third">
+                    <img src="../HTMLResources/img/amir.jpg" style="width:45%" class="w3-circle">
+                    <h3>Amir Al Sadi</h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:amir.alsadi@studio.unibo.it">amir.alsadi@studio.unibo.it</a></p>
+                </div>
+
+                <div class="w3-third">
+                    <img src="../HTMLResources/img/nik2.jpeg" style="width:45%" class="w3-circle">
+                    <h3>Nicolò Romandini</h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:nicolo.romandini@studio.unibo.it">nicolo.romandini@studio.unibo.it</a></p>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
