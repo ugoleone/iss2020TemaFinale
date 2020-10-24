@@ -13,9 +13,10 @@ object formatterUtil {
 			while(i < clientsStateArray.size) {
 				var temp = JSONObject()
 				temp.put("id", clientsStateArray[i])
-				temp.put("state", clientsStateArray[i+1])
+				temp.put("currentState", clientsStateArray[i+1])
 				temp.put("nextState", clientsStateArray[i+2])
-				i = i + 3
+				temp.put("lock", clientsStateArray[i+3])
+				i = i + 4
 				clientsStateJSONArray.put(temp)
 			}
 		}
@@ -38,9 +39,17 @@ object formatterUtil {
 		return ordersJSONArray
 	}
 	
+	fun formatTableState(tableState : String) : JSONObject{
+		var tableStateJSON = JSONObject()
+		val tableStateArray = tableState.replace("[","").replace("]","").split(",")
+		tableStateJSON.put("state", tableStateArray[0])
+		tableStateJSON.put("remainingTime", tableStateArray[1])
+		tableStateJSON.put("seatedClient", tableStateArray[2])
+		return tableStateJSON
+	}
+	
 	@JvmStatic fun formatJson( robotState : String, xRobot : String, yRobot: String, direction: String,
 							   teatable1State : String, teatable2State : String,
-							   teatable1ClientID : String, teatable2ClientID: String,
 							   serviceDeskState : String, orders : String,
 							   clientsState: String,
 							   teaServed : String,
@@ -52,10 +61,8 @@ object formatterUtil {
 		jo.put("xRobot", xRobot)
 		jo.put("yRobot", yRobot)
 		jo.put("direction", direction)
-		jo.put("teatable1State", teatable1State)
-		jo.put("teatable2State", teatable2State)
-		jo.put("teatable1ClientID", teatable1ClientID)
-		jo.put("teatable2ClientID", teatable2ClientID)
+		jo.put("teatable1State", formatTableState(teatable1State))
+		jo.put("teatable2State", formatTableState(teatable2State))
 		jo.put("serviceDeskState", serviceDeskState)
 		jo.put("orders", formatOrders(orders))
 		jo.put("clientsState", formatStates(clientsState))

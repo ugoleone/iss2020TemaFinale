@@ -16,6 +16,7 @@ class Timersmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		 var timersDict =  mutableMapOf<String, kotlinx.coroutines.Job>()  
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -25,24 +26,34 @@ class Timersmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 				}	 
 				state("waitingRequests") { //this:State
 					action { //it:State
-						println("[TIMER] Waiting for new requests")
+						println("[TIMERS MANAGER] Waiting for new requests")
 					}
-					 transition(edgeName="t043",targetState="timer",cond=whenDispatch("startTimer"))
+					 transition(edgeName="t052",targetState="timer",cond=whenDispatch("startTimer"))
+					transition(edgeName="t053",targetState="timer",cond=whenDispatch("cancelTimer"))
 				}	 
 				state("timer") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("startTimer(A,M,P,T)"), Term.createTerm("startTimer(A,M,P,T)"), 
+						if( checkMsgContent( Term.createTerm("startTimer(ID,A,M,P,T)"), Term.createTerm("startTimer(ID,A,M,P,T)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								
-												var Actor = payloadArg(0)
-												var Message = payloadArg(1)
-												var Payload = payloadArg(2)
-												var Time = payloadArg(3).toLong()
-												
-												scope.launch {
+												var ID = payloadArg(0)
+												var Actor = payloadArg(1)
+												var Message = payloadArg(2)
+												var Payload = payloadArg(3)
+												var Time = payloadArg(4).toLong()
+												if(ID == "0") {
+													ID = Math.random().toString()
+												}
+												timersDict.put(ID, scope.launch {
 													delay(Time)
 													forward("$Message", "$Message($Payload)" ,"$Actor" )		
-												}
+												})
+						}
+						if( checkMsgContent( Term.createTerm("cancelTimer(ID)"), Term.createTerm("cancelTimer(ID)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								
+												var ID = payloadArg(0) 
+												timersDict.get(ID)?.cancel() 
 						}
 					}
 					 transition( edgeName="goto",targetState="waitingRequests", cond=doswitch() )

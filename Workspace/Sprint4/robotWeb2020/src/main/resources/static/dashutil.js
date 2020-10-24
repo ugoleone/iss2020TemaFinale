@@ -28,15 +28,16 @@ function updateRinunce(data) {
 }
 
 /*
- * Questa funzione implementa un adapter per mostrare il numero totale di tavoli liberi
+ * Aggiorno informazioni sui tavoli
  */
-function adapterTavoliLiberi(table1, table2) {
+function updateTablesState(table1, table2) {
     var tavoliLiberi = 0;
-    if (table1 == "available")
+    if (table1.state == "available")
         tavoliLiberi += 1;
-    if (table2 == "available")
+    if (table2.state == "available")
         tavoliLiberi += 1;
     updateTavoliLiberi(tavoliLiberi);
+    updateClientsInTable(table1.seatedClient, table2.seatedClient)
 }
 
 /*
@@ -191,7 +192,7 @@ function updateClientsInTable(teatable1ClientID, teatable2ClientID){
         document.getElementById("cell23").innerHTML = generated; 
     }
     if(teatable2ClientID != "-1") {
-        var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\"></i>&nbsp;"+teatable2ClientID;
+        var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\" style=\"margin-top: 10px; margin-bottom: -2px; height: 120%;\"></i>&nbsp;"+teatable2ClientID;
         document.getElementById("cell43").innerHTML = generated; 
     }
 }
@@ -209,10 +210,8 @@ function updateClientsInTable(teatable1ClientID, teatable2ClientID){
     "direction" : "g",
     "totalNumberOfClients":"e",
     "clientsInTheRoom":"f",
-    "teatable2State":"c",
-    "teatable1State":"b",
-    "teatable1ClientID": "id1", -> -1 = no client
-    "teatable2ClientID": "id2", -> -1 = no client
+    "teatable2State":{"state":"c", "remainingTime": "0", "seatedClient":"1"},
+    "teatable1State":{"state":"c", "remainingTime": "0", "seatedClient":"1"},
     "withdraws" : "w",
     "clientsState" : [ { "id" : "1", "currentState" : "stato1", "nextState" : "state2", "lock" : "true"},  { "id" : "2", "currentState" : "stato1", "nextState" : "state2", "lock" : "true"} ] 
 }
@@ -223,14 +222,14 @@ function updateDashboard(message) {
     updateStatus(message.robotState);
     updateClientiTotali(message.totalNumberOfClients);
     updateClientiInSala(message.clientsInTheRoom);
-    adapterTavoliLiberi(message.teatable1State, message.teatable2State);
     updateTheServiti(message.teaServed);
     updateRinunce(message.withdraws)
     updateMap(message.yRobot, message.xRobot, message.direction);
     updateBarmanStatus(message.serviceDeskState);
     updateOrders(message.orders)
     updateClientsStatus(message.clientsState);
-    updateClientsInTable(message.teatable1ClientID, message.teatable2ClientID)
+    //updateClientsInTable(message.teatable1ClientID, message.teatable2ClientID)
+    updateTablesState(message.teatable1State, message.teatable2State);
 }
 
 

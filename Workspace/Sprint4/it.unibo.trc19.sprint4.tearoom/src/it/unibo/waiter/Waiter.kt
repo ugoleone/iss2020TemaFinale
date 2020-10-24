@@ -21,6 +21,11 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				var TeatableNumber = ""
 				var Teatable = ""
 				var Misc = ""
+				var StartCleaning = 0L
+				var CleaningTime = 0L
+				var RemainingTime = 0L
+				var ActiveTimer = 0L
+				var ReturningHome = false
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -33,20 +38,39 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("[WAITER] Waiting for a request!")
 					}
-					 transition(edgeName="t012",targetState="handleChange",cond=whenEvent("waiterTaskChangedEvent"))
-					transition(edgeName="t013",targetState="movementHelper",cond=whenDispatch("moveTo"))
+					 transition(edgeName="t013",targetState="handleChange",cond=whenEvent("waiterTaskChangedEvent"))
+					transition(edgeName="t014",targetState="movementHelper",cond=whenDispatch("moveTo"))
+					transition(edgeName="t015",targetState="returnHomeState",cond=whenDispatch("returnHome"))
 				}	 
 				state("handleChange") { //this:State
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("waiterTaskChangedEvent(X,T)"), Term.createTerm("waiterTaskChangedEvent(T,X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
+								if(  ReturningHome  
+								 ){forward("stopTask", "stopTask(0)" ,"planner" ) 
+								}
+								 ReturningHome = false  
+								
+											CleaningTime = System.currentTimeMillis() - StartCleaning
+											if(CleaningTime < RemainingTime){
+												//non ho finito di pulire il tavolo
+												RemainingTime = RemainingTime - CleaningTime
+								forward("cancelTimer", "cancelTimer($ActiveTimer)" ,"timersmanager" ) 
+								forward("cleaningInterrupted", "cleaningInterrupted($RemainingTime,$TeatableNumber)" ,"resourcemodel" ) 
+								
+											}
 								 
-								 				WhatImDoing = payloadArg(0)
-								 				Misc = payloadArg(1)
-								 				if(Misc == "1" || Misc == "2") {
-								 					TeatableNumber = Misc
-								 					Teatable = "teatable" + TeatableNumber
-								 				}
+											WhatImDoing = payloadArg(0)
+											Misc = payloadArg(1)
+											if(Misc == "1" || Misc == "2") {
+												TeatableNumber = Misc
+												Teatable = "teatable" + TeatableNumber
+											}
+											if(WhatImDoing == "sanitizing") {
+												TeatableNumber = Misc.split('s')[1]
+												Teatable = "teatable" + TeatableNumber
+												RemainingTime = Misc.split('s')[2].toLong()
+											}
 								println("[WAITER] New task: $WhatImDoing")
 								
 											when(WhatImDoing) {
@@ -72,7 +96,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								forward("moveTo", "moveTo(exitdoor)" ,"waiter" ) 
 								}
 												"returnHome" -> { 
-								forward("moveTo", "moveTo(home)" ,"waiter" ) 
+								forward("returnHome", "returnHome(home)" ,"waiter" ) 
 								}	
 												"sanitizing" -> { 
 								forward("moveTo", "moveTo($Teatable)" ,"waiter" ) 
@@ -125,7 +149,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("[WAITER] Collecting the money!")
 					}
-					 transition(edgeName="t014",targetState="handlePayment",cond=whenDispatch("payment"))
+					 transition(edgeName="t016",targetState="handlePayment",cond=whenDispatch("payment"))
 				}	 
 				state("handlePayment") { //this:State
 					action { //it:State
@@ -143,11 +167,44 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								TeatableNumber = payloadArg(0) 
 								println("[WAITER] Cleaning $Teatable!")
-								delay(5000) 
-								forward("taskDone", "taskDone($WhatImDoing,$TeatableNumber)" ,"resourcemodel" ) 
+								
+												StartCleaning = System.currentTimeMillis()
+												ActiveTimer = StartCleaning
+								forward("startTimer", "startTimer($StartCleaning,waiter,alarm,$TeatableNumber,$RemainingTime)" ,"timersmanager" ) 
+						}
+					}
+					 transition(edgeName="t017",targetState="endCleaning",cond=whenDispatch("alarm"))
+					transition(edgeName="t018",targetState="handleChange",cond=whenEvent("waiterTaskChangedEvent"))
+				}	 
+				state("endCleaning") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("alarm(ID)"), Term.createTerm("alarm(P)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								TeatableNumber = payloadArg(0) 
+								forward("taskDone", "taskDone(sanitizing,$TeatableNumber)" ,"resourcemodel" ) 
 						}
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
+				}	 
+				state("returnHomeState") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("returnHome(X)"), Term.createTerm("returnHome(L)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								val Location = payloadArg(0) 
+								request("askWhere", "askWhere($Location)" ,"resourcemodel" )  
+						}
+						if( checkMsgContent( Term.createTerm("location(X,Y)"), Term.createTerm("location(X,Y)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 
+												val XT = payloadArg(0)
+											   	val YT = payloadArg(1)			  
+								request("movetoCell", "movetoCell($XT,$YT)" ,"planner" )  
+								 ReturningHome = true  
+						}
+					}
+					 transition(edgeName="t119",targetState="handleChange",cond=whenEvent("waiterTaskChangedEvent"))
+					transition(edgeName="t120",targetState="returnHomeState",cond=whenReply("location"))
+					transition(edgeName="t121",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("movementHelper") { //this:State
 					action { //it:State
@@ -164,8 +221,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								request("movetoCell", "movetoCell($XT,$YT)" ,"planner" )  
 						}
 					}
-					 transition(edgeName="t115",targetState="movementHelper",cond=whenReply("location"))
-					transition(edgeName="t116",targetState="handleAtCell",cond=whenReply("atcell"))
+					 transition(edgeName="t122",targetState="movementHelper",cond=whenReply("location"))
+					transition(edgeName="t123",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 				state("handleAtCell") { //this:State
 					action { //it:State
@@ -174,6 +231,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								 when(WhatImDoing) {
 												"convoyTable" -> {
 								forward("unlockClient", "unlockClient($TeatableNumber)" ,"resourcemodel" ) 
+								forward("listenRequests", "listenRequests(1)" ,"waiter" ) 
+								forward("taskDone", "taskDone($WhatImDoing,$TeatableNumber)" ,"resourcemodel" ) 
 								 } 
 												"takingOrder" ->  {
 								forward("unlockClient", "unlockClient($TeatableNumber)" ,"resourcemodel" ) 
@@ -191,6 +250,11 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								forward("listenRequests", "listenRequests(1)" ,"waiter" ) 
 								forward("taskDone", "taskDone($WhatImDoing,$TeatableNumber)" ,"resourcemodel" ) 
 								}
+												"returnHome" -> {
+												ReturningHome = false  
+								forward("listenRequests", "listenRequests(1)" ,"waiter" ) 
+								forward("taskDone", "taskDone($WhatImDoing,$Misc)" ,"resourcemodel" ) 
+								}
 												else -> {
 								forward("listenRequests", "listenRequests(1)" ,"waiter" ) 
 								forward("taskDone", "taskDone($WhatImDoing,$Misc)" ,"resourcemodel" ) 
@@ -198,12 +262,12 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 											} 
 						}
 					}
-					 transition(edgeName="t117",targetState="movementHelper",cond=whenDispatch("moveTo"))
-					transition(edgeName="t118",targetState="takingOrder",cond=whenDispatch("order"))
-					transition(edgeName="t119",targetState="servingDrinkToClient",cond=whenDispatch("takeDrink"))
-					transition(edgeName="t120",targetState="handlePayment",cond=whenDispatch("payment"))
-					transition(edgeName="t121",targetState="cleaningTable",cond=whenDispatch("cleanTable"))
-					transition(edgeName="t122",targetState="reqHandler",cond=whenDispatch("listenRequests"))
+					 transition(edgeName="t124",targetState="movementHelper",cond=whenDispatch("moveTo"))
+					transition(edgeName="t125",targetState="takingOrder",cond=whenDispatch("order"))
+					transition(edgeName="t126",targetState="servingDrinkToClient",cond=whenDispatch("takeDrink"))
+					transition(edgeName="t127",targetState="handlePayment",cond=whenDispatch("payment"))
+					transition(edgeName="t128",targetState="cleaningTable",cond=whenDispatch("cleanTable"))
+					transition(edgeName="t129",targetState="reqHandler",cond=whenDispatch("listenRequests"))
 				}	 
 			}
 		}

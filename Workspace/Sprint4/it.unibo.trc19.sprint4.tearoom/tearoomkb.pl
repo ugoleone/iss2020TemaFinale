@@ -17,15 +17,17 @@ pos( exitdoor,     6, 4 ).
 %% Current Waiter Position
 %% ------------------------------------------ 
 
+
 currentWaiterPosDir(0,0,downDir).
 
+updateWaiterPositionDirection(X,Y,D) :- replaceRule(currentWaiterPosDir(_,_,_),currentWaiterPosDir(X,Y,D)).
 
 %% ------------------------------------------ 
 %% Waiter
 %% ------------------------------------------ 
 %% athome
 %% reachEntranceDoor
-%% convoyTable
+%% convoy
 %% takingOrder
 %% collectingDrink
 %% bringingDrinkToClient
@@ -37,6 +39,8 @@ currentWaiterPosDir(0,0,downDir).
 %% returnHomeFromExit
 
 waiter( athome ).
+
+updateWaiterTask(T) :- replaceRule(waiter(_),waiter(T)).
 
 pendingTasks([]).
 addTask(T,P) :- pendingTasks(L), append(L,[[T,P]],R), replaceRule(pendingTasks(_),pendingTasks(R)).
@@ -53,17 +57,19 @@ getWaitingClient(ID) :- waitingClients([ID|L]), replaceRule(waitingClients(_), w
 %% dirty	(free and not clean)
 %% available (free and clean)	
 
-teatable( 1, available ).
-teatable( 2, available ).
+%% (teatable number, state, cleaning time, seated client)
+teatable( 1, available, 0, -1).
+teatable( 2, available, 0, -1).
 
-teatableClientID(1,-1).
-teatableClientID(2,-1).
+teatableClientID(1, -1).
+teatableClientID(2, -1).
 
-teatableClientID(CT1, CT2) :- teatableClientID(1,CT1), teatableClientID(2,CT2).
+stateOfTeatables([S1,RT1,CS1],[S2,RT2,CS2]) :- teatable(1,S1,RT1,CS1),teatable(2,S2,RT2,CS2).
+reserveTable(T,ID) :- replaceRule(teatableClientID(T,_),teatableClientID(T,ID)), replaceRule(teatable( T, _, RT, _), teatable( T, busy, RT, -1)).
 
-stateOfTeatables(T1,T2) :- teatable(1,T1),teatable(2,T2).
-assignTable(T,ID) :- replaceRule(teatableClientID(T,_),teatableClientID(T,ID)).
-
+seatClient(T, ID) :- replaceRule(teatable( T, S, _, _), teatable( T, S, 60000, ID)).
+freeTable(T) :- replaceRule(teatable( T, _, _, _), teatable( T, dirty, 60000, -1)).
+tableCleaned(T) :- replaceRule(teatable( T, _, _, _), teatable( T, available, 0, -1)).
 
 
 %% ------------------------------------------ 
@@ -78,7 +84,12 @@ nextState(waitingtea,drinking).
 nextState(drinking,paying).
 nextState(paying,exiting).
 nextState(exiting,gone).
+nextState(gone,none).
 
+updateClientState(ID, S, L) :- replaceRule(client(ID,_,_),client(ID,S,L)).
+
+unlockClient(ID) :- replaceRule(client(ID,S,_),client(ID,S,false)).
+loclClient(ID) :- replaceRule(client(ID,S,_),client(ID,S,true)).
 
 clientsIDs([]).
 addClient(X) :- clientsIDs(L),append(L,[X],R),replaceRule(clientsIDs(_),clientsIDs(R)),addRule(client(X,waiting,true)).
@@ -106,6 +117,8 @@ addOrder(ID,O) :- orders(L), append(L,[[ID,O]],R), replaceRule(orders(_),orders(
 deleteOrder(ID,O) :- orders(L), delete([ID,O],L,R), replaceRule(orders(_), orders(R)).
 servicedesk( idle ).
 
+updateBarmanState(S) :- replaceRule(serviceDesk(_),serviceDesk(S)).
+
  
 	 
 %% ------------------------------------------ 
@@ -126,7 +139,7 @@ withdraw :- withdraws(W), WS is W + 1, replaceRule(withdraws(_),withdraws(WS)).
 %% ------------------------------------------ 
 %% Room as a whole
 %% ------------------------------------------ 
-roomstate( waiter(S),currentWaiterPosDir(Y,X,D) , stateOfTeatables(T1,T2), teatableClientID(CT1, CT2), servicedesk(SD), orders(O), getClientsState(CS), teaServed(TS), totalNumberOfClients(NC), clientsInTheRoom(CR), withdraws(W)):- waiter(S),currentWaiterPosDir(Y,X,D) , stateOfTeatables(T1,T2), teatableClientID(CT1, CT2), servicedesk(SD), orders(O), getClientsState(CS), teaServed(TS), totalNumberOfClients(NC), clientsInTheRoom(CR), withdraws(W).
+roomstate( waiter(S),currentWaiterPosDir(Y,X,D) , stateOfTeatables(T1,T2), servicedesk(SD), orders(O), getClientsState(CS), teaServed(TS), totalNumberOfClients(NC), clientsInTheRoom(CR), withdraws(W)):- waiter(S),currentWaiterPosDir(Y,X,D) , stateOfTeatables(T1,T2), servicedesk(SD), orders(O), getClientsState(CS), teaServed(TS), totalNumberOfClients(NC), clientsInTheRoom(CR), withdraws(W).
 
 
 	 
