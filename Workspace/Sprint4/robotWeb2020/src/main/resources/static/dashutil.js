@@ -30,14 +30,77 @@ function updateRinunce(data) {
 /*
  * Aggiorno informazioni sui tavoli
  */
+/*
+ * "teatable2State":{"state":"c", "remainingTime": "0", "seatedClient":"1"},
+ * "teatable1State":{"state":"c", "remainingTime": "0", "seatedClient":"1"},
+ */   
 function updateTablesState(table1, table2) {
     var tavoliLiberi = 0;
-    if (table1.state == "available")
+    if (table1.state == "available") {
         tavoliLiberi += 1;
-    if (table2.state == "available")
+        document.getElementById("cell23").innerHTML = "";
+        document.getElementById("cell23").style.background = "rgb(225, 254, 255)"
+    }
+    if (table2.state == "available") {
         tavoliLiberi += 1;
+        document.getElementById("cell43").innerHTML = "";
+        document.getElementById("cell43").style.background = "rgb(225, 254, 255)"
+    }
     updateTavoliLiberi(tavoliLiberi);
-    updateClientsInTable(table1.seatedClient, table2.seatedClient)
+    updateClientsInTable(table1, table2)
+    updateTableCleaningState(table1, table2);
+    
+    if(table1.state == "busy" && table1.seatedClient != "-1") {
+        document.getElementById("cell23").style.background = "rgb(252, 222, 221)"
+    }
+    if(table2.state == "busy" && table2.seatedClient != "-1") {
+        document.getElementById("cell43").style.background = "rgb(252, 222, 221)"
+    }
+}
+
+/*
+ * Questa funzione disegna sulla mappa lo stato di pulizia dei tavoli
+ */
+function updateTableCleaningState(table1, table2) {
+    //Se il tavolo e' in fase di pulizia si aggiorna la mappa per informare il manager
+    if(table1.state == "dirty") {
+        var generated = "<img src=\"cleanIcon.png\" style=\"margin-top: 5px; margin-bottom: -2px; height: 30px;\"></img>";
+        var tempoResiduo = parseInt(table1.remainingTime/1000);
+        var percDone = Math.round(mapRange(0, 60, 0, 100, tempoResiduo));
+        var percUndone = percDone;
+        console.log(percDone)
+        console.log(percUndone)
+        document.getElementById("cell23").innerHTML = generated;
+        document.getElementById("cell23").style.background= "linear-gradient(to bottom, rgb(252, 222, 221) "+percDone+"%,  rgb(225, 254, 255) "+percUndone+"%)";
+    }
+    if(table2.state == "dirty") {
+        var generated = "<img src=\"cleanIcon.png\" style=\"margin-top: 5px; margin-bottom: -2px; height: 30px;\"></img>";
+        var tempoResiduo = parseInt(table2.remainingTime/1000);
+        var percDone = Math.round(mapRange(0, 60, 0, 100, tempoResiduo));
+        var percUndone = percDone;
+        console.log(percDone)
+        console.log(percUndone)
+        document.getElementById("cell43").innerHTML = generated;
+        document.getElementById("cell43").style.background= "linear-gradient(to bottom, rgb(252, 222, 221) "+percDone+"%,  rgb(225, 254, 255) "+percUndone+"%)";
+    }
+}
+
+function mapRange (in_min, in_max, out_min, out_max, input) {
+    return (input - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
+
+/*
+ * Questa funzione disegna sulla mappa un cliente ed il relativo id se si trova ad un tavolo
+ */
+function updateClientsInTable(teatable1, teatable2) {
+    if(teatable1.seatedClient != "-1" && teatable1.state == "busy") {
+        var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\" style=\"margin-top: 10px; margin-bottom: -2px; height: 120%;\"></i>&nbsp;"+teatable1.seatedClient;
+        document.getElementById("cell23").innerHTML = generated; 
+    }
+    if(teatable2.seatedClient != "-1" && teatable2.state == "busy") {
+        var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\" style=\"margin-top: 10px; margin-bottom: -2px; height: 120%;\"></i>&nbsp;"+teatable2.seatedClient;
+        document.getElementById("cell43").innerHTML = generated; 
+    }
 }
 
 /*
@@ -185,17 +248,6 @@ function updateClientsStatus(clientsStatus) {
  * </tr>
  */
 
-
-function updateClientsInTable(teatable1ClientID, teatable2ClientID){
-    if(teatable1ClientID != "-1") {
-        var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\" style=\"margin-top: 10px; margin-bottom: -2px; height: 120%;\"></i>&nbsp;"+teatable1ClientID;
-        document.getElementById("cell23").innerHTML = generated; 
-    }
-    if(teatable2ClientID != "-1") {
-        var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\" style=\"margin-top: 10px; margin-bottom: -2px; height: 120%;\"></i>&nbsp;"+teatable2ClientID;
-        document.getElementById("cell43").innerHTML = generated; 
-    }
-}
 
 
 
