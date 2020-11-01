@@ -58,9 +58,10 @@ h3 {
     margin-left: 5.5%!important;
 }
 h4 {
-    background-color: #99ffcc;
+    background-color: rgb(252, 222, 221);
     font-size: 100%;
     width: 750px;
+    padding: 5px;
 }
 #i {
     color: #ff1010;
