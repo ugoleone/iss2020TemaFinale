@@ -26,9 +26,9 @@ Il *manager* deve poter visualizzare lo stato corrente (*current state*) della *
 
 <img src="Relazioni/Sprint2/img/gui_final.png" alt="WEB_GUI" style="zoom: 37%;" />
 
-<img src="Relazioni/Sprint4/img/mbot1.png" alt="mbot" style="width: 45%;" />
+<img src="Relazioni/Sprint4/img/mbot1.png" alt="mbot" style="zoom: 45%;" />
 
-<img src="Relazioni/Sprint4/img/ubot2.jpeg" alt="ubot" style="width: 45%;" />
+<img src="Relazioni/Sprint4/img/ubot2.jpeg" alt="ubot" style="zoom: 45%;" />
 
 
 
