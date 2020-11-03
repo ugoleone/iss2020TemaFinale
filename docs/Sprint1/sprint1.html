@@ -1,0 +1,496 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<link rel="stylesheet" type="text/css" href="../HTMLResources/css/main.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<!-- <script type="text/javascript" src="../css/issStyle.js"></script> -->
+
+
+<head>
+
+    <title>Sprint 1</title>
+</head>
+
+<body>
+    <div class="content">
+        <div id="top">
+            <h1>SPRINT 1 <font size="5"></font>
+            </h1>
+        </div>
+        <div class="body">
+
+            <h2>Requirements</h2>
+
+            <div>
+                Il primo Sprint si occupa di modellare la tearoom nella condizione in cui vi è un solo cliente presente
+                che compie le azioni seguenti:
+                <ul>
+                    <li>
+                        Suonare lo <bc>smartbell</bc>
+                    </li>
+                    <li>
+                        Farsi misurare la febbre dallo <bc>smartbell</bc>
+                    </li>
+                    <li>
+                        Entrare nella sala (ci sarà il sempre il <bc>table</bc> libero)
+                    </li>
+                    <li>
+                        Sedersi al <bc>table</bc>
+                    </li>
+                    <li>
+                        Compiere un'ordinazione (chiamare il <bc>waiter</bc> e ordinare)
+                    </li>
+                    <li>
+                        Consumare il drink
+                    </li>
+                    <li>
+                        Pagare il servizio
+                    </li>
+                    <li>
+                        Lasciare la stanza
+                    </li>
+                </ul>
+                Si supponga che:
+                <ul>
+                    <li>
+                        Nella simulazione è presente un solo <bc>client</bc>
+                    </li>
+                    <li>
+                        Il waiter deve poter madare l'ordinazione al <bc>barman</bc> e portarla al <bc>client</bc> quando è pronta
+                    </li>
+                    <li>
+                        Non si tenga conto degli stati del <bc>table</bc> e della pulizia da parte del <bc>waiter</bc>
+                    </li>
+                    <li>
+                        Non si tenga conto del rispetto del <em>maxstaytime</em>
+                    </li>
+
+                    <li>
+                        Il <bc>client</bc> non compia azioni diverse da quelle elencate precedentemente
+                    </li>
+                </ul>
+            </div>
+
+
+
+            <h2>Requirement analysis</h2>
+            <div>
+                Di seguito sono riportati i requisiti trattati in questo sprint:</br></br>
+                <table style="width:100%" border="1">
+
+                    <tr><td><bc>NUMERO REQUISITO</bc></td><td><bc>ATTORE REQUISITO</bc></td><td><bc>DESCRIZIONE REQUISITO</bc></td><td><bc>TAG REQUISITO</bc></td></tr>    
+                    
+                    
+                    <tr><td>0</td><td>WAITER</td> 
+                    <td>
+                    L'entità <bc>waiter</bc> deve poter essere in grado di muoversi autonomamente tra i punti <em>home</em>, <em>servicedesk</em>, <em>table1</em>, <em>table2</em>, <em>entrancedoor</em>, <em>exitdoor</em>
+                    </td>
+                    <td></td>
+                    </tr>  
+                    
+                    <tr><td>1</td><td>WAITER</td> 
+                    <td>
+                    All'inizio il <bc>waiter</bc> si trova nel punto <em>home</em> e ci ritorna quando non ha più task da svolgere</td>
+                    <td></td>
+                    </tr>
+                    
+                    <tr><td>2</td><td>WAITER</td> 
+                    <td>
+                    Il <bc>waiter</bc> deve poter raggiungere l'entrata
+                    <td><em>reach</em></td>
+                    </tr>
+                    
+                    <tr><td>3</td><td>WAITER</td> 
+                    <td>
+                    Il <bc>waiter</bc> deve poter andare dal <bc>barman</bc> a ritirare il drink e portarlo al <bc>table</bc> del <bc>client</bc>
+                    <td><em>serve</em></td>
+                    </tr>
+                    
+                    <tr><td>4</td><td>WAITER</td> 
+                    <td>
+                    Il <bc>waiter</bc> deve poter accompagnare il cliente alla <em>exitdoor</em> e dall'entrata al <bc>table</bc>
+                    <td><em>convoy</em></td>
+                    </tr>
+                    
+                    <tr><td>5</td><td>WAITER</td> 
+                    <td>
+                    Il <bc>waiter</bc> in risposta alla richiesta ricevuta tramite lo <bc>smartbell</bc> deve poter rispondere che il <bc>client</bc> può entrare, se ci sono <bc>table</bc> AVAILABLE
+                    <td><em>waitingTime(0)</em></td>
+                    </tr>
+                    
+                    
+                    <tr><td>8</td><td>WAITER</td> 
+                    <td>
+                    Il <bc>waiter</bc> deve poter prendere l'ordine dal <bc>client</bc> e trasmetterlo al <bc>barman</bc>
+                    <td><em>take</em></td>
+                    </tr>
+                    
+                    <tr><td>9</td><td>WAITER</td> 
+                    <td>
+                    Il <bc>waiter</bc> deve far pagare il <bc>client</bc> quando ha finito di consumare <s>oppure è scaduto il <em>maxstaytime</em></s>
+                    <td><em>collect</em></td>
+                    </tr>
+    
+    
+                    <tr><td>12</td><td>BARMAN</td> 
+                    <td>
+                    Il <bc>barman</bc> quando riceve l'ordine dal <bc>waiter</bc> deve mettersi a preparare il the
+                    <td><em>orderReq</em></td>
+                    </tr>
+    
+                    <tr><td>13</td><td>BARMAN</td> 
+                        <td>
+                        Il <bc>barman</bc> deve poter notificare al <bc>waiter</bc>  che il drink è pronto
+                        <td><em>ready</em></td>
+                    </tr>
+                    
+                    <tr><td>14</td><td>CLIENT</td> 
+                    <td>
+                    Il <bc>client</bc> deve poter suonare lo <bc>smartbell</bc> per richiedere di entrare
+                    <td><em>notify</em></td>
+                    </tr>
+    
+                    <tr><td>15</td><td>CLIENT</td> 
+                        <td>
+                        Il <bc>client</bc> deve poter avvisare il <bc>waiter</bc> che è pronto per ordinare
+                        <td><em>readyToOrder</em></td>
+                    </tr>
+    
+                    <tr><td>16</td><td>CLIENT</td> 
+                        <td>
+                        Il <bc>client</bc> deve poter ordinare il the al <bc>waiter</bc>
+                        <td><em>order</em></td>
+                    </tr>
+    
+                    <tr><td>17</td><td>CLIENT</td> 
+                        <td>
+                        Il <bc>client</bc> deve poter richiamare il <bc>waiter</bc> per avvertirlo che ha finito di consumare
+                        <td><em>exitReq</em></td>
+                        </tr>
+    
+                        <tr><td>23</td><td>SMARTBELL</td> 
+                        <td>
+                            Lo <bc>smartbell</bc> deve presentare al client un'interfaccia da cui poter chiedere di entrare nella <em>tearoom</em>
+                        <td></td>
+                        </tr>
+                        
+                        <tr><td>24</td><td>SMARTBELL</td> 
+                            <td>
+                                Lo <bc>smartbell</bc> deve misurare la temperatura del <bc>client</bc> e comunicargli l'esito della verifica
+                            <td><em>tempResult</em></td>
+                        </tr>
+                        
+                        <tr><td>25</td><td>SMARTBELL</td> 
+                            <td>
+                                Lo <bc>smartbell</bc> deve avvisare il <bc>waiter</bc> della presenza di un <bc>client</bc> pronto per entrare
+                            <td><em>checkAvail</em></td>
+                        </tr>
+                        
+                        <tr><td>26</td><td>SMARTBELL</td> 
+                            <td>
+                                Lo <bc>smartbell</bc> deve riportare al <bc>client</bc> l'avviso che un <bc>waiter</bc> sta arrivando per accompagnarlo, se ci sono <bc>table</bc> liberi
+                            <td><em>accept</em></td>
+                        </tr>
+                        
+                </table>
+            
+            </div>
+
+        </br>
+            <div>
+                <p>
+                    Nell'implementare (e poter testare) la possibilità del <bc>waiter</bc> di muoversi autonomamente tra i punti della stanza, emergono alcuni aspetti:
+                    <ol>
+                        <li>Rappresentare lo spazio</li>
+                        <li>Conoscere la posizione corrente del <bc>waiter</bc> nello spazio</li>
+                        <li>Spostarsi da un punto all'altro dello spazio</li>
+
+                    </ol>
+                </p>
+                <p>
+                    <strong>Rappresentare lo spazio</strong><br>
+                    La rappresentazione dell'ambiente (mappa) è la base di conoscenza che racchiude le informazioni sulla posizione degli elementi nella stanza. Per quanto riguarda tutti gli elementi tranne il <bc>waiter</bc>, la mappa potrebbe rimanere invariata per tutto il tempo di esecuzione del sistema (non emergendo dai requisiti la necessità di spostare tavoli, barman, porte, ...).
+                    La mappa iniziale, ovvero priva delle informazioni sulla posizione <bc>waiter</bc>, potrebbe essere calcolata dal waiter stesso o, vista la natura del problema, fornita all'inizio dell'esecuzione del sistema dall'esterno.
+                </p>
+                <p>
+                    <strong>Posizione corrente del waiter</strong></br>
+                    Per quanto riguarda, invece, il <bc>waiter</bc> la sua posizione deve essere aggiornata ogni volta che si muove nell'ambiente.
+                </p>
+                <p>
+                    <strong>Pianificare i percorsi</strong></br>
+                    Infine per poter calcolare le mosse da eseguire per muoversi nell'ambiente sono possibili due strade:
+                    <ul>
+                        <li>
+                            si potrebbe essere portati a ricorrere ad una più semplice implentazione "dummy" con percorsi prefissati
+                        </li>
+                        <li>
+                            si potrebbe affrontare sin da subito la progettazione di una soluzione in grado di calcolare i percorsi dinamicamente
+                        </li>
+                    </ul>
+                    Volendo ottimizzare i tempi, e disponendo all'interno della nostra software-house di una utility per implementare un planner già pronta, risulta più conveniente iniziare da subito con una soluzione più vicina al prodotto finale. Ciò permette di ridurre i tempi di sviluppo: un'implementazione a percorsi predefiniti, utile in una prima fase di prova, sarebbe poi da sostituire con la successiva pianificazione dinamica dei percorsi (più affidabile e quindi più appropriata per il prodotto finale): tantovale iniziare a investire tempo di sviluppo fin da subito su di una soluzione definitiva, sopratutto se è già disponibile un'utility software per farlo.
+                </p>
+
+                <p>
+                    <strong>TestPlans</strong></br>
+                    Per formalizzare un primo set di test plans ed avere anche una base di partenza per la realizzazione di un planner si potrebbe suddividere il pavimento della <em>tearoom</em> in una griglia di <tt>R * C</tt> quadrati di lato <tt>L</tt>. Dove <tt>L</tt> è la dimensione più piccola possibile tale da contenere il robot.
+                    Ogni cella può essere libera oppure occupata da un ostacolo.
+                    A questo punto si può definire la posizione di ogni elemento nella mappa come una coppia di coordinate (R,C). Il planner calcolerà il percorso da eseguire dalla posizione corrente del <bc>waiter</bc> fino al punto richiesto, e alla fine dell'esecuzione si potrà testare verificando che la posizione raggiunta sia quella richiesta inizialmente.
+                </p>
+                    
+                <p>
+                    Questo concetto di mappa è stato già usato nella nostra software house, supponendo che, in ogni cella:
+                    <ul>
+                        <li>
+                            <bc>r</bc> significa "cella occupata dal waiter"
+                        </li>
+                        <li>
+                            <bc>x</bc> significa "cella occupata da un ostacolo"
+                        </li>
+                        <li>
+                            <bc>1</bc> significa "cella nota come libera"
+                        </li>
+                        <li>
+                            <bc>0</bc> significa "cella goal"
+                        </li>
+                    </ul>
+                </p>
+
+                <p>
+                    Da tutto ciò consegue che potrebbe essere utile far muovere il waiter di cella in cella definendo questo tipo di movimento "step".
+                </p>
+                
+            </div>
+
+            <h2>Problem analysis</h2>
+            <div>
+                <p>
+                    Dal punto di vista logico, il nostro sistema distribuito è composto da varie entità ognuna concepita come un attore, modellato come una FSM.
+                    Sicuramente l'entità <bc>waiter</bc> dovendo soddisfare vari requisiti è quella che presenta il maggior grado di complessità. Per risolvere i vari problemi ad essa relativi potrebbe risultare conveniente adottare un'architettura a layer, sopratutto perchè sono già disponibili all'interno della nostra software-house alcune componenti pronte per essere riutilizzate a tal proposito. </br>
+                    La componente <strong>it.unibo.qak20.basicrobot</strong> <a href="https://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qak20.basicrobot/userDocs/Qak20Basicrobot.html"> (definito qui)</a> infatti risulta molto utile per realizzare un'entità che si collochi nel mezzo tra "la mente" del <bc>waiter</bc> e la sua realizzazione "fisica", potendo ricevere comandi di alto livello come "step" e facendoli attuare ad un robot virtuale.
+
+                    </br>
+                    <center><img src="img/basicrobotproject.png" width="50%"></center>
+                    </br>
+
+                    Per quanto riguarda la pianificazione dei percorsi è già disponibile nella nostra software-house anche un <a href="https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.planner20/resources/itunibo/planner/plannerUtil.kt">planner</a> già compatibile con il basicrobot.
+                    
+
+                </p>
+                
+            </div>
+
+            <h2>Test plans</h2>
+            <div>
+                Di seguito è riportata una tabella che riassume tutte le funzionalità coperte e testate
+                all' interno di questo sprint, evidenziando stato pre e post interazione. </br>
+                Le interazioni colorate in verde sono quelle testate nella sezione di <a href="#testing">Testing</a>, mentre
+                quelle non colorate si suppongono già testate in quanto semplici interazioni (dispatch, request-response definite <a href="http://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.qakactor/userDocs/LabQakIntro2020.html">qui</a>) implementate nel framework di riferimento 
+                QAK già presente nella nostra software-house.</br></br>
+                <table style="width:100%" border="1">
+                    <tr>
+                        <td><bc>TAG TEST</bc></td>
+                        <td><bc>STATO INIZIALE</bc></td>
+                        <td><bc>STATO FINALE</bc></td>
+                    </tr>    
+
+                    <tr>
+                        <td><em>notify</em></td>
+                        <td>Il <bc>client</bc> si trova all'ingresso</td>
+                        <td>Il <bc>client</bc> aspetta la risposta dello <bc>smartbell</bc></td>
+                    </tr>
+
+                    <tr>
+                        <td><em>tempResult</em></td>
+                        <td>Lo <bc>smartbell</bc> ha ricevuto una richiesta di ingresso da un <bc>client</bc></td>
+                        <td>Il <bc>client</bc> esce dal sistema (temperatura pari o superiore ai <tt>37.5</tt>°C) o aspetta di conoscere il tempo di attesa dallo <bc>smartbell</bc></td>
+                    </tr>
+
+                    <tr>
+                        <td><em>checkAvail</em></td>
+                        <td>Lo <bc>smartbell</bc> ha appena accettato un <bc>cliente</bc> misurandogli la temperatura</td>
+                        <td>Lo <bc>smartbell</bc> è pronto a fare una <em>accept</em> del <bc>client</bc> nella stanza</td>
+                    </tr>
+
+                    <tr>
+                        <td><em>waitingTime(0)</em></td>
+                        <td>Il <bc>client</bc> è in attesa di scoprire se può entrare</td>
+                        <td>Il <bc>client</bc> aspetta il <bc>waiter</bc> alla <em>entrancedoor</em></td>
+                    </tr>
+
+                    <tr>
+                        <td><em>accept</em></td>
+                        <td>Lo <bc>smartbell</bc> ha appena ricevuto dal <bc>waiter</bc> il via libera a far entrare <b>senza attesa</b> il <bc>client</bc> nella stanza</td>
+                        <td>Il <bc>client</bc> aspetta il <bc>waiter</bc> per essere portato al tavolo</td>
+                    </tr> 
+                    
+                    <tr class="done">
+                        <td><em>reach</em></td>
+                        <td>Il robot <bc>waiter</bc> è fermo nella <em>home</em></td>
+                        <td>Il robot <bc>waiter</bc> si trova alla <em>entrancedoor</em></td>
+                    </tr>
+
+                    <tr class="done">
+                        <td><em>convoy</em></td>
+                        <td>Il <bc>client</bc> si trova nella <em>entrancedoor</em></td>
+                        <td>Il <bc>client</bc> si trova nel suo <bc>table</bc></td>
+                    </tr>
+
+                    <tr class="done">
+                        <td><em>readyToOrder</em></td>
+                        <td>Il <bc>client</bc> ha deciso cosa ordinare</td>
+                        <td>Il <bc>client</bc> si mette in attesa del <bc>waiter</bc> per comunicargli la sua ordinazione</td>
+                    </tr>
+
+                    <tr class="done">
+                        <td><em>take</em></td>
+                        <td>Il <bc>client</bc> aspetta il waiter per comunicargli l'ordine</td>
+                        <td>Il <bc>waiter</bc> è arrivato al <bc>table</bc> ed è pronto a conoscere il contenuto dell'ordinazione</td>
+                    </tr>
+
+                    <tr class="done">
+                        <td><em>order</em></td>
+                        <td>Il <bc>waiter</bc> ha domandato al <bc>client</bc> di comunicargli il contenuto della sua ordinazione</td>
+                        <td>Il <bc>waiter</bc> ha ricevuto l'ordine dal <bc>client</bc></td>
+                    </tr>
+
+                    <tr class="done">
+                        <td><em>orderReq</em></td>
+                        <td>Il <bc>waiter</bc> ha preso in consegna l'ordine del <bc>client</bc></td>
+                        <td>Il <bc>waiter</bc> ha comunicato al <bc>barman</bc> il contenuto dell'ordinazione</td>
+                    </tr>
+
+                    <tr>
+                        <td><em>ready</em></td>
+                        <td>Il <bc>barman</bc> ha concluso di preparare l'ordinazione</td>
+                        <td>Il <bc>waiter</bc> sa che il <bc>barman</bc> ha concluso il drink</td>
+                    </tr>
+
+                    <tr class="done">
+                        <td><em>serve</em></td>
+                        <td>Il <bc>waiter</bc> è fermo in un punto della mappa</td>
+                        <td>Il <bc>waiter</bc> ha preso in consegna il drink pronto, lo ha portato al <bc>table</bc> del <bc>client</bc> e il <bc>client</bc> inizia la consumazione del drink</td>
+                    </tr>
+
+                    <tr class="done">
+                        <td><em>exitReq</em></td>
+                        <td>Il <bc>client</bc> ha concluso la consumazione</td>
+                        <td>Il <bc>waiter</bc> sa che può andare dal <bc>client</bc> per fargli effettuare il pagamento</td>
+                    </tr>
+                    
+                    <tr class="done">
+                        <td><em>collect</em></td>
+                        <td>Il <bc>waiter</bc> comunica l'importo della ordinazione al <bc>client</bc></td>
+                        <td>Il <bc>waiter</bc> ha raccolto l'importo</td>
+                    </tr>
+
+                    <tr class="done">
+                        <td><em>convoy</em></td>
+                        <td>Il <bc>client</bc> si trova nel suo <bc>table</bc></td>
+                        <td>Il <bc>client</bc> si trova nella <bc>exitdoor</bc></td>
+                    </tr>
+                        
+                </table>
+
+                <h3>Nuova interazione per l'ordinazione client</h3>
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:60%">
+                            <center><img src="img/iss2020Sprint1-Client-Waiter.png" width="75%" height="32%"/></center>
+                        </td>
+                        <td>
+                            Quando il <bc>barman</bc> ha finito di preparare il drink richiesto dal <bc>client</bc>, lo comunica al <bc>waiter</bc> tramite un <em>ready</em>.</br></br>
+                            Allora il <bc>waiter</bc> lo va a prendere e lo porta al <bc>table</bc> del <bc>client</bc> consegnandoglielo con una <strong>serveDrink</strong>.
+                            
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <h2>Project</h2>
+            <div>
+            Si riporta l'esempio relativo al <bc>waiter</bc> per evidenziare l'architettura a layer adottata. In particolare viene mostrato il caso in cui un <bc>client</bc> richieda di uscire dalla sala da te.
+            </br>
+            <center><img src="img/waiter_architecture.png" width="50%"></center>
+            </br>
+
+            Per una definizione formale di tutta la struttura, l'interazione ed il comportamento si rimanda alla definizione dei QActor:
+            <ul>
+                <li><a href="../../Workspace/Sprint1/it.unibo.trc19.sprint1.waiter/src/waiter.qak">waiter.qak</a></li>
+                <li><a href="../../Workspace/Sprint1/it.unibo.trc19.sprint1.client/src/client.qak">client.qak</a></li>
+                <li><a href="../../Workspace/Sprint1/it.unibo.trc19.sprint1.smartbell/src/smartbell.qak">smartbell.qak</a></li>
+                <li><a href="../../Workspace/Sprint1/it.unibo.trc19.sprint1.barman/src/barman.qak">barman.qak</a></li>
+            </ul>
+             
+            
+            </div>
+
+            <h2 id="testing">Testing</h2>
+            <div>
+                <b>Tutti i test sono stati svolti con JUnit4</b></br>
+                <img src="img/test.PNG"></br></br>
+                I test sono stati svolti analizzando il flusso delle interazioni fra i vari attori del sistema,
+                concentrandosi particolarmente sul movimento del <bc>waiter</bc>. La logica di confronto è 
+                basata sull'osservazione della composizione della mappa dopo ogni spostamento del robot e il test è 
+                svolto confrontando la mappa al momento del test (ottenuta tramite il riferimento in <a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/resources/itunibo/planner/plannerUtil.kt">plannerUtil.kt</a>)
+                e la mappa che ci si aspettava in quel momento.<br></br>
+                Per motivi di testing, tutte le entità esterne al <bc>waiter</bc> sono state rese attori senza logica applicativa. Tutti gli attori sono inseriti
+                nel contesto del <bc>waiter</bc> (si guardi <a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.tearoom/src/tearoom.qak">tearoom.qak</a>).</br>
+                Nello specifico, <b>le classi di test sono</b>:
+                <ol>
+                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterConvoyEntrance.kt">TestWaiterConvoyEntrance.kt</a> verifica che il <bc>waiter</bc>
+                    compia correttamente le azioni di <em>reach</em>, <em>convoy</em> all'ingresso e successivo ritorno alla <em>home</em>.</li>
+                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterDrinkOrder.kt">TestWaiterDrinkOrder.kt</a> verifica che il <bc>waiter</bc>
+                    compia correttamente le azioni di <em>readyToOrder</em> (che implica raggiungimento del tavolo del <bc>client</bc>), <em>take</em>, <em>order</em> e successivo ritorno alla <em>home</em>.</li>
+                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterBringingDrink.kt">TestWaiterBringingDrink.kt</a> verifica che il <bc>waiter</bc>
+                    compia correttamente la <em>serve</em> (che implica che il <bc>barman</bc> gli abbia notificato una <em>ready</em>), e successivo ritorno alla <em>home</em>.</li>
+                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterPaymentExit.kt">TestWaiterPaymentExit.kt</a> verifica che il <bc>waiter</bc>
+                        compia correttamente le azioni di <em>collect</em>, <em>payment</em>, <em>convoy</em> in uscita e successivo ritorno alla <em>home</em>.</li>
+                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterComplessivo.kt">TestWaiterComplessivo.kt</a> esegue in successione i precedenti test,
+                        simulando tutto il flow del <bc>client</bc> all'interno del sistema.</li>        
+                </ol>
+            </br>
+            <b>ATTENZIONE!</b> Ricaricare la mappa virtuale a ogni tentativo di test, in modo da sincronizzare correttamente la base di conoscenza.
+
+            </div>
+            
+
+            <br /><br />
+
+        </div>
+
+        <!-- TEAM -->
+        <div class="w3-container w3-padding-64 w3-center" id="team">
+            <h2>Our Team</h2>
+
+            <div class="w3-row"><br>
+
+                <div class="w3-third">
+                    <img src="../HTMLResources/img/ugo3.jpg" style="width:45%" class="w3-circle">
+                    <h3>Ugo Leone Cavalcanti</br>
+                    </h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:ugoleone.cavalcanti@studio.unibo.it">ugoleone.cavalcanti@studio.unibo.it</a>
+                    </p>
+                </div>
+
+                <div class="w3-third">
+                    <img src="../HTMLResources/img/amir.jpg" style="width:45%" class="w3-circle">
+                    <h3>Amir Al Sadi</br>
+                    </h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:amir.alsadi@studio.unibo.it">amir.alsadi@studio.unibo.it</a></p>
+                </div>
+
+                <div class="w3-third">
+                    <img src="../HTMLResources/img/nik2.jpeg" style="width:45%" class="w3-circle">
+                    <h3>Nicolò Romandini</br>
+                    </h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:nicolo.romandini@studio.unibo.it">nicolo.romandini@studio.unibo.it</a></p>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+
+<link rel="stylesheet" type="text/css" href="../HTMLResources/css/main.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<!-- <script type="text/javascript" src="../css/issStyle.js"></script> -->
+
+
+<head>
+
+    <title>Sprint 2</title>
+</head>
+
+<body>
+    <div class="content">
+        <div id="top">
+            <h1>LABORATORIO DI SISTEMI SOFTWARE <font size="5"></font>
+            </h1>
+        </div>
+        <div class="body">
+            <h2>Requirements</h2>
+            <div>
+                Questo sprint si occupa di definire lo stato della stanza, introducendo un'architettura esagonale.</br>
+                Inoltre si inizierà a costruire il pannello di controllo da fornire al manager, tramite il quale si potrà visualizzare lo stato della stanza.
+            </div>
+
+
+            <h2>Requirement analysis</h2>
+            <div>
+                Per "stato della stanza" si intenda:
+                <ul>
+                    <li>Posizione degli elementi nella stanza</li>
+                    <li>Posizione corrente del waiter</li>
+                    <li>Attività in cui è impegnato waiter</li>
+                    <li>Stato dei tavoli</li>
+                    <li>Identificativo dei clienti attualmente dentro la stanza</li>
+                    <li>Attività in cui è impegnato il Barman</li>
+                    <li>Eventuali statistiche del sistema
+                        <ul>
+                            <li>ad es, numero di clienti serviti</li>
+                        </ul>
+                    </li>
+                </ul> 
+                </br>
+                L'<a href ="https://jmgarridopaz.github.io/content/hexagonalarchitecture.html">architettura esagonale</a>, o architettura a porte e adattatori, è un pattern architetturale usato in
+                software design.</br>
+                <center><img src="img/portAdapter.png" alt="tearoom20.png" width="15%" height="32%" /></center></br>
+                Il principale obiettivo di questa architettura è quello di disaccoppiare la logica core
+                dell'applicazione dai servizi che essa usa. Ciò permette a differenti servizi di poter essere "plugged
+                in", ed inoltre di poter eseguire senza questi servizi.
+                La <em>connessione tra la parte interna e quella esterna</em> del sistema è realizzata tramite
+                l'astrazione delle <bc>porte</bc> e la loro controparte implementativa chiamata <bc>adattatori</bc>.
+                <ul>
+                    <li>La <em>business logic</em> di un'applicazione consiste negli algoritmi essenziali per il suo
+                        scopo. Essi implementano i <em>casi d'uso</em> che sono il cuore dell'applicazione.
+                    </li>
+                    <li> I <em>servizi</em> non sono essenziali. Essi possono essere sostituiti senza camibiare lo scopo
+                        dell'applicazione.
+                        Esempi: accesso a database, interfaccia utente, hardware devices.
+                    </li>
+                    <li>È <em>facile sostituire i servizi</em> con altri che sono più idonei alla luce di nuove
+                        esigenze.
+                    </li>
+                </ul>
+            </br>
+                    <center><img src="img/portAdapterArch.png" alt="tearoom20.png" width="55%" height="32%" /></center></br>
+			Viene di seguito riportato il <b>modello formale</b> del sistema definito in fase di analisi dei requisiti.</br>
+			<div>
+			<pre>
+System resourcemodel
+Context <ks>ctxresourcemodel</ks> ip[host="localhost" port=8010]
+
+QActor <k>resourcemodel</k> context ctxresourcemodel{
+	State s0 initial{<kc>
+			//questo attore presenterà tramite l'uso di un 
+			//generico meccanismo le informazioni richieste nei
+			//requisiti</kc>	
+	}
+}				</pre>
+			</div>
+            </div>
+
+            <h2>Problem analysis</h2>
+            <div>
+                Adottando un'architettura esagonale si avrà un attore principale <bc>resourcemodel</bc> che andrà a gestire quello che è il modello del dominio nell'architettura esagonale.</br>
+                Già nel precedente sprint era stata impiegata una base di conoscenza (scritta in Prolog) per mantenere alcune informazioni sul sistema, ciò, insieme alle informazioni dello stato della stanza, costituisce il <i>domain model</i> vero e proprio. E il <bc>resourcemodel</bc> andrà a fare da controller per questa base di conoscenza.</br>
+				<br />
+				All'arrivo di un generico messaggio <b>modelChange</b>, <bc>resourcemodel</bc> reagisce emettendo un evento <b>modelChanged</b>
+				che informa del cambiamento avvenuto.</br>
+				<center><img src="img/architettura-esagonale-resourcemodel.png" alt="hexagonal.png" width="55%" height="32%" /></center></br>
+				Viene di seguito riportato il <b>modello formale</b> del sistema definito in fase di analisi del problema.</br> 
+				<div>
+				<pre>
+System resourcemodel
+
+Dispatch modelChange : modelChange(CHANGE)
+Event modelChanged : modelChanged(CHANGE)
+
+Context <ks>ctxresourcemodel</ks> ip[host="localhost" port=8010]
+
+QActor <k>resourcemodel</k> context ctxresourcemodel{
+    State s0 initial{
+        println("STARTING, I will be soon ready to listen to changes!")
+        solve(consult("tearoomkb.pl"))
+        delay 200
+    }
+    Goto listenToChanges
+    
+    State listenToChanges{
+        println("LISTENING...")
+    } Transition t0 
+            whenMsg modelChange-> informChanges
+    
+    State informChanges{
+        println("MODEL has changed...")
+        solve(modelChange)
+        emit modelChanged: modelChange("change")
+    } Goto listenToChanges
+}   			</pre>
+				</div>
+            </div>
+
+            <h2>Test plans</h2>
+            <div>
+                Non sono sorte in fase di analisi funzionalità da testare, in quanto questo sprint si occupa unicamente di modificare il precedente
+                modello introducendo il modello esagonale (completamente espresso con la tecnologia QAK, framework presente nella nostra software house).
+            </div>
+
+            <h2>Project</h2>
+            <div>
+                Il <bc>waiter</bc> interagisce ora con il <bc>resourcemodel</bc> in tre occasioni:
+                <ol>
+                    <li>Tramite <b>teaTableCleaned</b>, per notificare il cambiamento di stato del tavolo, dopo averlo pulito.</li>
+                    <li>Tramite <b>taskUpdate</b>, per notificare il completamento di un task.</li>
+                    <li>Tramite <b>askWhere</b>, per richiedere la posizione (ottenuta tramite <b>location</b>) di un oggetto nella stanza
+                    verso cui si deve spostare il robot.</li>
+                </ol> 
+                Il <bc>planner</bc> interagisce ora con il <bc>resourcemodel</bc> tramite l'evento <b>waiterCurrentPosition</b>, per aggiornare 
+                la posizione corrente del waiter nella stanza.</br>
+                La scelta di una interazione ad evento è basata su due considerazioni:
+                <ul>
+                    <li>Essendo il planner un attore di "supporto" al sistema, è stato preferito non dargli la responsabilità di <b>interagire direttamente</b> con il modello.</li>
+                    <li>La possibilità di aggiornare la posizione corrente del waiter tramite un evento può risultare utile nel momento in cui l'attore venga spostato
+                        in una <b>posizione esterna</b> al sistema.</li>
+                </ul>
+                <center><img src="img/nuova_struttura_waiter.png" alt="struttura_waiter.png" width="55%" height="32%" /></center></br>
+                Una descrizione formale di questo modello si può trovare in <a href="../../Workspace/Sprint2/Project/it.unibo.trc19.sprint2.tearoom/src/tearoom.qak">tearoom.qak</a></br>
+                Inoltre, viene introdotta la parte frontend di interazione con il manager, che rappresenta le informazioni elencate nei requisiti.</br>
+                Questa, implementata tramite il framework <a href="https://spring.io/">Spring</a>, si relaziona con il resource model tramite un canale <a href="https://en.wikipedia.org/wiki/Constrained_Application_Protocol">CoAP</a>,
+                che viene aggiornato ogniqualvolta avviene un cambio di modello, utilizzando la feature QAK <b>updateResource</b>.</br></br>
+                <center><img src="img/iss2020Sprint2-HTML_manager_esagonale.png" alt="HTML_esagonale.png" width="65%" height="32%" /></center></br>
+                Il main della interfaccia web si può trovare in <a href="../../Workspace/Sprint2/Project/robotWeb2020/src/main/java/it/unibo/robotWeb2020/RobotWeb2020Application.java">RobotWeb2020Application</a> (accessibile da <b>localhost:7001</b>).
+            </div>
+
+            <h2>Testing</h2>
+            <div>
+                Il testing si può svolgere tramite il confronto fra il comportamento atteso (descritto nei requisiti) e quello osservato dalla
+                interfaccia web realizzata per il manager (<a href="../../Workspace/Sprint2/Project/robotWeb2020/src/main/java/it/unibo/robotWeb2020/RobotWeb2020Application.java">RobotWeb2020Application</a>),
+                supportato dall'infrastruttura software modellata in <a href="../../Workspace/Sprint2/Project/it.unibo.trc19.sprint2.tearoom/src/tearoom.qak">tearoom.qak</a>.
+            </div>
+            <br /><br />
+
+        </div>
+
+        <h2>Sprint review del 17/7/2020</h2>
+        <div>
+            <ul>
+                Rispetto alla demo presentata il 17/7/2020 è emerso necessario aggiungere alla interfaccia grafica le funzionalità di:
+                <ul>
+                    <li>Far progredire manualmente gli stati del <bc>clientsimulator</bc> tramite un tasto.</li>
+                    <li>Aggiungere un controllo manuale del robot.</li></br>
+                    <center><img src="img/gui_final.png" alt="gui_final" width="100%" height="60%" /></center></br>                   
+                </ul>
+            </ul>
+        </div>
+
+        <h2>Sprint retrospective del 17/7/2020</h2>
+        <div>
+            <b>Considerazioni sul cliente</b></br>
+            Nell'aggiungere i tasti per simulare il comportamento dei clienti, è sorta l'utilità di tracciare il loro stato corrente all'interno della base di conoscenza.
+            La pressione del tasto sulla interfaccia web genera un evento che viene recepito dal <bc>clientsimulator</bc>, il quale notifica tramite <b>updateClientState</b> la volontà del cambiare lo stato del cliente.</br>
+           
+            <br />
+            Sebbene ora sia l'interfaccia web (per necessità di demo) a propagare i cambiamenti di stato del cliente, in un futuro questa logica potrebbe essere riutilizzata nel prodotto finale tramite delle interfacce come tablet o simili.
+            <br />
+            Dal <bc>clientsimulator</bc> si potrà infatti rimuovere la parte relativa al "comportamento autonomo" di un cliente (necessaria ora per simulare il sistema) lasciando soltanto la logica necessaria ad interfacciare un cliente reale con il resto del sistema, ovvero comunicare al modello le attività di un cliente.
+            <br /> 
+        </br>
+            <b>Revisione</b></br>
+            Dopo un confronto con il committente sono stati attuati i seguenti cambiamenti:
+            <ul>    
+                <li>Il modello è stato pensato seguendo un ragionamento a macrostati: si prevede che il <bc>waiter</bc> comunichi al modello la fine di ogni <b>task</b>(<em>reach</em>, <em>convoy</em>,..), tramite <b>taskDone</b>.</li>
+                <li>Data la considerazione precedente, dobbiamo quindi prevedere che il modello mantenga persistentemente il <b>task</b> corrente del robot.</li>
+                <li>Le uniche azioni consentite al <bc>robot</bc> sono quelle previste dettate dai cambiamenti di stato del modello.</li>
+                <li>Il cambiamento di stato del modello determina il nuovo <b>task</b> del waiter.</li>
+                <li>Il <bc>planner</bc> fornisce al modello posizione e direzione corrente del robot ogni volta che una di esse o entrambe cambiano tramite <b>waiterCurrentPositionDirection</b>.</li>
+            </ul>
+            Congruentemente ai cambiamenti svolti, la base di conoscenza è stata cambiata come segue: <a href="../../Workspace/Sprint2/Project/it.unibo.trc19.sprint2.tearoom/tearoomkb.pl">tearoomkb.pl</a></br>
+            <b>Di seguito è riportato il modello aggiornato, indicando il rosso i nuovi attori/messaggi introdotti nel modello.</b>
+            <center><img src="img/iss2020Sprint2-sprint_retrospective.png" alt="sprintretrospective.png" width="75%" height="52%" /></center></br>
+            Quando comandiamo il movimento del robot assumiamo che basicrobot (già fornito dalla nostra software-house) compia i comandi con successo.
+        </div>
+
+        <!-- TEAM -->
+        <div class="w3-container w3-padding-64 w3-center" id="team">
+            <h2>Our Team</h2>
+
+            <div class="w3-row"><br>
+
+                <div class="w3-third">
+                    <img src="../HTMLResources/img/ugo3.jpg" style="width:45%" class="w3-circle">
+                    <h3>Ugo Leone Cavalcanti</br>
+                    </h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:ugoleone.cavalcanti@studio.unibo.it">ugoleone.cavalcanti@studio.unibo.it</a>
+                    </p>
+                </div>
+
+                <div class="w3-third">
+                    <img src="../HTMLResources/img/amir.jpg" style="width:45%" class="w3-circle">
+                    <h3>Amir Al Sadi</br>
+                    </h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:amir.alsadi@studio.unibo.it">amir.alsadi@studio.unibo.it</a></p>
+                </div>
+
+                <div class="w3-third">
+                    <img src="../HTMLResources/img/nik2.jpeg" style="width:45%" class="w3-circle">
+                    <h3>Nicolò Romandini</br>
+                    </h3>
+                    <p style="font-size: 70%;"><a href="MAILTO:nicolo.romandini@studio.unibo.it">nicolo.romandini@studio.unibo.it</a></p>
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+</body>
+
+</html>
