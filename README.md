@@ -1,12 +1,13 @@
 # iss2020TemaFinale
 Esame di Ingegneria dei Sistemi Software A.A. 2019/2020
+
 [**Project Website**](https://ugoleone.github.io/iss2020TemaFinale/)
 
 ## Introduzione
 
-[**Analisi**](https://ugoleone.github.io/iss2020TemaFinale/blob/master/docs/Analisi/analisi.html)
+[**Analisi**](https://ugoleone.github.io/iss2020TemaFinale/Analisi/analisi.html)
 
-[**Requisiti**](https://ugoleone.github.io/iss2020TemaFinale/blob/master/docs/Requisiti/Requisiti.html)
+[**Requisiti**](https://ugoleone.github.io/iss2020TemaFinale/Requisiti/Requisiti.html)
 
 
 
@@ -41,10 +42,10 @@ Dalla analisi preliminare del sistema risulta necessario pianificare un piano di
 
 | NOME                                                         | DESCRIZIONE                                                  | MOTIVAZIONE                                                  |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [**SPRINT 1**](https://ugoleone.github.io/iss2020TemaFinale/blob/master/docs/Sprint1/sprint1.html) | Si occupa della modellazione del sistema nell'ipotesi in cui operi un solo client e che compia unicamente le azioni previste dal suo comportamento standard, senza interferenze di alcun genere. | La scelta di questo primo sprint è motivata dalla volontà di simulare un primo scenario di base che preveda una interazione "controllata" e "prevista" del sistema, in modo da aggiungere nei successivi sprint i casi imprevisti. |
-| [**SPRINT 2**](https://ugoleone.github.io/iss2020TemaFinale/blob/master/docs/Sprint2/sprint2.html) | Si occupa della definizione dello stato della stanza.  Questo sprint aggiunge al primo sprint una descrizione degli elementi della stanza, introducendo il concetto di **architettura esagonale**.  Inoltre in questo sprint si inizia a costruire il pannello di controllo da fornire al manager. | Dopo aver verificato le funzionalità base del sistema è necessario iniziare a dare una forma a quella che sarà l'architettura finale. |
-| [**SPRINT 3**](https://ugoleone.github.io/iss2020TemaFinale/blob/master/docs/Sprint3/sprint3.html) | Si occupa della **concorrenza** fra client, ossia la presenza di più client nella *tearoom* contemporaneamente. e della gestione del tempo (**maxstaytime** e **waitingtime**). | Dopo aver costruito una prima versione dell'architettura finale, aggiungiamo al sistema ulteriori casi d'uso con lo scopo di avvicinarlo sempre più al prodotto finale richiesto. |
-| [**SPRINT 4**](https://ugoleone.github.io/iss2020TemaFinale/blob/master/docs/Sprint4/sprint4.html) | Deployment del sistema e impiego di robot fisici oltre che del virtual robot fornito. Possibilità di interrompere alcuni task per riprenderli in seguito. | Questo sprint finale rende il sistema pronto per essere consegnato al cliente e ne dimostra il funzionamento su dei DDR reali. |
+| [**SPRINT 1**](https://ugoleone.github.io/iss2020TemaFinale/Sprint1/sprint1.html) | Si occupa della modellazione del sistema nell'ipotesi in cui operi un solo client e che compia unicamente le azioni previste dal suo comportamento standard, senza interferenze di alcun genere. | La scelta di questo primo sprint è motivata dalla volontà di simulare un primo scenario di base che preveda una interazione "controllata" e "prevista" del sistema, in modo da aggiungere nei successivi sprint i casi imprevisti. |
+| [**SPRINT 2**](https://ugoleone.github.io/iss2020TemaFinale/Sprint2/sprint2.html) | Si occupa della definizione dello stato della stanza.  Questo sprint aggiunge al primo sprint una descrizione degli elementi della stanza, introducendo il concetto di **architettura esagonale**.  Inoltre in questo sprint si inizia a costruire il pannello di controllo da fornire al manager. | Dopo aver verificato le funzionalità base del sistema è necessario iniziare a dare una forma a quella che sarà l'architettura finale. |
+| [**SPRINT 3**](https://ugoleone.github.io/iss2020TemaFinale/Sprint3/sprint3.html) | Si occupa della **concorrenza** fra client, ossia la presenza di più client nella *tearoom* contemporaneamente. e della gestione del tempo (**maxstaytime** e **waitingtime**). | Dopo aver costruito una prima versione dell'architettura finale, aggiungiamo al sistema ulteriori casi d'uso con lo scopo di avvicinarlo sempre più al prodotto finale richiesto. |
+| [**SPRINT 4**](https://ugoleone.github.io/iss2020TemaFinale/Sprint4/sprint4.html) | Deployment del sistema e impiego di robot fisici oltre che del virtual robot fornito. Possibilità di interrompere alcuni task per riprenderli in seguito. | Questo sprint finale rende il sistema pronto per essere consegnato al cliente e ne dimostra il funzionamento su dei DDR reali. |
 
 
 
