@@ -103,14 +103,6 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								}
 													"drinking" -> { 
 								solve("updateClientState($ID,$CS,false)","") //set resVar	
-								if( busy 
-								 ){solve("addTask(returnHome,0)","") //set resVar	
-								}
-								else
-								 { busy = true  
-								 solve("updateWaiterTask(returnHome)","") //set resVar	
-								 emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(returnHome,0)" ) 
-								 }
 								}
 													"paying" -> { 
 								solve("updateClientState($ID,$CS,true)","") //set resVar	
@@ -214,21 +206,7 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								solve("teatableClientID($TeatableNumber,ID)","") //set resVar	
 								 var ID = getCurSol("ID").toString()  
 								solve("seatClient($TeatableNumber,$ID)","") //set resVar	
-								forward("startTimer", "startTimer(0,resourcemodel,alarm,$ID,60000)" ,"timersmanager" ) 
-								solve("getTask(T,P)","") //set resVar	
-								if( currentSolution.isSuccess() ) { Task = getCurSol("T").toString() 
-														var P = getCurSol("P").toString()
-								solve("updateWaiterTask($Task)","") //set resVar	
-								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent($Task,$P)" ) 
-								}
-								else
-								{ busy = false  
-								solve("updateWaiterTask(returnHome)","") //set resVar	
-								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(returnHome,0)" ) 
-								}
-								 } 
-												"returnHome" ->  {
-								solve("updateWaiterTask(athome)","") //set resVar	
+								forward("startTimer", "startTimer(0,resourcemodel,alarm,$ID,600000)" ,"timersmanager" ) 
 								solve("getTask(T,P)","") //set resVar	
 								if( currentSolution.isSuccess() ) { Task = getCurSol("T").toString() 
 														var P = getCurSol("P").toString()
@@ -246,9 +224,13 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(sanitizing,$Concat)" ) 
 								}
 								else
-								{ busy = false  
+								{solve("updateWaiterTask(returnHome)","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(returnHome,0)" ) 
 								}
 								}
+								 } 
+												"returnHome" ->  {
+								solve("updateWaiterTask(athome)","") //set resVar	
 								 } 
 												"takingOrder" ->  {
 								solve("getTask(T,P)","") //set resVar	
@@ -258,9 +240,19 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent($Task,$P)" ) 
 								}
 								else
-								{ busy = false  
-								solve("updateWaiterTask(returnHome)","") //set resVar	
+								{solve("teatable(TeatableNumber,dirty,RemainingTime,_)","") //set resVar	
+								 busy = false  
+								if( currentSolution.isSuccess() ) { 
+															TeatableNumber = getCurSol("TeatableNumber").toString() 
+															var RemainingTime = getCurSol("RemainingTime").toString()
+															var Concat = "s" + TeatableNumber + "s" + RemainingTime
+								solve("updateWaiterTask(sanitizing)","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(sanitizing,$Concat)" ) 
+								}
+								else
+								{solve("updateWaiterTask(returnHome)","") //set resVar	
 								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(returnHome,0)" ) 
+								}
 								}
 								 } 
 												"collectingDrink" ->  {
@@ -276,9 +268,19 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent($Task,$P)" ) 
 								}
 								else
-								{ busy = false  
-								solve("updateWaiterTask(returnHome)","") //set resVar	
+								{solve("teatable(TeatableNumber,dirty,RemainingTime,_)","") //set resVar	
+								 busy = false  
+								if( currentSolution.isSuccess() ) { 
+															TeatableNumber = getCurSol("TeatableNumber").toString() 
+															var RemainingTime = getCurSol("RemainingTime").toString()
+															var Concat = "s" + TeatableNumber + "s" + RemainingTime
+								solve("updateWaiterTask(sanitizing)","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(sanitizing,$Concat)" ) 
+								}
+								else
+								{solve("updateWaiterTask(returnHome)","") //set resVar	
 								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(returnHome,0)" ) 
+								}
 								}
 								solve("serveTea","") //set resVar	
 								 } 
@@ -287,10 +289,11 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								 TeatableNumber = getCurSol("T").toString()  
 								solve("updateWaiterTask(convoyExit)","") //set resVar	
 								solve("freeTable($TeatableNumber)","") //set resVar	
-								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(convoyExit,0)" ) 
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(convoyExit,${payloadArg(1)})" ) 
 								 } 
 												"convoyExit" ->  {
-								solve("replaceRule(client($ID,S,_),client($ID,S,false))","") //set resVar	
+								 ID = payloadArg(1)  
+								solve("unlockClient($ID)","") //set resVar	
 								solve("getTask(T,P)","") //set resVar	
 								if( currentSolution.isSuccess() ) { Task = getCurSol("T").toString() 
 														var P = getCurSol("P").toString()
@@ -298,9 +301,19 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent($Task,$P)" ) 
 								}
 								else
-								{ busy = false  
-								solve("updateWaiterTask(returnHome)","") //set resVar	
+								{solve("teatable(TeatableNumber,dirty,RemainingTime,_)","") //set resVar	
+								 busy = false  
+								if( currentSolution.isSuccess() ) { 
+															TeatableNumber = getCurSol("TeatableNumber").toString() 
+															var RemainingTime = getCurSol("RemainingTime").toString()
+															var Concat = "s" + TeatableNumber + "s" + RemainingTime
+								solve("updateWaiterTask(sanitizing)","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(sanitizing,$Concat)" ) 
+								}
+								else
+								{solve("updateWaiterTask(returnHome)","") //set resVar	
 								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(returnHome,0)" ) 
+								}
 								}
 								 } 
 												"sanitizing" ->  {
@@ -324,9 +337,19 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent($Task,$P)" ) 
 								}
 								else
-								{ busy = false  
-								solve("updateWaiterTask(returnHome)","") //set resVar	
+								{solve("teatable(TeatableNumber,dirty,RemainingTime,_)","") //set resVar	
+								 busy = false  
+								if( currentSolution.isSuccess() ) { 
+																TeatableNumber = getCurSol("TeatableNumber").toString() 
+																var RemainingTime = getCurSol("RemainingTime").toString()
+																var Concat = "s" + TeatableNumber + "s" + RemainingTime
+								solve("updateWaiterTask(sanitizing)","") //set resVar	
+								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(sanitizing,$Concat)" ) 
+								}
+								else
+								{solve("updateWaiterTask(returnHome)","") //set resVar	
 								emit("waiterTaskChangedEvent", "waiterTaskChangedEvent(returnHome,0)" ) 
+								}
 								}
 								}
 								}
@@ -466,6 +489,7 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								 
 												var RemainingTime = payloadArg(0) 
 												var TeatableNumber = payloadArg(1)
+												println(TeatableNumber)
 								solve("replaceRule(teatable($TeatableNumber,_,_,CS),teatable($TeatableNumber,dirty,$RemainingTime,CS))","") //set resVar	
 						}
 					}

@@ -9,11 +9,11 @@
 .my-table th {
     border: 1px solid #ccc;
     width: 50px;
-    height: 40px;
+    height: 45px;
     padding: 8px 8px;
     /*display: table-cell;*/
     text-align: center;
-    vertical-align: top
+    vertical-align: middle
 }
 
 .grid-container {
@@ -37,3 +37,6 @@
     visibility: hidden;
 }
 
+#waiter {
+	//font-size: 10px;
+}

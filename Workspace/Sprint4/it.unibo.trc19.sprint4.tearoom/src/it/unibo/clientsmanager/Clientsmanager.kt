@@ -31,9 +31,9 @@ class Clientsmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 				state("waitingMsg") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t042",targetState="newClientState",cond=whenEvent("newClient"))
-					transition(edgeName="t043",targetState="retrieveClientState",cond=whenEvent("nextState"))
-					transition(edgeName="t044",targetState="handleAlarm",cond=whenDispatch("alarm"))
+					 transition(edgeName="t043",targetState="newClientState",cond=whenEvent("newClient"))
+					transition(edgeName="t044",targetState="retrieveClientState",cond=whenEvent("nextState"))
+					transition(edgeName="t045",targetState="handleAlarm",cond=whenDispatch("alarm"))
 				}	 
 				state("handleAlarm") { //this:State
 					action { //it:State
@@ -43,7 +43,7 @@ class Clientsmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 								request("clientStateReq", "clientStateReq($ID)" ,"resourcemodel" )  
 						}
 					}
-					 transition(edgeName="t045",targetState="stayOrLeave",cond=whenReply("clientStateRep"))
+					 transition(edgeName="t046",targetState="stayOrLeave",cond=whenReply("clientStateRep"))
 				}	 
 				state("stayOrLeave") { //this:State
 					action { //it:State
@@ -73,7 +73,7 @@ class Clientsmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 								} 
 						request("notify", "notify($Temperature)" ,"smartbell" )  
 					}
-					 transition(edgeName="t046",targetState="handleReply",cond=whenReply("tempResult"))
+					 transition(edgeName="t047",targetState="handleReply",cond=whenReply("tempResult"))
 				}	 
 				state("handleReply") { //this:State
 					action { //it:State
@@ -90,8 +90,8 @@ class Clientsmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 				state("waitToEnter") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t147",targetState="wait",cond=whenDispatch("inform"))
-					transition(edgeName="t148",targetState="enter",cond=whenDispatch("accept"))
+					 transition(edgeName="t148",targetState="wait",cond=whenDispatch("inform"))
+					transition(edgeName="t149",targetState="enter",cond=whenDispatch("accept"))
 				}	 
 				state("wait") { //this:State
 					action { //it:State
@@ -123,7 +123,7 @@ class Clientsmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 								request("clientStateReq", "clientStateReq($ID)" ,"resourcemodel" )  
 						}
 					}
-					 transition(edgeName="t049",targetState="progressClientState",cond=whenReply("clientStateRep"))
+					 transition(edgeName="t050",targetState="progressClientState",cond=whenReply("clientStateRep"))
 				}	 
 				state("progressClientState") { //this:State
 					action { //it:State
@@ -177,12 +177,12 @@ class Clientsmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 				state("makeOrder") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t050",targetState="progressClientState",cond=whenEvent("nextState"))
+					 transition(edgeName="t051",targetState="progressClientState",cond=whenEvent("nextState"))
 				}	 
 				state("pay") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t051",targetState="progressClientState",cond=whenEvent("nextState"))
+					 transition(edgeName="t052",targetState="progressClientState",cond=whenEvent("nextState"))
 				}	 
 				state("exit") { //this:State
 					action { //it:State

@@ -28,8 +28,8 @@ class Timersmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					action { //it:State
 						println("[TIMERS MANAGER] Waiting for new requests")
 					}
-					 transition(edgeName="t052",targetState="timer",cond=whenDispatch("startTimer"))
-					transition(edgeName="t053",targetState="timer",cond=whenDispatch("cancelTimer"))
+					 transition(edgeName="t053",targetState="timer",cond=whenDispatch("startTimer"))
+					transition(edgeName="t054",targetState="timer",cond=whenDispatch("cancelTimer"))
 				}	 
 				state("timer") { //this:State
 					action { //it:State

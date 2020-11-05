@@ -64,7 +64,7 @@ function updateTablesState(table1, table2) {
 function updateTableCleaningState(table1, table2) {
     //Se il tavolo e' in fase di pulizia si aggiorna la mappa per informare il manager
     if(table1.state == "dirty") {
-        var generated = "<img src=\"cleanIcon.png\" style=\"margin-top: 5px; margin-bottom: -2px; height: 30px;\"></img>";
+        var generated = "<img src=\"cleanIcon.png\" style=\"height: 30px;\"></img>";
         var tempoResiduo = parseInt(table1.remainingTime/1000);
         var percDone = Math.round(mapRange(0, 60, 0, 100, tempoResiduo));
         var percUndone = percDone;
@@ -74,7 +74,7 @@ function updateTableCleaningState(table1, table2) {
         document.getElementById("cell23").style.background= "linear-gradient(to bottom, rgb(252, 222, 221) "+percDone+"%,  rgb(225, 254, 255) "+percUndone+"%)";
     }
     if(table2.state == "dirty") {
-        var generated = "<img src=\"cleanIcon.png\" style=\"margin-top: 5px; margin-bottom: -2px; height: 30px;\"></img>";
+        var generated = "<img src=\"cleanIcon.png\" style=\"height: 30px;\"></img>";
         var tempoResiduo = parseInt(table2.remainingTime/1000);
         var percDone = Math.round(mapRange(0, 60, 0, 100, tempoResiduo));
         var percUndone = percDone;
@@ -94,11 +94,11 @@ function mapRange (in_min, in_max, out_min, out_max, input) {
  */
 function updateClientsInTable(teatable1, teatable2) {
     if(teatable1.seatedClient != "-1" && teatable1.state == "busy") {
-        var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\" style=\"margin-top: 10px; margin-bottom: -2px; height: 120%;\"></i>&nbsp;"+teatable1.seatedClient;
+        var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\"></i>&nbsp;"+teatable1.seatedClient;
         document.getElementById("cell23").innerHTML = generated; 
     }
     if(teatable2.seatedClient != "-1" && teatable2.state == "busy") {
-        var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\" style=\"margin-top: 10px; margin-bottom: -2px; height: 120%;\"></i>&nbsp;"+teatable2.seatedClient;
+        var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\"></i>&nbsp;"+teatable2.seatedClient;
         document.getElementById("cell43").innerHTML = generated; 
     }
 }
@@ -118,7 +118,7 @@ function updateMap(cols, rows, direction) {
         }  
     }
     direction = direction.replace("Dir", "");
-    document.getElementById(nomeCella).innerHTML = "<strong>R</strong> <i class='fa fa-long-arrow-"+direction+"'></i>";
+    document.getElementById(nomeCella).innerHTML = "<i class='fa fa-chevron-circle-"+direction+" fa-lg'></i>";
 }
 
 

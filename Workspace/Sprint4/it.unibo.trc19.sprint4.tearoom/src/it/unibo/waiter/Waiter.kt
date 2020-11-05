@@ -26,6 +26,9 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				var RemainingTime = 0L
 				var ActiveTimer = 0L
 				var ReturningHome = false
+				var TeatableToClean = ""
+				var TeatableNumberToClean = ""
+				var WasCleaning = false
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -49,15 +52,20 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								if(  ReturningHome  
 								 ){forward("stopTask", "stopTask(0)" ,"planner" ) 
 								}
-								 ReturningHome = false  
+								else
+								 { ReturningHome = false  
+								 }
 								
-											CleaningTime = System.currentTimeMillis() - StartCleaning
-											if(CleaningTime < RemainingTime){
-												//non ho finito di pulire il tavolo
-												RemainingTime = RemainingTime - CleaningTime
+								 			if(WasCleaning) {
+												CleaningTime = System.currentTimeMillis() - StartCleaning
+												if(CleaningTime < RemainingTime){
+													//non ho finito di pulire il tavolo
+													RemainingTime = RemainingTime - CleaningTime
+													WasCleaning = false
 								forward("cancelTimer", "cancelTimer($ActiveTimer)" ,"timersmanager" ) 
-								forward("cleaningInterrupted", "cleaningInterrupted($RemainingTime,$TeatableNumber)" ,"resourcemodel" ) 
+								forward("cleaningInterrupted", "cleaningInterrupted($RemainingTime,$TeatableNumberToClean)" ,"resourcemodel" ) 
 								
+												}
 											}
 								 
 											WhatImDoing = payloadArg(0)
@@ -67,8 +75,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 												Teatable = "teatable" + TeatableNumber
 											}
 											if(WhatImDoing == "sanitizing") {
-												TeatableNumber = Misc.split('s')[1]
-												Teatable = "teatable" + TeatableNumber
+												TeatableNumberToClean = Misc.split('s')[1]
+												TeatableToClean = "teatable" + TeatableNumberToClean
 												RemainingTime = Misc.split('s')[2].toLong()
 											}
 								println("[WAITER] New task: $WhatImDoing")
@@ -99,8 +107,9 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								forward("returnHome", "returnHome(home)" ,"waiter" ) 
 								}	
 												"sanitizing" -> { 
-								forward("moveTo", "moveTo($Teatable)" ,"waiter" ) 
+								forward("moveTo", "moveTo($TeatableToClean)" ,"waiter" ) 
 								}
+									
 									
 												"stepAhead" -> { 
 								forward("doMove", "doMove(w)" ,"planner" ) 
@@ -165,12 +174,13 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("cleanTable(T)"), Term.createTerm("cleanTable(T)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								TeatableNumber = payloadArg(0) 
-								println("[WAITER] Cleaning $Teatable!")
+								TeatableNumberToClean = payloadArg(0) 
+								println("[WAITER] Cleaning $TeatableToClean!")
 								
 												StartCleaning = System.currentTimeMillis()
 												ActiveTimer = StartCleaning
-								forward("startTimer", "startTimer($StartCleaning,waiter,alarm,$TeatableNumber,$RemainingTime)" ,"timersmanager" ) 
+												WasCleaning = true
+								forward("startTimer", "startTimer($StartCleaning,waiter,alarm,$TeatableNumberToClean,$RemainingTime)" ,"timersmanager" ) 
 						}
 					}
 					 transition(edgeName="t017",targetState="endCleaning",cond=whenDispatch("alarm"))
@@ -180,8 +190,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("alarm(ID)"), Term.createTerm("alarm(P)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								TeatableNumber = payloadArg(0) 
-								forward("taskDone", "taskDone(sanitizing,$TeatableNumber)" ,"resourcemodel" ) 
+								TeatableNumberToClean = payloadArg(0) 
+								forward("taskDone", "taskDone(sanitizing,$TeatableNumberToClean)" ,"resourcemodel" ) 
 						}
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
@@ -244,7 +254,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								forward("unlockClient", "unlockClient($TeatableNumber)" ,"resourcemodel" ) 
 								 } 
 												"sanitizing" ->  {
-								forward("cleanTable", "cleanTable($TeatableNumber)" ,"waiter" ) 
+								forward("cleanTable", "cleanTable($TeatableNumberToClean)" ,"waiter" ) 
 								}
 												"forceExit" -> { 
 								forward("listenRequests", "listenRequests(1)" ,"waiter" ) 

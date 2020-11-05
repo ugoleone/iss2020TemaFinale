@@ -27,6 +27,7 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
+						println("[PLANNER] Waiting requests")
 						if(  !Configured  
 						 ){ Configured = true  
 						itunibo.planner.plannerUtil.initAI(  )
@@ -63,6 +64,7 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				}	 
 				state("walk") { //this:State
 					action { //it:State
+						 StopTask = false  
 						if( checkMsgContent( Term.createTerm("movetoCell(X,Y)"), Term.createTerm("movetoCell(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 XT = payloadArg(0)
@@ -96,6 +98,8 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 			itunibo.planner.plannerUtil.resetActions()
 					}
 					 transition(edgeName="t035",targetState="execTheMove",cond=whenDispatch("doMove"))
+					transition(edgeName="t036",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
+					}))
 				}	 
 				state("execTheMove") { //this:State
 					action { //it:State
@@ -121,8 +125,8 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("waitStepDoneFail") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t136",targetState="updateCurrentWaiterPosDir",cond=whenReply("stepdone"))
-					transition(edgeName="t137",targetState="updateCurrentWaiterPosDir",cond=whenReply("stepfail"))
+					 transition(edgeName="t137",targetState="updateCurrentWaiterPosDir",cond=whenReply("stepdone"))
+					transition(edgeName="t138",targetState="updateCurrentWaiterPosDir",cond=whenReply("stepfail"))
 				}	 
 				state("updateCurrentWaiterPosDir") { //this:State
 					action { //it:State
