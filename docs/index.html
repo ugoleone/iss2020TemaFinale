@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="HTMLResources/css/webProj.css">
+    <script src="HTMLResources/js/modal.js"></script>
     <style>
         body {
           font-family: 'Montserrat', sans-serif;
@@ -95,7 +96,7 @@
         <div class="w3-panel" id="progetto">
           <h1 class="w3-center">Progetto</h1>
           <p class="w3-large">
-            La metodologia di approccio allo sviluppo del progetto è stata di tipo agile, in particolare tramite framework <a href="https://www.scrum.org/resources/scrum-guide">SCRUM</a>. Questo ha consentito di dividere il lavoro richiesto dai <a href="Requisiti/Requisiti.html">requisiti</a> in 4 sprint:
+            La metodologia di approccio allo sviluppo del progetto è stata di tipo agile, in particolare tramite framework <a href="https://www.scrum.org/resources/scrum-guide">SCRUM</a>. Questo ha consentito di dividere il lavoro richiesto dai <a href="Requisiti/Requisiti.html">requisiti</a> in 4 sprint, partendo dall'<a href="Analisi/analisi.html">analisi dei requisiti</a> e impiegando i metodi di progettazione e sviluppo visti nel corso.
           </p>
           <div class="w3-row-padding w3-center">
             <div class="w3-col l6 w3-padding-large">
@@ -125,17 +126,16 @@
         <div class="w3-panel" id="specifiche">
             <h1 class="w3-center">Specifiche</h1>
             
+            <!-- View del manager -->
             <h2 class="w3-text-grey">View del manager</h2>
             <div class="w3-row-padding w3-center">
               <div class="w3-col l6 w3-padding-large">
-                <img src="HTMLResources/img/guiScreen.png" id="myImg" class="w3-round w3-image" alt="gui preview" width="600" height="750">
-                <!-- The Modal -->
-                <div id="myModal" class="modal">
-                  <span class="close">&times;</span>
-                  <img class="modal-content" id="img01">
-                  <!--<div id="caption"></div>-->
+                <img src="HTMLResources/img/guiScreen.png" id="img1" class="w3-round w3-image modalImg" alt="gui preview" width="600" height="750">
+                <div id="modal1" class="modal">
+                  <span id="closer1" class="close">&times;</span>
+                  <img class="modal-content" id="modalImg1">
                 </div>
-                <script src="HTMLResources/js/modal.js"></script>
+                <script>setModal("modal1", "img1", "modalImg1", "closer1")</script>
               </div>
               <div class="w3-col l6 w3-padding-large">
                 <p class="w3-justify">La view del manager è una pagina web che consente al manager di consultare lo stato complessivo del sistema, in particolare permette di conoscere:</p>
@@ -152,6 +152,7 @@
               </div>
             </div>
 
+            <!-- Architettura esagonale -->
             <h2 class="w3-text-grey">Architettura esagonale</h2>
             <div class="w3-row-padding w3-center">
               <div class="w3-col l6 w3-padding-large">
@@ -163,9 +164,60 @@
                 </p>
               </div>
               <div class="w3-col l6 w3-padding-large">
-                <img src="HTMLResources/img/architecture.png" class="w3-round w3-image" alt="architecture preview" width="600" height="750">
+                <img src="HTMLResources/img/architecture.png" id="img2" class="w3-round w3-image modalImg" alt="architecture preview" width="600" height="750">
+                <div id="modal2" class="modal" style="background-color: rgba(255,255,255,0.9);">
+                  <span id="closer2" class="close">&times;</span>
+                  <img class="modal-content" id="modalImg2" style="width: 70%;">
+                </div>
+                <script>setModal("modal2", "img2", "modalImg2", "closer2")</script>
               </div>
             </div>
+
+            <!-- Gestione del tempo -->
+            <h2 class="w3-text-grey">Gestione del tempo</h2>
+            <div class="w3-row-padding w3-center">
+              <div class="w3-col l6 w3-padding-large">
+                <img src="HTMLResources/img/architecture.png" id="img3" class="w3-round w3-image modalImg" alt="architecture preview" width="600" height="750">
+                <div id="modal3" class="modal" style="background-color: rgba(255,255,255,0.9);">
+                  <span id="closer3" class="close">&times;</span>
+                  <img class="modal-content" id="modalImg3" style="width: 70%;">
+                </div>
+                <script>setModal("modal3", "img3", "modalImg3", "closer3")</script>
+              </div>
+              <div class="w3-col l6 w3-padding-large">
+                <p class="w3-justify">
+                  Per soddisfare alcuni dei requisiti richiesti è stato necessario tenere sotto controllo lo scorrere del tempo, così da poter attivare alcune azioni ad esso legate come, per esempio, l'impedire ad un cliente di restare troppo a lungo nella sala da the.
+                </p>
+                <p class="w3-justify">
+                  Pertanto si è introdotto un attore timersmanager, atto a realizzare, tramite coroutines, timer concorrenti e bloccabili. In questo modo gli si può richiedere di attivare in qualsiasi momento un timer decidendo cosa fare allo scadere del tempo.
+                </p>
+              </div>
+            </div>
+
+            <!-- Planner -->
+            <h2 class="w3-text-grey">Planner interrompibile</h2>
+            <div class="w3-row-padding w3-center">
+              <div class="w3-col l6 w3-padding-large">
+                <p class="w3-justify">
+                  Data una rappresentazione dello spazio in cui muoversi (una mappa della stanza) il waiter è il grado di trovare ed eseguire autonomamente il percorso più breve per spostarsi tra due punti.
+                </p>
+                <p class="w3-justify">
+                  Qualora inoltre sia presente un ostacolo nella sala da the il robot è in grado di fermarsi prima di sbattere contro di esso.
+                </p>
+                <p class="w3-justify">
+                  In fine è possibile interrompere il percorso in esecuzione, ad esempio quando il waiter ha necessità di dedicarsi a task più prioritari.
+                </p>
+              </div>
+              <div class="w3-col l6 w3-padding-large">
+                <img src="HTMLResources/img/architecture.png" id="img4" class="w3-round w3-image modalImg" alt="architecture preview" width="600" height="750">
+                <div id="modal4" class="modal" style="background-color: rgba(255,255,255,0.9);">
+                  <span id="closer4" class="close">&times;</span>
+                  <img class="modal-content" id="modalImg4">
+                </div>
+                <script>setModal("modal4", "img4", "modalImg4", "closer4")</script>
+              </div>
+            </div>
+
         </div>
     
         
@@ -189,11 +241,13 @@
             <img class="w3-circle w3-center" src="HTMLResources/img/ugo3.jpg" style="width:45%">
             <p>Ugo Leone Cavalcanti</p>
             <a href="MAILTO:ugoleone.cavalcanti@studio.unibo.it">ugoleone.cavalcanti@studio.unibo.it</a>
+            <p></p>
           </div>
           <div class="w3-container w3-third w3-center">
             <img class="w3-circle w3-center" src="HTMLResources/img/amir.jpg" style="width:45%">
             <p>Amir Al Sadi</p>
             <a href="MAILTO:amir.alsadi@studio.unibo.it">amir.alsadi@studio.unibo.it</a>
+            <p></p>
           </div>
           <div class="w3-container w3-third w3-center">
             <img class="w3-circle w3-center" src="HTMLResources/img/nik2.jpeg" style="width:45%">
