@@ -6,6 +6,7 @@
     <title>TRC19</title>
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="HTMLResources/css/webProj.css">
     <style>
         body {
           font-family: 'Montserrat', sans-serif;
@@ -29,6 +30,7 @@
         <span class="w3-bar-item w3-left">Tearoom Covid-19</span>
         <div class="w3-right w3-hide-small">
             <a href="#demo" class="w3-bar-item w3-button">Demo</a>
+            <a href="#progetto" class="w3-bar-item w3-button">Progetto</a>
             <a href="#specifiche" class="w3-bar-item w3-button">Specifiche</a>
             <a href="#build" class="w3-bar-item w3-button">Build</a>
             <a href="#crediti" class="w3-bar-item w3-button">Team</a>
@@ -88,11 +90,81 @@
 
         <hr>
 
+
+        <!-- Progetto -->
+        <div class="w3-panel" id="progetto">
+          <h1 class="w3-center">Progetto</h1>
+          <p class="w3-large">
+            La metodologia di approccio allo sviluppo del progetto è stata di tipo agile, in particolare tramite framework <a href="https://www.scrum.org/resources/scrum-guide">SCRUM</a>. Questo ha consentito di dividere il lavoro richiesto dai <a href="Requisiti/Requisiti.html">requisiti</a> in 4 sprint:
+          </p>
+          <div class="w3-row-padding w3-center">
+            <div class="w3-col l6 w3-padding-large">
+              <p class="w3-large"><strong><a href="Sprint1/sprint1.html">Sprint 1</a></strong></p>
+              <p class="w3-text-grey">Versione iniziale del sistema con soltanto un cliente, così da iniziare ad avere una prima visione d'insieme.</p>
+            </div>
+            <div class="w3-col l6 w3-padding-large">
+              <p class="w3-large"><strong><a href="Sprint2/sprint2.html">Sprint 2</a></strong></p>
+              <p class="w3-text-grey">Incentrato sulla definizione dello stato della stanza, introducendo un’architettura esagonale ed il pannello di controllo per il manager.</p>
+            </div>
+          </div>
+          <div class="w3-row-padding w3-center">
+            <div class="w3-col l6 w3-padding-large">
+              <p class="w3-large"><strong><a href="Sprint3/sprint3.html">Sprint 3</a></strong></p>
+              <p class="w3-text-grey">Incentrato sulla gestione di più clienti presenti contemporaneamente nella stanza e sui controlli relativi al tempo di permanenza nel sistema.</p>
+            </div>
+            <div class="w3-col l6 w3-padding-large">
+              <p class="w3-large"><strong><a href="Sprint4/sprint4.html">Sprint 4</a></strong></p>
+              <p class="w3-text-grey">Dedicato al deployment del sistema sui robot fisici e sulla possibilità di avere dei task interrompibili da parte del waiter.</p>
+            </div>
+          </div>
+        </div>
+
+        <hr>
         
         <!-- Specifiche -->
         <div class="w3-panel" id="specifiche">
             <h1 class="w3-center">Specifiche</h1>
+            
+            <h2 class="w3-text-grey">View del manager</h2>
             <div class="w3-row-padding w3-center">
+              <div class="w3-col l6 w3-padding-large">
+                <img src="HTMLResources/img/guiScreen.png" id="myImg" class="w3-round w3-image" alt="gui preview" width="600" height="750">
+                <!-- The Modal -->
+                <div id="myModal" class="modal">
+                  <span class="close">&times;</span>
+                  <img class="modal-content" id="img01">
+                  <!--<div id="caption"></div>-->
+                </div>
+                <script src="HTMLResources/js/modal.js"></script>
+              </div>
+              <div class="w3-col l6 w3-padding-large">
+                <p class="w3-justify">La view del manager è una pagina web che consente al manager di consultare lo stato complessivo del sistema, in particolare permette di conoscere:</p>
+                <ul class="w3-justify">
+                  <li>Posizione degli elementi nella stanza</li>
+                  <li>Posizione corrente del waiter</li>
+                  <li>Attività in cui è impegnato waiter</li>
+                  <li>Stato dei tavoli</li>
+                  <li>Identificativo dei clienti attualmente dentro la stanza</li>
+                  <li>Attività in cui è impegnato il Barman</li>
+                  <li>Eventuali statistiche del sistema</li>
+                </ul>
+                <p class="w3-justify">La GUI fornisce, inoltre, la possibilità di <strong>comandare manualmente il robot</strong>, visualizzare la mappa relativa al robot virtuale oppure la telecamera di bordo del robot DDR.</p>
+              </div>
+            </div>
+
+            <h2 class="w3-text-grey">Architettura esagonale</h2>
+            <div class="w3-row-padding w3-center">
+              <div class="w3-col l6 w3-padding-large">
+                <p class="w3-justify">
+                  L'aver adottato un'architettura esagonale permette di poter sviluppare e inserire facilmente nell’applicazione nuovi servizi, impiegando porte e adattatori. Questo pattern consente inoltre di donare scalabilità e flessibilità al sistema, sia in termini di servizi utilizzati che manutenzione degli stessi.
+                </p>
+                <p class="w3-justify">
+                  Per quanto riguarda il modello si è scelto di implementare una base di conoscenza Prolog, ciò ha consentito di beneficiare di una forte capacità espressiva ed una buona scalabilità, un esempio concreto lo si ha avuto durante lo <a href="Sprint3/sprint3.html">sprint 3</a> nell'aggiungere la presenza in contemporanea di più clienti.
+                </p>
+              </div>
+              <div class="w3-col l6 w3-padding-large">
+                <img src="HTMLResources/img/architecture.png" class="w3-round w3-image" alt="architecture preview" width="600" height="750">
+              </div>
             </div>
         </div>
     
