@@ -272,7 +272,7 @@
                     <center><img src="img/basicrobotproject.png" width="50%"></center>
                     </br>
 
-                    Per quanto riguarda la pianificazione dei percorsi è già disponibile nella nostra software-house anche un <a href="https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.planner20/resources/itunibo/planner/plannerUtil.kt">planner</a> già compatibile con il basicrobot.
+                    Per quanto riguarda la pianificazione dei percorsi è già disponibile nella nostra software-house anche un <a href="https://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.planner20/resources/itunibo/planner/plannerUtil.kt">planner</a> già compatibile con il basicrobot.
                     
 
                 </p>
@@ -415,10 +415,10 @@
 
             Per una definizione formale di tutta la struttura, l'interazione ed il comportamento si rimanda alla definizione dei QActor:
             <ul>
-                <li><a href="../../Workspace/Sprint1/it.unibo.trc19.sprint1.waiter/src/waiter.qak">waiter.qak</a></li>
-                <li><a href="../../Workspace/Sprint1/it.unibo.trc19.sprint1.client/src/client.qak">client.qak</a></li>
-                <li><a href="../../Workspace/Sprint1/it.unibo.trc19.sprint1.smartbell/src/smartbell.qak">smartbell.qak</a></li>
-                <li><a href="../../Workspace/Sprint1/it.unibo.trc19.sprint1.barman/src/barman.qak">barman.qak</a></li>
+                <li><a href="https://raw.githubusercontent.com/ugoleone/iss2020TemaFinale/master/Workspace/Sprint1/it.unibo.trc19.sprint1.waiter/src/waiter.qak">waiter.qak</a></li>
+                <li><a href="https://raw.githubusercontent.com/ugoleone/iss2020TemaFinale/master/Workspace/Sprint1/it.unibo.trc19.sprint1.clientsimulator/src/clientsimulator.qak">clientsimulator.qak</a></li>
+                <li><a href="https://raw.githubusercontent.com/ugoleone/iss2020TemaFinale/master/Workspace/Sprint1/it.unibo.trc19.sprint1.smartbell/src/smartbell.qak">smartbell.qak</a></li>
+                <li><a href="https://raw.githubusercontent.com/ugoleone/iss2020TemaFinale/master/Workspace/Sprint1/it.unibo.trc19.sprint1.barman/src/barman.qak">barman.qak</a></li>
             </ul>
              
             
@@ -431,21 +431,21 @@
                 I test sono stati svolti analizzando il flusso delle interazioni fra i vari attori del sistema,
                 concentrandosi particolarmente sul movimento del <bc>waiter</bc>. La logica di confronto è 
                 basata sull'osservazione della composizione della mappa dopo ogni spostamento del robot e il test è 
-                svolto confrontando la mappa al momento del test (ottenuta tramite il riferimento in <a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/resources/itunibo/planner/plannerUtil.kt">plannerUtil.kt</a>)
+                svolto confrontando la mappa al momento del test (ottenuta tramite il riferimento in <a href="https://raw.githubusercontent.com/ugoleone/iss2020TemaFinale/master/Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.tearoom/resources/itunibo/planner/plannerUtil.kt">plannerUtil.kt</a>)
                 e la mappa che ci si aspettava in quel momento.<br></br>
                 Per motivi di testing, tutte le entità esterne al <bc>waiter</bc> sono state rese attori senza logica applicativa. Tutti gli attori sono inseriti
-                nel contesto del <bc>waiter</bc> (si guardi <a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.tearoom/src/tearoom.qak">tearoom.qak</a>).</br>
+                nel contesto del <bc>waiter</bc> (si guardi <a href="https://raw.githubusercontent.com/ugoleone/iss2020TemaFinale/master/Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.tearoom/src/tearoom.qak">tearoom.qak</a>).</br>
                 Nello specifico, <b>le classi di test sono</b>:
                 <ol>
-                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterConvoyEntrance.kt">TestWaiterConvoyEntrance.kt</a> verifica che il <bc>waiter</bc>
+                    <li><a href="https://raw.githubusercontent.com/ugoleone/iss2020TemaFinale/master/Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.tearoom/test/TestWaiterConvoyEntrance.kt">TestWaiterConvoyEntrance.kt</a> verifica che il <bc>waiter</bc>
                     compia correttamente le azioni di <em>reach</em>, <em>convoy</em> all'ingresso e successivo ritorno alla <em>home</em>.</li>
-                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterDrinkOrder.kt">TestWaiterDrinkOrder.kt</a> verifica che il <bc>waiter</bc>
+                    <li><a href="https://raw.githubusercontent.com/ugoleone/iss2020TemaFinale/master/Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.tearoom/test/TestWaiterDrinkOrder.kt">TestWaiterDrinkOrder.kt</a> verifica che il <bc>waiter</bc>
                     compia correttamente le azioni di <em>readyToOrder</em> (che implica raggiungimento del tavolo del <bc>client</bc>), <em>take</em>, <em>order</em> e successivo ritorno alla <em>home</em>.</li>
-                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterBringingDrink.kt">TestWaiterBringingDrink.kt</a> verifica che il <bc>waiter</bc>
+                    <li><a href="https://raw.githubusercontent.com/ugoleone/iss2020TemaFinale/master/Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.tearoom/test/TestWaiterBringingDrink.kt">TestWaiterBringingDrink.kt</a> verifica che il <bc>waiter</bc>
                     compia correttamente la <em>serve</em> (che implica che il <bc>barman</bc> gli abbia notificato una <em>ready</em>), e successivo ritorno alla <em>home</em>.</li>
-                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterPaymentExit.kt">TestWaiterPaymentExit.kt</a> verifica che il <bc>waiter</bc>
+                    <li><a href="https://raw.githubusercontent.com/ugoleone/iss2020TemaFinale/master/Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.tearoom/test/TestWaiterPaymentExit.kt">TestWaiterPaymentExit.kt</a> verifica che il <bc>waiter</bc>
                         compia correttamente le azioni di <em>collect</em>, <em>payment</em>, <em>convoy</em> in uscita e successivo ritorno alla <em>home</em>.</li>
-                    <li><a href="../../Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.waiter/test/TestWaiterComplessivo.kt">TestWaiterComplessivo.kt</a> esegue in successione i precedenti test,
+                    <li><a href="https://raw.githubusercontent.com/ugoleone/iss2020TemaFinale/master/Workspace/Sprint1/Test/it.unibo.trc19.sprint1.test.tearoom/test/TestWaiterComplessivo.kt">TestWaiterComplessivo.kt</a> esegue in successione i precedenti test,
                         simulando tutto il flow del <bc>client</bc> all'interno del sistema.</li>        
                 </ol>
             </br>
