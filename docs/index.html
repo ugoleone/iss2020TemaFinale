@@ -4,10 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TRC19</title>
+    <meta name="description" content="Robot in grado di gestire autonomamente una sala da the ai tempi del COVID-19."/> <!-- 150 chars -->
+    <meta property="og:title" content="Tearoom Covid-19"/>
+    <meta property="og:description" content="Robot in grado di gestire autonomamente una sala da the ai tempi del COVID-19. Prende gli ordini, li serve, sanifica i tavoli e misura la febbre ai clienti prima che entrino."/> <!-- 300 chars -->
+    <meta property="og:site_name" content="Tearoom Covid-19 - Project Overview"/>
+    <meta property="og:locale" content="it_IT"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:url" content="ugoleone.github.io/iss2020temafinale/"/>
+    <meta property="og:image:secure_url" itemprop="image" content="ugoleone.github.io/iss2020temafinale/HTMLResources/img/webHeader.png"/>
+    <link rel="icon" 
+      type="image/png" 
+      href="HTMLResources/img/favicon.png"/>
+
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="HTMLResources/css/webProj.css">
     <script src="HTMLResources/js/modal.js"></script>
+    
     <style>
         body {
           font-family: 'Montserrat', sans-serif;
@@ -27,235 +40,235 @@
 </head>
 <body>
     <!-- Navbar -->
-    <div class="w3-bar w3-top w3-blue-grey w3-large w3-round-small w3-opacity" style="z-index:4">
-        <span class="w3-bar-item w3-left">Tearoom Covid-19</span>
-        <div class="w3-right w3-hide-small">
-            <a href="#demo" class="w3-bar-item w3-button">Demo</a>
-            <a href="#progetto" class="w3-bar-item w3-button">Progetto</a>
-            <a href="#specifiche" class="w3-bar-item w3-button">Specifiche</a>
-            <a href="#build" class="w3-bar-item w3-button">Build</a>
-            <a href="#crediti" class="w3-bar-item w3-button">Team</a>
-          </div>
+    <div class="w3-bar w3-top w3-blue-grey w3-large w3-round-small w3-opacity" style="z-index:4; max-width:1600px;min-width:300px">
+      <span class="w3-bar-item w3-left">Tearoom Covid-19</span>
+      <div class="w3-right w3-hide-small">
+          <a href="#demo" class="w3-bar-item w3-button">Demo</a>
+          <a href="#progetto" class="w3-bar-item w3-button">Progetto</a>
+          <a href="#specifiche" class="w3-bar-item w3-button">Specifiche</a>
+          <a href="#build" class="w3-bar-item w3-button">Build</a>
+          <a href="#crediti" class="w3-bar-item w3-button">Team</a>
+        </div>
     </div>
     
     <!-- Header -->
-    <header class="w3-display-container w3-content w3-wide" style="max-width:100%;min-width:500px" id="home">
+    <header class="w3-display-container w3-content w3-wide" style="max-width:1600px;min-width:300px" id="home">
         <img class="w3-image" src="HTMLResources/img/webHeader.png" alt="robotHeader" width="1600" height="800">
     </header>
 
 
     <!-- Page content -->
-    <div class="w3-content" style="max-width:1100px">
+    <div class="w3-content" style="max-width:1100px;">
 
-        <!-- About Section -->
-        <div class="w3-row w3-padding-64" id="about">
-            <div class="w3-col m6 w3-padding-large w3-hide-small">
-                <img src="HTMLResources/img/overview.png" class="w3-round w3-image" style="margin-top: 100px;" alt="overview" width="600" height="750">
-            </div>
-
-            <div class="w3-col m6 w3-padding-large">
-                <h1 class="w3-center">Abstract</h1>
-                <p class="w3-large w3-text-grey">Il manager di una sala da the (tearoom) vorrebbe regolare l'accesso al servizio impiegando un DDR robot (waiter). Inoltre richiede di poterne visualizzare lo stato corrente (current state) tramite un browser connesso ad un server web associato all'applicazione.</p>
-                <p class="w3-large w3-text-grey">
-                    <a href="#">Analisi dei requisiti</a>
-                </p>
-                <p class="w3-large">
-                    Pertanto è stato realizzato un robot, ed il relativo sistema di supporto, che svolga tali funzionalità. In particolare, il robot creato è in grado di decidere automaticamente dove dirigersi e che mansioni svolgere, in relazione al comportamento dei clienti, all’interno di una sala da tè.
-                </p>
-            </div>
-        </div>
-
-        <hr>
-
-        <!-- Demo Section -->
-        <div class="w3-panel" id="demo">
-            <h1 class="w3-center">Demo</h1>
-            <div class="w3-row-padding w3-center">
-                <div class="w3-half w3-padding">
-                    <video width="400" controls>
-                        <source src="https://www.youtube.com/watch?v=0Eji8obIOjI" type="video/mp4">
-                        Your browser does not support HTML video.
-                      </video>
-                      <p class="w3-large"><i>Funzionamento con Virtual Robot</i></p>
-                </div>
-                <div class="w3-half w3-padding">
-                    <video width="400" controls>
-                        <source src="https://www.youtube.com/watch?v=0Eji8obIOjI" type="video/mp4">
-                        Your browser does not support HTML video.
-                      </video>
-                      <p class="w3-large"><i>Funzionamento con robot fisici</i></p>
-                </div>
-               
-            </div>
-        </div>
-
-        <hr>
-
-
-        <!-- Progetto -->
-        <div class="w3-panel" id="progetto">
-          <h1 class="w3-center">Progetto</h1>
-          <p class="w3-large">
-            La metodologia di approccio allo sviluppo del progetto è stata di tipo agile, in particolare tramite framework <a href="https://www.scrum.org/resources/scrum-guide">SCRUM</a>. Questo ha consentito di dividere il lavoro richiesto dai <a href="Requisiti/Requisiti.html">requisiti</a> in 4 sprint, partendo dall'<a href="Analisi/analisi.html">analisi dei requisiti</a> e impiegando i metodi di progettazione e sviluppo visti nel corso.
-          </p>
-          <div class="w3-row-padding w3-center">
-            <div class="w3-col l6 w3-padding-large">
-              <p class="w3-large"><strong><a href="Sprint1/sprint1.html">Sprint 1</a></strong></p>
-              <p class="w3-text-grey">Versione iniziale del sistema con soltanto un cliente, così da iniziare ad avere una prima visione d'insieme.</p>
-            </div>
-            <div class="w3-col l6 w3-padding-large">
-              <p class="w3-large"><strong><a href="Sprint2/sprint2.html">Sprint 2</a></strong></p>
-              <p class="w3-text-grey">Incentrato sulla definizione dello stato della stanza, introducendo un’architettura esagonale ed il pannello di controllo per il manager.</p>
-            </div>
+      <!-- About Section -->
+      <div class="w3-row w3-padding-64" id="about">
+          <div class="w3-col m6 w3-padding-large w3-hide-small">
+              <img src="HTMLResources/img/overview.png" class="w3-round w3-image" style="margin-top: 100px;" alt="overview" width="600" height="750">
           </div>
+
+          <div class="w3-col m6 w3-padding-large">
+              <h1 class="w3-center">Abstract</h1>
+              <p class="w3-large w3-text-grey">Il manager di una sala da the (tearoom) vorrebbe regolare l'accesso al servizio impiegando un DDR robot (waiter). Inoltre richiede di poterne visualizzare lo stato corrente (current state) tramite un browser connesso ad un server web associato all'applicazione.</p>
+              <p class="w3-large w3-text-grey">
+                  <a href="#">Analisi dei requisiti</a>
+              </p>
+              <p class="w3-large">
+                  Pertanto è stato realizzato un robot, ed il relativo sistema di supporto, che svolga tali funzionalità. In particolare, il robot creato è in grado di decidere automaticamente dove dirigersi e che mansioni svolgere, in relazione al comportamento dei clienti, all’interno di una sala da tè.
+              </p>
+          </div>
+      </div>
+
+      <hr>
+
+      <!-- Demo Section -->
+      <div class="w3-panel" id="demo">
+          <h1 class="w3-center">Demo</h1>
           <div class="w3-row-padding w3-center">
-            <div class="w3-col l6 w3-padding-large">
-              <p class="w3-large"><strong><a href="Sprint3/sprint3.html">Sprint 3</a></strong></p>
-              <p class="w3-text-grey">Incentrato sulla gestione di più clienti presenti contemporaneamente nella stanza e sui controlli relativi al tempo di permanenza nel sistema.</p>
-            </div>
-            <div class="w3-col l6 w3-padding-large">
-              <p class="w3-large"><strong><a href="Sprint4/sprint4.html">Sprint 4</a></strong></p>
-              <p class="w3-text-grey">Dedicato al deployment del sistema sui robot fisici e sulla possibilità di avere dei task interrompibili da parte del waiter.</p>
-            </div>
+              <div class="w3-half w3-padding">
+                  <video controls style="width: 80%;">
+                      <source src="https://www.youtube.com/watch?v=0Eji8obIOjI" type="video/mp4">
+                      Your browser does not support HTML video.
+                    </video>
+                    <p class="w3-large"><i>Funzionamento con Virtual Robot</i></p>
+              </div>
+              <div class="w3-half w3-padding">
+                  <video controls style="width: 80%;">
+                      <source src="https://www.youtube.com/watch?v=0Eji8obIOjI" type="video/mp4">
+                      Your browser does not support HTML video.
+                    </video>
+                    <p class="w3-large"><i>Funzionamento con robot fisici</i></p>
+              </div>
+              
+          </div>
+      </div>
+
+      <hr>
+
+
+      <!-- Progetto -->
+      <div class="w3-panel" id="progetto">
+        <h1 class="w3-center">Progetto</h1>
+        <p class="w3-large">
+          La metodologia di approccio allo sviluppo del progetto è stata di tipo agile, in particolare tramite framework <a href="https://www.scrum.org/resources/scrum-guide">SCRUM</a>. Questo ha consentito di dividere il lavoro richiesto dai <a href="Requisiti/Requisiti.html">requisiti</a> in 4 sprint, partendo dall'<a href="Analisi/analisi.html">analisi dei requisiti</a> e impiegando i metodi di progettazione e sviluppo visti nel corso.
+        </p>
+        <div class="w3-row-padding w3-center">
+          <div class="w3-col l6 w3-padding-large">
+            <p class="w3-large"><strong><a href="Sprint1/sprint1.html">Sprint 1</a></strong></p>
+            <p class="w3-text-grey">Versione iniziale del sistema con soltanto un cliente, così da iniziare ad avere una prima visione d'insieme.</p>
+          </div>
+          <div class="w3-col l6 w3-padding-large">
+            <p class="w3-large"><strong><a href="Sprint2/sprint2.html">Sprint 2</a></strong></p>
+            <p class="w3-text-grey">Incentrato sulla definizione dello stato della stanza, introducendo un’architettura esagonale ed il pannello di controllo per il manager.</p>
           </div>
         </div>
-
-        <hr>
-        
-        <!-- Specifiche -->
-        <div class="w3-panel" id="specifiche">
-            <h1 class="w3-center">Specifiche</h1>
-            
-            <!-- View del manager -->
-            <h2 class="w3-text-grey">View del manager</h2>
-            <div class="w3-row-padding w3-center">
-              <div class="w3-col l6 w3-padding-large">
-                <img src="HTMLResources/img/guiScreen.png" id="img1" class="w3-round w3-image modalImg" alt="gui preview" width="600" height="750">
-                <div id="modal1" class="modal">
-                  <span id="closer1" class="close">&times;</span>
-                  <img class="modal-content" id="modalImg1">
-                </div>
-                <script>setModal("modal1", "img1", "modalImg1", "closer1")</script>
-              </div>
-              <div class="w3-col l6 w3-padding-large">
-                <p class="w3-justify">La view del manager è una pagina web che consente al manager di consultare lo stato complessivo del sistema, in particolare permette di conoscere:</p>
-                <ul class="w3-justify">
-                  <li>Posizione degli elementi nella stanza</li>
-                  <li>Posizione corrente del waiter</li>
-                  <li>Attività in cui è impegnato waiter</li>
-                  <li>Stato dei tavoli</li>
-                  <li>Identificativo dei clienti attualmente dentro la stanza</li>
-                  <li>Attività in cui è impegnato il Barman</li>
-                  <li>Eventuali statistiche del sistema</li>
-                </ul>
-                <p class="w3-justify">La GUI fornisce, inoltre, la possibilità di <strong>comandare manualmente il robot</strong>, visualizzare la mappa relativa al robot virtuale oppure la telecamera di bordo del robot DDR.</p>
-              </div>
-            </div>
-
-            <!-- Architettura esagonale -->
-            <h2 class="w3-text-grey">Architettura esagonale</h2>
-            <div class="w3-row-padding w3-center">
-              <div class="w3-col l6 w3-padding-large">
-                <p class="w3-justify">
-                  L'aver adottato un'architettura esagonale permette di poter sviluppare e inserire facilmente nell’applicazione nuovi servizi, impiegando porte e adattatori. Questo pattern consente inoltre di donare scalabilità e flessibilità al sistema, sia in termini di servizi utilizzati che manutenzione degli stessi.
-                </p>
-                <p class="w3-justify">
-                  Per quanto riguarda il modello si è scelto di implementare una base di conoscenza Prolog, ciò ha consentito di beneficiare di una forte capacità espressiva ed una buona scalabilità, un esempio concreto lo si ha avuto durante lo <a href="Sprint3/sprint3.html">sprint 3</a> nell'aggiungere la presenza in contemporanea di più clienti.
-                </p>
-              </div>
-              <div class="w3-col l6 w3-padding-large">
-                <img src="HTMLResources/img/sitoweb-archesagonale.png" id="img2" class="w3-round w3-image modalImg" alt="architecture preview" width="600" height="750">
-                <div id="modal2" class="modal" style="background-color: rgba(255,255,255,0.9);">
-                  <span id="closer2" class="close">&times;</span>
-                  <img class="modal-content" id="modalImg2" style="width: 70%;">
-                </div>
-                <script>setModal("modal2", "img2", "modalImg2", "closer2")</script>
-              </div>
-            </div>
-
-            <!-- Gestione del tempo -->
-            <h2 class="w3-text-grey">Gestione del tempo</h2>
-            <div class="w3-row-padding w3-center">
-              <div class="w3-col l6 w3-padding-large">
-                <img src="HTMLResources/img/architecture.png" id="img3" class="w3-round w3-image modalImg" alt="architecture preview" width="600" height="750">
-                <div id="modal3" class="modal" style="background-color: rgba(255,255,255,0.9);">
-                  <span id="closer3" class="close">&times;</span>
-                  <img class="modal-content" id="modalImg3" style="width: 70%;">
-                </div>
-                <script>setModal("modal3", "img3", "modalImg3", "closer3")</script>
-              </div>
-              <div class="w3-col l6 w3-padding-large">
-                <p class="w3-justify">
-                  Per soddisfare alcuni dei requisiti richiesti è stato necessario tenere sotto controllo lo scorrere del tempo, così da poter attivare alcune azioni ad esso legate come, per esempio, l'impedire ad un cliente di restare troppo a lungo nella sala da the.
-                </p>
-                <p class="w3-justify">
-                  Pertanto si è introdotto un attore timersmanager, atto a realizzare, tramite coroutines, timer concorrenti e bloccabili. In questo modo gli si può richiedere di attivare in qualsiasi momento un timer decidendo cosa fare allo scadere del tempo.
-                </p>
-              </div>
-            </div>
-
-            <!-- Planner -->
-            <h2 class="w3-text-grey">Planner interrompibile</h2>
-            <div class="w3-row-padding w3-center">
-              <div class="w3-col l6 w3-padding-large">
-                <p class="w3-justify">
-                  Data una rappresentazione dello spazio in cui muoversi (una mappa della stanza) il waiter è il grado di trovare ed eseguire autonomamente il percorso più breve per spostarsi tra due punti.
-                </p>
-                <p class="w3-justify">
-                  Qualora inoltre sia presente un ostacolo nella sala da the il robot è in grado di fermarsi prima di sbattere contro di esso.
-                </p>
-                <p class="w3-justify">
-                  In fine è possibile interrompere il percorso in esecuzione, ad esempio quando il waiter ha necessità di dedicarsi a task più prioritari.
-                </p>
-              </div>
-              <div class="w3-col l6 w3-padding-large">
-                <img src="HTMLResources/img/sitoweb-planner.png" id="img4" class="w3-round w3-image modalImg" alt="architecture preview" width="600" height="750">
-                <div id="modal4" class="modal" style="background-color: rgba(255,255,255,0.9);">
-                  <span id="closer4" class="close">&times;</span>
-                  <img class="modal-content" id="modalImg4">
-                </div>
-                <script>setModal("modal4", "img4", "modalImg4", "closer4")</script>
-              </div>
-            </div>
-
+        <div class="w3-row-padding w3-center">
+          <div class="w3-col l6 w3-padding-large">
+            <p class="w3-large"><strong><a href="Sprint3/sprint3.html">Sprint 3</a></strong></p>
+            <p class="w3-text-grey">Incentrato sulla gestione di più clienti presenti contemporaneamente nella stanza e sui controlli relativi al tempo di permanenza nel sistema.</p>
+          </div>
+          <div class="w3-col l6 w3-padding-large">
+            <p class="w3-large"><strong><a href="Sprint4/sprint4.html">Sprint 4</a></strong></p>
+            <p class="w3-text-grey">Dedicato al deployment del sistema sui robot fisici e sulla possibilità di avere dei task interrompibili da parte del waiter.</p>
+          </div>
         </div>
-    
-        
-        <hr>
+      </div>
+
+      <hr>
+      
+      <!-- Specifiche -->
+      <div class="w3-panel" id="specifiche">
+          <h1 class="w3-center">Specifiche</h1>
+          
+          <!-- View del manager -->
+          <h2 class="w3-text-grey">View del manager</h2>
+          <div class="w3-row-padding w3-center">
+            <div class="w3-col l6 w3-padding-large">
+              <img src="HTMLResources/img/guiScreen.png" id="img1" class="w3-round w3-image modalImg" alt="gui preview" width="600" height="750">
+              <div id="modal1" class="modal">
+                <span id="closer1" class="close">&times;</span>
+                <img class="modal-content" id="modalImg1">
+              </div>
+              <script>setModal("modal1", "img1", "modalImg1", "closer1")</script>
+            </div>
+            <div class="w3-col l6 w3-padding-large">
+              <p class="w3-justify">La view del manager è una pagina web che consente al manager di consultare lo stato complessivo del sistema, in particolare permette di conoscere:</p>
+              <ul class="w3-justify">
+                <li>Posizione degli elementi nella stanza</li>
+                <li>Posizione corrente del waiter</li>
+                <li>Attività in cui è impegnato waiter</li>
+                <li>Stato dei tavoli</li>
+                <li>Identificativo dei clienti attualmente dentro la stanza</li>
+                <li>Attività in cui è impegnato il Barman</li>
+                <li>Eventuali statistiche del sistema</li>
+              </ul>
+              <p class="w3-justify">La GUI fornisce, inoltre, la possibilità di <strong>comandare manualmente il robot</strong>, visualizzare la mappa relativa al robot virtuale oppure la telecamera di bordo del robot DDR.</p>
+            </div>
+          </div>
+
+          <!-- Architettura esagonale -->
+          <h2 class="w3-text-grey">Architettura esagonale</h2>
+          <div class="w3-row-padding w3-center">
+            <div class="w3-col l6 w3-padding-large">
+              <p class="w3-justify">
+                L'aver adottato un'architettura esagonale permette di poter sviluppare e inserire facilmente nell’applicazione nuovi servizi, impiegando porte e adattatori. Questo pattern consente inoltre di donare scalabilità e flessibilità al sistema, sia in termini di servizi utilizzati che manutenzione degli stessi.
+              </p>
+              <p class="w3-justify">
+                Per quanto riguarda il modello si è scelto di implementare una base di conoscenza Prolog, ciò ha consentito di beneficiare di una forte capacità espressiva ed una buona scalabilità, un esempio concreto lo si ha avuto durante lo <a href="Sprint3/sprint3.html">sprint 3</a> nell'aggiungere la presenza in contemporanea di più clienti.
+              </p>
+            </div>
+            <div class="w3-col l6 w3-padding-large">
+              <img src="HTMLResources/img/sitoweb-archesagonale.png" id="img2" class="w3-round w3-image modalImg" alt="architecture preview" width="600" height="750">
+              <div id="modal2" class="modal" style="background-color: rgba(255,255,255,0.9);">
+                <span id="closer2" class="close">&times;</span>
+                <img class="modal-content" id="modalImg2" style="width: 70%;">
+              </div>
+              <script>setModal("modal2", "img2", "modalImg2", "closer2")</script>
+            </div>
+          </div>
+
+          <!-- Gestione del tempo -->
+          <h2 class="w3-text-grey">Gestione del tempo</h2>
+          <div class="w3-row-padding w3-center">
+            <div class="w3-col l6 w3-padding-large">
+              <img src="HTMLResources/img/sitoweb-timersmanager.png" id="img3" class="w3-round w3-image modalImg" alt="architecture preview" width="600" height="750">
+              <div id="modal3" class="modal" style="background-color: rgba(255,255,255,0.9);">
+                <span id="closer3" class="close">&times;</span>
+                <img class="modal-content" id="modalImg3" style="width: 70%;">
+              </div>
+              <script>setModal("modal3", "img3", "modalImg3", "closer3")</script>
+            </div>
+            <div class="w3-col l6 w3-padding-large">
+              <p class="w3-justify">
+                Per soddisfare alcuni dei requisiti richiesti è stato necessario tenere sotto controllo lo scorrere del tempo, così da poter attivare alcune azioni ad esso legate come, per esempio, l'impedire ad un cliente di restare troppo a lungo nella sala da the.
+              </p>
+              <p class="w3-justify">
+                Pertanto si è introdotto un attore timersmanager, atto a realizzare, tramite coroutines, timer concorrenti e bloccabili. In questo modo gli si può richiedere di attivare in qualsiasi momento un timer decidendo cosa fare allo scadere del tempo.
+              </p>
+            </div>
+          </div>
+
+          <!-- Planner -->
+          <h2 class="w3-text-grey">Planner interrompibile</h2>
+          <div class="w3-row-padding w3-center">
+            <div class="w3-col l6 w3-padding-large">
+              <p class="w3-justify">
+                Data una rappresentazione dello spazio in cui muoversi (una mappa della stanza) il waiter è il grado di trovare ed eseguire autonomamente il percorso più breve per spostarsi tra due punti.
+              </p>
+              <p class="w3-justify">
+                Qualora inoltre sia presente un ostacolo nella sala da the il robot è in grado di fermarsi prima di sbattere contro di esso.
+              </p>
+              <p class="w3-justify">
+                In fine è possibile interrompere il percorso in esecuzione, ad esempio quando il waiter ha necessità di dedicarsi a task più prioritari.
+              </p>
+            </div>
+            <div class="w3-col l6 w3-padding-large">
+              <img src="HTMLResources/img/sitoweb-planner.png" id="img4" class="w3-round w3-image modalImg" alt="architecture preview" width="600" height="750">
+              <div id="modal4" class="modal" style="background-color: rgba(255,255,255,0.9);">
+                <span id="closer4" class="close">&times;</span>
+                <img class="modal-content" id="modalImg4">
+              </div>
+              <script>setModal("modal4", "img4", "modalImg4", "closer4")</script>
+            </div>
+          </div>
+
+      </div>
+  
+      
+      <hr>
 
 
-        <!-- SPACER -->
-        <div style="height:800px"></div>
+      <!-- SPACER -->
+      <div style="height:800px"></div>
     
     </div>
 
     <!-- TEAM -->
     <div class="w3-container w3-blue-grey w3-padding-32 w3-round-small" id="crediti">
-        <div class="w3-row">
-          <h3>Crediti</h3>
-  
+      <div class="w3-row">
+        <h3>Crediti</h3>
+
+      </div>
+
+      <div class="w3-row">
+        <div class="w3-container w3-third w3-center">
+          <img class="w3-circle w3-center" src="HTMLResources/img/ugo3.jpg" style="width:45%">
+          <p>Ugo Leone Cavalcanti</p>
+          <a href="MAILTO:ugoleone.cavalcanti@studio.unibo.it">ugoleone.cavalcanti@studio.unibo.it</a>
+          <p></p>
         </div>
-  
-        <div class="w3-row">
-          <div class="w3-container w3-third w3-center">
-            <img class="w3-circle w3-center" src="HTMLResources/img/ugo3.jpg" style="width:45%">
-            <p>Ugo Leone Cavalcanti</p>
-            <a href="MAILTO:ugoleone.cavalcanti@studio.unibo.it">ugoleone.cavalcanti@studio.unibo.it</a>
-            <p></p>
-          </div>
-          <div class="w3-container w3-third w3-center">
-            <img class="w3-circle w3-center" src="HTMLResources/img/amir.jpg" style="width:45%">
-            <p>Amir Al Sadi</p>
-            <a href="MAILTO:amir.alsadi@studio.unibo.it">amir.alsadi@studio.unibo.it</a>
-            <p></p>
-          </div>
-          <div class="w3-container w3-third w3-center">
-            <img class="w3-circle w3-center" src="HTMLResources/img/nik2.jpeg" style="width:45%">
-            <p>Nicol&ograve Romandini</p>
-            <a href="MAILTO:nicolo.romandini@studio.unibo.it">nicolo.romandini@studio.unibo.it</a>
-          </div>
+        <div class="w3-container w3-third w3-center">
+          <img class="w3-circle w3-center" src="HTMLResources/img/amir.jpg" style="width:45%">
+          <p>Amir Al Sadi</p>
+          <a href="MAILTO:amir.alsadi@studio.unibo.it">amir.alsadi@studio.unibo.it</a>
+          <p></p>
         </div>
+        <div class="w3-container w3-third w3-center">
+          <img class="w3-circle w3-center" src="HTMLResources/img/nik2.jpeg" style="width:45%">
+          <p>Nicol&ograve Romandini</p>
+          <a href="MAILTO:nicolo.romandini@studio.unibo.it">nicolo.romandini@studio.unibo.it</a>
+        </div>
+      </div>
     </div>
 
-</body>
+  </body>
 </html>
