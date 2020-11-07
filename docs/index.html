@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="HTMLResources/css/webProj.css">
-    <script src="HTMLResources/js/modal.js"></script>
+    
     
     <style>
         body {
@@ -46,6 +46,7 @@
           <a href="#demo" class="w3-bar-item w3-button">Demo</a>
           <a href="#progetto" class="w3-bar-item w3-button">Progetto</a>
           <a href="#specifiche" class="w3-bar-item w3-button">Specifiche</a>
+          <a href="#galleria" class="w3-bar-item w3-button">Galleria</a>
           <a href="#build" class="w3-bar-item w3-button">Build</a>
           <a href="#crediti" class="w3-bar-item w3-button">Team</a>
         </div>
@@ -234,11 +235,112 @@
       </div>
   
       
-      <hr>
+      <hr/>
 
+      <!-- Project Section -->
+      <div class="w3-container w3-padding-32" id="galleria">
+        <h1 class="w3-center">Galleria</h1>
+      </div>
+
+      <div class="w3-row-padding">
+        <div class="w3-col l3 m6 w3-margin-bottom">
+          <div class="w3-display-container">
+            <img src="HTMLResources/img/gallery/IMG_6783.jpg" alt="robotImg" style="width:100%; cursor:pointer" class="w3-hover-shadow" onclick="openModal();currentDiv(1)"/>
+          </div>
+        </div>
+        <div class="w3-col l3 m6 w3-margin-bottom">
+          <div class="w3-display-container">
+            <img src="HTMLResources/img/gallery/IMG_6782.jpg" alt="robotImg" style="width:100%; cursor:pointer" class="w3-hover-shadow" onclick="openModal();currentDiv(2)"/>
+          </div>
+        </div>
+        <div class="w3-col l3 m6 w3-margin-bottom">
+          <div class="w3-display-container">
+            <img src="HTMLResources/img/gallery/IMG_5382.jpg" alt="robotImg" style="width:100%; cursor:pointer" class="w3-hover-shadow" onclick="openModal();currentDiv(3)"/>
+          </div>
+        </div>
+        <div class="w3-col l3 m6 w3-margin-bottom">
+          <div class="w3-display-container">
+            <img src="HTMLResources/img/gallery/schematic.png" alt="robotImg" style="width:100%; cursor:pointer" class="w3-hover-shadow" onclick="openModal();currentDiv(4)"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="w3-row-padding">
+        <div class="w3-col l3 m6 w3-margin-bottom">
+          <div class="w3-display-container">
+            <img src="HTMLResources/img/guiScreen.png" alt="robotImg" style="width:100%; cursor:pointer" class="w3-hover-shadow" onclick="openModal();currentDiv(5)"/>
+          </div>
+        </div>
+        <div class="w3-col l3 m6 w3-margin-bottom">
+          <div class="w3-display-container">
+            <img src="HTMLResources/img/guiScreen.png" alt="robotImg" style="width:100%; cursor:pointer" class="w3-hover-shadow" onclick="openModal();currentDiv(6)"/>
+          </div>
+        </div>
+        <div class="w3-col l3 m6 w3-margin-bottom">
+          <div class="w3-display-container">
+            <img src="HTMLResources/img/guiScreen.png" alt="robotImg" style="width:100%; cursor:pointer" class="w3-hover-shadow" onclick="openModal();currentDiv(7)"/>
+          </div>
+        </div>
+        <div class="w3-col l3 m6 w3-margin-bottom">
+          <div class="w3-display-container">
+            <img src="HTMLResources/img/guiScreen.png" alt="robotImg" style="width:100%; cursor:pointer" class="w3-hover-shadow" onclick="openModal();currentDiv(8)"/>
+          </div>
+        </div>
+      </div>
+
+      <div id="myModal" class="modal">
+        <span class="w3-text-grey w3-xxlarge w3-hover-text-dark-grey w3-container w3-display-topright" onclick="closeModal()" style="cursor:pointer; top: 50px;">×</span>
+        <div class="w3-modal-content">
+       
+          <div class="w3-content" style="max-width:1200px">
+            <img class="mySlides" src="HTMLResources/img/gallery/IMG_6783.jpg" style="width:100%">
+            <img class="mySlides" src="HTMLResources/img/gallery/IMG_6782.jpg" style="width:100%">
+            <img class="mySlides" src="HTMLResources/img/gallery/IMG_5382.jpg" style="width:100%">
+            <img class="mySlides" src="HTMLResources/img/gallery/schematic.png" style="width:100%">
+            <img class="mySlides" src="HTMLResources/img/guiScreen.png" style="width:100%">
+            <img class="mySlides" src="HTMLResources/img/guiScreen.png" style="width:100%">
+            <img class="mySlides" src="HTMLResources/img/guiScreen.png" style="width:100%">
+            <img class="mySlides" src="HTMLResources/img/guiScreen.png" style="width:100%">
+            
+            <div class="w3-row w3-center">
+              <div class="w3-display-container">
+                <span class="w3-display-left w3-btn w3-white w3-text-grey" style="top: -250px" onclick="plusDivs(-1)">❮</span>
+                <span class="w3-display-right w3-btn w3-white w3-text-grey" style="top: -250px" onclick="plusDivs(1)">❯</span>
+              </div>
+              <div class="w3-col s4">
+                <img class="demo w3-opacity w3-hover-opacity-off" src="HTMLResources/img/gallery/IMG_6783.jpg" style="width:100%" onclick="currentDiv(1)" alt="robotGalleryItem">
+              </div>
+              <div class="w3-col s4">
+                <img class="demo w3-opacity w3-hover-opacity-off" src="HTMLResources/img/gallery/IMG_6782.jpg" style="width:100%" onclick="currentDiv(2)" alt="robotGalleryItem">
+              </div>
+              <div class="w3-col s4">
+                <img class="demo w3-opacity w3-hover-opacity-off" src="HTMLResources/img/gallery/IMG_5382.jpg" style="width:100%" onclick="currentDiv(3)" alt="robotGalleryItem">
+              </div>
+              <div class="w3-col s4">
+                <img class="demo w3-opacity w3-hover-opacity-off" src="HTMLResources/img/gallery/schematic.png" style="width:100%" onclick="currentDiv(4)" alt="robotGalleryItem">
+              </div>
+              <div class="w3-col s4">
+                <img class="demo w3-opacity w3-hover-opacity-off" src="HTMLResources/img/guiScreen.png" style="width:100%" onclick="currentDiv(5)" alt="robotGalleryItem">
+              </div>
+              <div class="w3-col s4">
+                <img class="demo w3-opacity w3-hover-opacity-off" src="HTMLResources/img/guiScreen.png" style="width:100%" onclick="currentDiv(6)" alt="robotGalleryItem">
+              </div>
+              <div class="w3-col s4">
+                <img class="demo w3-opacity w3-hover-opacity-off" src="HTMLResources/img/guiScreen.png" style="width:100%" onclick="currentDiv(7)" alt="robotGalleryItem">
+              </div>
+              <div class="w3-col s4">
+                <img class="demo w3-opacity w3-hover-opacity-off" src="HTMLResources/img/guiScreen.png" style="width:100%" onclick="currentDiv(8)" alt="robotGalleryItem">
+              </div>
+            </div> <!-- End row -->
+          </div> <!-- End w3-content -->
+         
+        </div> <!-- End modal content -->
+      </div> <!-- End modal -->
+       
+      <hr/>
 
       <!-- SPACER -->
-      <div style="height:800px"></div>
+      <div style="height:200px"></div>
     
     </div>
 
@@ -270,5 +372,6 @@
       </div>
     </div>
 
+    <script src="HTMLResources/js/modal.js"></script>
   </body>
 </html>
