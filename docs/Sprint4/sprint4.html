@@ -57,7 +57,7 @@
                 <h5><b>Interrompibilità dei task in esecuzione</b></h5>
                 Da questo nuovo requisito risulta necessario introdurre una nuova semantica di esecuzione dei task.
                 Nelle precedenti versioni infatti i task venivano eseguiti in maniera atomica mentre ora è richiesto di potersi fermare durante l'esecuzione, per eseguire
-                un'altra mansione, e riprendere in seguito quella bloccata.
+                un'altra mansione, e nel caso riprendere in seguito quella bloccata.
                 
                 <h5><b>Deployment su DDR robot</b></h5>
                 Per far si che da un robot virtuale il basicrobot possa passare ad un robot fisico è necessario un qualcosa che permetta di far attuare i comandi senza dover conoscere i dettagli dello specifico robot in uso, ma ciò è già fornito <a href="https://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.mbot2020/userdocs/Mbot2020.html">qui</a> all'interno della nostra software house.
@@ -76,6 +76,8 @@
                 <ul>
                     <li>La pulizia del tavolo (<em>sanitizing</em>), in quanto risulta di maggiore urgenza servire il cliente.</li>
                     <li>Il ritorno alla home (<em>returnHome</em>), in quanto non è un task relativo al servizio del cliente ma una semplice azione di spostamento.</li>
+                    <li>Il prendere l'ordinazione (<em>takingOrder</em>) e la riscossione del pagamento (<em>collectingPayment</em>), in quanto sono task che richiedono l'attesa di un messaggio dal cliente, 
+                        che potrebbe non arrivare mai. Serve quindi poter "sbloccare" il <bc>waiter</bc>.</li>
                 </ul>
                 
                 <h5><b>Pulizia del tavolo</b></h5>
@@ -124,10 +126,17 @@ teatable( 2, available, 0, -1).
                         </ol>
                     </li>
                 </ul>
-                <h6 class="w3-center"><b>Planner</b></h6>
-                E' stato modificato per recepire il messaggio di stopTask e per annullare le mosse pianificate nel caso di ricezione di esso.
+                <h5><b>Timeout Client</b></h5>
+                Come detto in precedenza, occorre un meccanismo che permetta di "sbloccare" il <bc>waiter</bc> durante l'attesa di una risposta dal cliente (l'ordine o il pagamento).
+                <h6 class="w3-center"><b>Waiter</b></h6>
+                Quando il waiter esegue il task <em>takingOrder</em> o <em>collectingPayment</em>, appena arrivato al tavolo fa partire un timer di 10 secondi. Due diverse situazioni possono verificarsi:
+                <ul>
+                    <li>Il cliente notifica al <bc>waiter</bc> l'ordine o il pagamento. In questo caso il timer attivato viene cancellato e il <bc>waiter</bc> continua nella sua esecuzione.</li>
+                    <li>Lo scadere del tempo conteggiato dal timer. In questo caso il <bc>waiter</bc> continua l'esecuzione di eventuali altri task o ritorna alla <em>home</em>.
+                        Il cliente invece ritorna nello stato precedente.
+                    </li>
+                </ul>
                 
-                Per una definizione formale di tutta la struttura, l'interazione ed il comportamento si rimanda alla definizione del file <a href="https://raw.githubusercontent.com/ugoleone/iss2020TemaFinale/master/Workspace/Sprint4/it.unibo.trc19.sprint4.tearoom/src/tearoom.qak">tearoom.qak</a>.
                 
                 <h4>Deployment su DDR robot</h4>
                 Sono stati realizzati due robot sulla base di un <a href="https://htmlpreview.github.io/?https://github.com/anatali/iss2020LabBo/blob/master/it.unibo.mbot2020/userdocs/Mbot2020.html">Mbot</a>.
