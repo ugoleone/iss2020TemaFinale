@@ -41,9 +41,9 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("[WAITER] Waiting for a request!")
 					}
-					 transition(edgeName="t013",targetState="handleChange",cond=whenEvent("waiterTaskChangedEvent"))
-					transition(edgeName="t014",targetState="movementHelper",cond=whenDispatch("moveTo"))
-					transition(edgeName="t015",targetState="returnHomeState",cond=whenDispatch("returnHome"))
+					 transition(edgeName="t014",targetState="handleChange",cond=whenEvent("waiterTaskChangedEvent"))
+					transition(edgeName="t015",targetState="movementHelper",cond=whenDispatch("moveTo"))
+					transition(edgeName="t016",targetState="returnHomeState",cond=whenDispatch("returnHome"))
 				}	 
 				state("handleChange") { //this:State
 					action { //it:State
@@ -129,15 +129,11 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
 				}	 
-				state("clientReady") { //this:State
-					action { //it:State
-					}
-					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
-				}	 
 				state("takingOrder") { //this:State
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("order(ID,X)"), Term.createTerm("order(ID,O)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
+								forward("cancelTimer", "cancelTimer($ActiveTimer)" ,"timersmanager" ) 
 								 var ID = payloadArg(0) 
 												var O = payloadArg(1)
 								forward("orderReq", "orderReq($ID,$O)" ,"resourcemodel" ) 
@@ -154,16 +150,11 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
 				}	 
-				state("payment") { //this:State
-					action { //it:State
-						println("[WAITER] Collecting the money!")
-					}
-					 transition(edgeName="t016",targetState="handlePayment",cond=whenDispatch("payment"))
-				}	 
 				state("handlePayment") { //this:State
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("payment(ID,X)"), Term.createTerm("payment(ID,MONEY)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
+								forward("cancelTimer", "cancelTimer($ActiveTimer)" ,"timersmanager" ) 
 								 println("[WAITER] " + payloadArg(0) + " EUR collected! Have a nice day!")  
 								forward("taskDone", "taskDone($WhatImDoing,${payloadArg(0)})" ,"resourcemodel" ) 
 						}
@@ -180,7 +171,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 												StartCleaning = System.currentTimeMillis()
 												ActiveTimer = StartCleaning
 												WasCleaning = true
-								forward("startTimer", "startTimer($StartCleaning,waiter,alarm,$TeatableNumberToClean,$RemainingTime)" ,"timersmanager" ) 
+								forward("startTimer", "startTimer($ActiveTimer,waiter,alarm,$TeatableNumberToClean,$RemainingTime)" ,"timersmanager" ) 
 						}
 					}
 					 transition(edgeName="t017",targetState="endCleaning",cond=whenDispatch("alarm"))
@@ -192,6 +183,17 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								TeatableNumberToClean = payloadArg(0) 
 								forward("taskDone", "taskDone(sanitizing,$TeatableNumberToClean)" ,"resourcemodel" ) 
+						}
+					}
+					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
+				}	 
+				state("handleAlarm") { //this:State
+					action { //it:State
+						println("[WAITER] Client timeout!")
+						if( checkMsgContent( Term.createTerm("alarm(ID)"), Term.createTerm("alarm(P)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								TeatableNumber = payloadArg(0) 
+								forward("timeoutClient", "timeoutClient($WhatImDoing,$TeatableNumber)" ,"resourcemodel" ) 
 						}
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
@@ -238,28 +240,47 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("atcell(X,Y)"), Term.createTerm("atcell(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
+								 
+												var Col = payloadArg(0).toInt()
+												var Row = payloadArg(1).toInt()
 								 when(WhatImDoing) {
 												"convoyTable" -> {
-								forward("unlockClient", "unlockClient($TeatableNumber)" ,"resourcemodel" ) 
+								if( (Col==2 && Row==2) || (Col==4 && Row==2) 
+								 ){forward("unlockClient", "unlockClient($TeatableNumber)" ,"resourcemodel" ) 
 								forward("listenRequests", "listenRequests(1)" ,"waiter" ) 
 								forward("taskDone", "taskDone($WhatImDoing,$TeatableNumber)" ,"resourcemodel" ) 
+								}
 								 } 
 												"takingOrder" ->  {
+								if( (Col==2 && Row==2) || (Col==4 && Row==2) 
+								 ){ ActiveTimer = System.currentTimeMillis()  
+								forward("startTimer", "startTimer($ActiveTimer,waiter,alarm,$TeatableNumber,10000)" ,"timersmanager" ) 
 								forward("unlockClient", "unlockClient($TeatableNumber)" ,"resourcemodel" ) 
-								 } 
+								}
+								 }
 												"bringingDrinkToClient" ->  {
-								forward("unlockClient", "unlockClient($TeatableNumber)" ,"resourcemodel" ) 
-								 } 
+								if( (Col==2 && Row==2) || (Col==4 && Row==2) 
+								 ){forward("listenRequests", "listenRequests(1)" ,"waiter" ) 
+								forward("taskDone", "taskDone($WhatImDoing,$TeatableNumber)" ,"resourcemodel" ) 
+								}
+								 }
 												"collectingPayment" ->  {
+								if( (Col==2 && Row==2) || (Col==4 && Row==2) 
+								 ){ ActiveTimer = System.currentTimeMillis()  
+								forward("startTimer", "startTimer($ActiveTimer,waiter,alarm,$TeatableNumber,10000)" ,"timersmanager" ) 
 								forward("unlockClient", "unlockClient($TeatableNumber)" ,"resourcemodel" ) 
+								}
 								 } 
 												"sanitizing" ->  {
-								forward("cleanTable", "cleanTable($TeatableNumberToClean)" ,"waiter" ) 
+								if( (Col==2 && Row==2) || (Col==4 && Row==2) 
+								 ){forward("cleanTable", "cleanTable($TeatableNumberToClean)" ,"waiter" ) 
+								}
 								}
 												"forceExit" -> { 
 								forward("listenRequests", "listenRequests(1)" ,"waiter" ) 
 								forward("taskDone", "taskDone($WhatImDoing,$TeatableNumber)" ,"resourcemodel" ) 
 								}
+												
 												"returnHome" -> {
 												ReturningHome = false  
 								forward("listenRequests", "listenRequests(1)" ,"waiter" ) 
@@ -274,10 +295,11 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					}
 					 transition(edgeName="t124",targetState="movementHelper",cond=whenDispatch("moveTo"))
 					transition(edgeName="t125",targetState="takingOrder",cond=whenDispatch("order"))
-					transition(edgeName="t126",targetState="servingDrinkToClient",cond=whenDispatch("takeDrink"))
-					transition(edgeName="t127",targetState="handlePayment",cond=whenDispatch("payment"))
-					transition(edgeName="t128",targetState="cleaningTable",cond=whenDispatch("cleanTable"))
-					transition(edgeName="t129",targetState="reqHandler",cond=whenDispatch("listenRequests"))
+					transition(edgeName="t126",targetState="handlePayment",cond=whenDispatch("payment"))
+					transition(edgeName="t127",targetState="cleaningTable",cond=whenDispatch("cleanTable"))
+					transition(edgeName="t128",targetState="reqHandler",cond=whenDispatch("listenRequests"))
+					transition(edgeName="t129",targetState="handleAlarm",cond=whenDispatch("alarm"))
+					transition(edgeName="t130",targetState="handleAtCell",cond=whenReply("atcell"))
 				}	 
 			}
 		}

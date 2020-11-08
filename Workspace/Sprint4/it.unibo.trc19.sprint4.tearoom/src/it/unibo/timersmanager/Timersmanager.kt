@@ -28,13 +28,14 @@ class Timersmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					action { //it:State
 						println("[TIMERS MANAGER] Waiting for new requests")
 					}
-					 transition(edgeName="t053",targetState="timer",cond=whenDispatch("startTimer"))
-					transition(edgeName="t054",targetState="timer",cond=whenDispatch("cancelTimer"))
+					 transition(edgeName="t054",targetState="timer",cond=whenDispatch("startTimer"))
+					transition(edgeName="t055",targetState="timer",cond=whenDispatch("cancelTimer"))
 				}	 
 				state("timer") { //this:State
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("startTimer(ID,A,M,P,T)"), Term.createTerm("startTimer(ID,A,M,P,T)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("[TIMERS MANAGER] Starting timer")
 								
 												var ID = payloadArg(0)
 												var Actor = payloadArg(1)
@@ -51,6 +52,7 @@ class Timersmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						}
 						if( checkMsgContent( Term.createTerm("cancelTimer(ID)"), Term.createTerm("cancelTimer(ID)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("[TIMERS MANAGER] Cancelling timer")
 								
 												var ID = payloadArg(0) 
 												timersDict.get(ID)?.cancel() 

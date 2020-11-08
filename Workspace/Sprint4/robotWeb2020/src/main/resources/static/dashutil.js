@@ -50,11 +50,13 @@ function updateTablesState(table1, table2) {
     updateClientsInTable(table1, table2)
     updateTableCleaningState(table1, table2);
     
-    if(table1.state == "busy" && table1.seatedClient != "-1") {
-        document.getElementById("cell23").style.background = "rgb(252, 222, 221)"
+    if(table1.state == "busy" && table1.seatedClient == "-1") {
+    	document.getElementById("cell23").innerHTML = "";
+        document.getElementById("cell23").style.background = "rgb(225, 254, 255)"
     }
-    if(table2.state == "busy" && table2.seatedClient != "-1") {
-        document.getElementById("cell43").style.background = "rgb(252, 222, 221)"
+    if(table2.state == "busy" && table2.seatedClient == "-1") {
+    	document.getElementById("cell43").innerHTML = "";
+        document.getElementById("cell43").style.background = "rgb(225, 254, 255)"
     }
 }
 
@@ -94,10 +96,12 @@ function mapRange (in_min, in_max, out_min, out_max, input) {
  */
 function updateClientsInTable(teatable1, teatable2) {
     if(teatable1.seatedClient != "-1" && teatable1.state == "busy") {
+    	document.getElementById("cell23").style.background = "rgb(252, 222, 221)"
         var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\"></i>&nbsp;"+teatable1.seatedClient;
         document.getElementById("cell23").innerHTML = generated; 
     }
     if(teatable2.seatedClient != "-1" && teatable2.state == "busy") {
+    	document.getElementById("cell43").style.background = "rgb(252, 222, 221)"
         var generated = "<i class=\"fa fa-user\" aria-hidden=\"true\"></i>&nbsp;"+teatable2.seatedClient;
         document.getElementById("cell43").innerHTML = generated; 
     }
@@ -107,16 +111,11 @@ function updateClientsInTable(teatable1, teatable2) {
  * Questa funzione serve per aggiornare la posizione del robot sulla mappa.
  * Disegna una R in grassetto alle coordinate passate con cols e rows.
  */
-function updateMap(cols, rows, direction) {
+function updateMap(oldCol, oldRow, col, row, direction) {
     var table = document.getElementById("mappa");
-    var nomeCella = "cell"+cols+rows;
-    for (var i = 0, row; row = table.rows[i]; i++) {
-        //itera sulle righe
-        for (var j = 0, col; col = row.cells[j]; j++) {
-            //itera sulle colonne (quindi le celle)
-            col.textContent = "";
-        }  
-    }
+    var nomeCella = "cell"+col+row;
+    var oldCell = "cell"+oldCol+oldRow
+    document.getElementById(oldCell).innerHTML = ""
     direction = direction.replace("Dir", "");
     document.getElementById(nomeCella).innerHTML = "<i class='fa fa-chevron-circle-"+direction+" fa-lg'></i>";
 }
@@ -173,10 +172,17 @@ function updateOrders(orders) {
     }
 }
 
-//[ { "id" : "1", "order" : "tea1"},  { "id" : "2", "order" : "tea2"} ]
+//[ { "id" : "1", "order" : "tea1", "ready" : "true"},  { "id" : "2", "order" : "tea2", "ready" : "false"} ]
 function addOrder(order) {
     var clientOrder = "" + order.id + order.order
-    var generated = "<tr class=\"w3-round-small;\"><td style='text-align:center;vertical-align:middle'>Client "+order.id+":</td><td style='text-align:center;vertical-align:middle' >"+order.order+"</td><td style='text-align:center;vertical-align:middle'><button class=\"w3-button w3-blue-gray w3-round-small\" onclick=\"prepare(\'"+order.id+"\')\"id=\""+clientOrder+"\" type=\"submit\">Prepare</button></td></tr>";
+    var button = ""
+    console.log(order.ready)
+    if (order.ready == "true")
+    	button = '<button class="w3-button w3-blue-gray w3-round-small" disabled>Ready</button>'
+    else 
+    	button = '<button class="w3-button w3-blue-gray w3-round-small" onclick="prepare('+order.id+')" id='+clientOrder+' type="submit">Prepare</button>'
+     	
+    var generated = "<tr class=\"w3-round-small;\"><td style='text-align:center;vertical-align:middle'>Client "+order.id+":</td><td style='text-align:center;vertical-align:middle' >"+order.order+"</td><td style='text-align:center;vertical-align:middle'>"+button+"</td></tr>";
     document.getElementById("ordini").innerHTML += generated;
 }
 
@@ -268,20 +274,53 @@ function updateClientsStatus(clientsStatus) {
     "clientsState" : [ { "id" : "1", "currentState" : "stato1", "nextState" : "state2", "lock" : "true"},  { "id" : "2", "currentState" : "stato1", "nextState" : "state2", "lock" : "true"} ] 
 }
 */
-function updateDashboard(message) {
-    console.log(message);
 
-    updateStatus(message.robotState);
-    updateClientiTotali(message.totalNumberOfClients);
-    updateClientiInSala(message.clientsInTheRoom);
-    updateTheServiti(message.teaServed);
-    updateRinunce(message.withdraws)
-    updateMap(message.yRobot, message.xRobot, message.direction);
-    updateBarmanStatus(message.serviceDeskState);
-    updateOrders(message.orders)
-    updateClientsStatus(message.clientsState);
-    //updateClientsInTable(message.teatable1ClientID, message.teatable2ClientID)
-    updateTablesState(message.teatable1State, message.teatable2State);
+var oldMessage = null
+var raspIP = ""
+
+function updateDashboard(message) {
+    //console.log(message);
+    
+    if (oldMessage) {
+		if (oldMessage.robotState != message.robotState)
+	    	updateStatus(message.robotState);
+	    if (oldMessage.totalNumberOfClients != message.totalNumberOfClients)
+	    	updateClientiTotali(message.totalNumberOfClients);
+	    if (oldMessage.clientsInTheRoom != message.clientsInTheRoom)
+	    	updateClientiInSala(message.clientsInTheRoom);
+	    if (oldMessage.teaServed != message.teaServed)
+	    	updateTheServiti(message.teaServed);
+	    if (oldMessage.withdraws != message.withdraws)
+	    	updateRinunce(message.withdraws)
+	    if (oldMessage.yRobot != message.yRobot || oldMessage.xRobot != message.xRobot || oldMessage.direction != message.direction)
+	    	updateMap(oldMessage.yRobot, oldMessage.xRobot, message.yRobot, message.xRobot, message.direction);
+	    if (oldMessage.serviceDeskState != message.serviceDeskState)
+	    	updateBarmanStatus(message.serviceDeskState);
+	    if (JSON.stringify(oldMessage.orders) != JSON.stringify(message.orders))
+	    	updateOrders(message.orders)
+	    if (JSON.stringify(oldMessage.clientsState) != JSON.stringify(message.clientsState))
+	    	updateClientsStatus(message.clientsState);
+	    if (JSON.stringify(oldMessage.teatable1State) != JSON.stringify(message.teatable1State) || JSON.stringify(oldMessage.teatable2State) != JSON.stringify(message.teatable2State))
+	    	updateTablesState(message.teatable1State, message.teatable2State);
+    } else {
+    	raspIP = message.raspIP
+    	var url = "http://" + raspIP + ":8080/?action=stream";
+        document.getElementById("img_src").src = url;
+        document.getElementById("img_src2").src = url;
+    	updateStatus(message.robotState);
+    	updateClientiTotali(message.totalNumberOfClients);
+    	updateClientiInSala(message.clientsInTheRoom);
+    	updateTheServiti(message.teaServed);
+    	updateRinunce(message.withdraws)
+    	updateMap(0,0,message.yRobot, message.xRobot, message.direction);
+    	updateBarmanStatus(message.serviceDeskState);
+    	updateOrders(message.orders)
+    	updateClientsStatus(message.clientsState);
+    	updateTablesState(message.teatable1State, message.teatable2State);
+   	}
+    
+    oldMessage = message
+    
 }
 
 

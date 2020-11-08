@@ -32,7 +32,8 @@ object formatterUtil {
 				var temp = JSONObject()
 				temp.put("id", ordersArray[i])
 				temp.put("order", ordersArray[i+1])
-				i = i + 2
+				temp.put("ready", ordersArray[i+2])
+				i = i + 3
 				ordersJSONArray.put(temp)
 			}
 		}
@@ -55,7 +56,8 @@ object formatterUtil {
 							   teaServed : String,
 							   totalNumberOfClients : String,
 							   clientsInTheRoom : String,
-							   withdraws : String ) :String{
+							   withdraws : String,
+							   raspIP : String) :String{
 		val jo = JSONObject()
 		jo.put("robotState", robotState)
 		jo.put("xRobot", xRobot)
@@ -70,7 +72,7 @@ object formatterUtil {
 		jo.put("totalNumberOfClients", totalNumberOfClients)
 		jo.put("clientsInTheRoom", clientsInTheRoom)
 		jo.put("withdraws", withdraws)
-		
+		jo.put("raspIP", raspIP.removeSurrounding("\'"))
 		return jo.toString()
 		
  	}

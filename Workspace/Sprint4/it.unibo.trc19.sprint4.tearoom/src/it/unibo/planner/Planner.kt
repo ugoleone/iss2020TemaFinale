@@ -37,8 +37,8 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 SingleMove = false  
 						 StopTask = false  
 					}
-					 transition(edgeName="t030",targetState="walk",cond=whenRequest("movetoCell"))
-					transition(edgeName="t031",targetState="execSingleMove",cond=whenDispatch("doMove"))
+					 transition(edgeName="t031",targetState="walk",cond=whenRequest("movetoCell"))
+					transition(edgeName="t032",targetState="execSingleMove",cond=whenDispatch("doMove"))
 				}	 
 				state("execSingleMove") { //this:State
 					action { //it:State
@@ -86,9 +86,9 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 answer("movetoCell", "atcell", "atcell($XT,$YT)"   )  
 						 }
 					}
-					 transition(edgeName="t032",targetState="handleStop",cond=whenDispatch("stopTask"))
-					transition(edgeName="t033",targetState="execTheMove",cond=whenDispatch("doMove"))
-					transition(edgeName="t034",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
+					 transition(edgeName="t033",targetState="handleStop",cond=whenDispatch("stopTask"))
+					transition(edgeName="t034",targetState="execTheMove",cond=whenDispatch("doMove"))
+					transition(edgeName="t035",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
 					}))
 				}	 
 				state("handleStop") { //this:State
@@ -97,8 +97,8 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 						 			StopTask = true 
 						 			itunibo.planner.plannerUtil.resetActions()
 					}
-					 transition(edgeName="t035",targetState="execTheMove",cond=whenDispatch("doMove"))
-					transition(edgeName="t036",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
+					 transition(edgeName="t036",targetState="execTheMove",cond=whenDispatch("doMove"))
+					transition(edgeName="t037",targetState="walk",cond=whenRequestGuarded("movetoCell",{ CurrentPlannedMove.length == 0  
 					}))
 				}	 
 				state("execTheMove") { //this:State
@@ -125,8 +125,8 @@ class Planner ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sc
 				state("waitStepDoneFail") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t137",targetState="updateCurrentWaiterPosDir",cond=whenReply("stepdone"))
-					transition(edgeName="t138",targetState="updateCurrentWaiterPosDir",cond=whenReply("stepfail"))
+					 transition(edgeName="t138",targetState="updateCurrentWaiterPosDir",cond=whenReply("stepdone"))
+					transition(edgeName="t139",targetState="updateCurrentWaiterPosDir",cond=whenReply("stepfail"))
 				}	 
 				state("updateCurrentWaiterPosDir") { //this:State
 					action { //it:State

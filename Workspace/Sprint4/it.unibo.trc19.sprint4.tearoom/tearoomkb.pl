@@ -111,11 +111,13 @@ getClientsState([]).
 %% idle
 %% preparing( CLIENTID )
 %% ready( CLIENTID )
-
-orders([]).
-addOrder(ID,O) :- orders(L), append(L,[[ID,O]],R), replaceRule(orders(_),orders(R)).
-deleteOrder(ID,O) :- orders(L), delete([ID,O],L,R), replaceRule(orders(_), orders(R)).
+%% order(1,tea,true)
+addOrder(ID,O,R) :- addRule(order(ID,O,R)).
+deleteOrder(ID) :- removeRule(order(ID,_,_)).
+orderReady(ID) :- replaceRule(order(ID,O,_),order(ID,O,true)).
 servicedesk( idle ).
+
+getOrders(L) :- findall([ID,O,R],order(ID,O,R),L).
 
 updateBarmanState(S) :- replaceRule(serviceDesk(_),serviceDesk(S)).
 
@@ -130,8 +132,9 @@ clientsInTheRoom(0).
 teaServed(0).
 withdraws(0).
 
-newClient(X) :- totalNumberOfClients(N),X is N+1,replaceRule(totalNumberOfClients(_),totalNumberOfClients(X)),addClient(X),clientsInTheRoom(NC),XC is NC+1,replaceRule(clientsInTheRoom(_),clientsInTheRoom(XC)).
+newClient(X) :- totalNumberOfClients(N),X is N+1,replaceRule(totalNumberOfClients(_),totalNumberOfClients(X)),addClient(X).
 exitClient(X) :- clientsInTheRoom(NC),XC is NC-1,replaceRule(clientsInTheRoom(_),clientsInTheRoom(XC)),removeClient(X).
+enterClient :- clientsInTheRoom(NC),XC is NC+1,replaceRule(clientsInTheRoom(_),clientsInTheRoom(XC)).
 serveTea :- teaServed(TS), NTS is TS + 1, replaceRule(teaServed(_),teaServed(NTS)).
 withdraw :- withdraws(W), WS is W + 1, replaceRule(withdraws(_),withdraws(WS)).
 
@@ -139,7 +142,7 @@ withdraw :- withdraws(W), WS is W + 1, replaceRule(withdraws(_),withdraws(WS)).
 %% ------------------------------------------ 
 %% Room as a whole
 %% ------------------------------------------ 
-roomstate( waiter(S),currentWaiterPosDir(Y,X,D) , stateOfTeatables(T1,T2), servicedesk(SD), orders(O), getClientsState(CS), teaServed(TS), totalNumberOfClients(NC), clientsInTheRoom(CR), withdraws(W)):- waiter(S),currentWaiterPosDir(Y,X,D) , stateOfTeatables(T1,T2), servicedesk(SD), orders(O), getClientsState(CS), teaServed(TS), totalNumberOfClients(NC), clientsInTheRoom(CR), withdraws(W).
+roomstate(S,Y,X,D,T1,T2,SD,O,CS,TS,NC,CR,W):- waiter(S), currentWaiterPosDir(Y,X,D) , stateOfTeatables(T1,T2), servicedesk(SD), getOrders(O), getClientsState(CS), teaServed(TS), totalNumberOfClients(NC), clientsInTheRoom(CR), withdraws(W).
 
 
 	 
