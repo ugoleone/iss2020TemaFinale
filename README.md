@@ -35,6 +35,37 @@ Il *manager* deve poter visualizzare lo stato corrente (*current state*) della *
 | <img src="docs/Sprint4/img/mbot1.png" alt="mbot" style="zoom: 45%;" /> | <img src="docs/Sprint4/img/ubot2.jpeg" alt="ubot" style="zoom: 45%;" /> |
 
 
+## Deployment (UNIX)
+
+1) Scaricare il *deployment.zip* più recente al link <a href="https://github.com/ugoleone/iss2020TemaFinale/releases">releases</a>
+
+2) Estrarre la cartella *deployment*
+
+3) Entrare nella cartella *deployment*
+
+4) Aprire un terminale all'interno della cartella *deployment*
+
+5) Digitare nel terminale ed inviare il seguente comando (Avvio del robot virtuale) 
+```shell
+cd it.unibo.virtualRobot2020/node/WEnv/server/src
+node main 8999
+``` 
+6) Aprire un secondo terminale all'interno della cartella *deployment*, digitare nel terminale ed inviare il seguente comando (Avvio del basicrobot) 
+```shell
+./it.unibo.qak20.basicrobot-1.0/bin/it.unibo.qak20.basicrobot
+```
+
+7) Aprire un terzo terminale all'interno della cartella *deployment*, digitare nel terminale ed inviare il seguente comando (Avvio della tearoom) 
+```shell
+./it.unibo.trc19.sprint4.tearoom-1.0/bin/it.unibo.trc19.sprint4.tearoom
+```
+
+8) Aprire un quarto terminale all'interno della cartella *deployment*, digitare nel terminale ed inviare il seguente comando (Avvio della pagina web con Spring)  
+```shell
+./robotWeb2020-boot-1.0/bin/robotWeb2020
+```
+
+8) Buon divertimento!
 
 ## Piano di lavoro
 
