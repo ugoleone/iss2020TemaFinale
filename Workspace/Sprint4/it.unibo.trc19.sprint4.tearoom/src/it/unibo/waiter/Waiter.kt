@@ -143,13 +143,6 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					}
 					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
 				}	 
-				state("servingDrinkToClient") { //this:State
-					action { //it:State
-						println("[WAITER] Serving the drink")
-						forward("taskDone", "taskDone($WhatImDoing,0)" ,"resourcemodel" ) 
-					}
-					 transition( edgeName="goto",targetState="reqHandler", cond=doswitch() )
-				}	 
 				state("handlePayment") { //this:State
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("payment(ID,X)"), Term.createTerm("payment(ID,MONEY)"), 
@@ -256,6 +249,12 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								 ){ ActiveTimer = System.currentTimeMillis()  
 								forward("startTimer", "startTimer($ActiveTimer,waiter,alarm,$TeatableNumber,10000)" ,"timersmanager" ) 
 								forward("unlockClient", "unlockClient($TeatableNumber)" ,"resourcemodel" ) 
+								}
+								 }
+												"collectingDrink" ->  {
+								if( Col==5 && Row==0 
+								 ){forward("listenRequests", "listenRequests(1)" ,"waiter" ) 
+								forward("taskDone", "taskDone($WhatImDoing,$Misc)" ,"resourcemodel" ) 
 								}
 								 }
 												"bringingDrinkToClient" ->  {

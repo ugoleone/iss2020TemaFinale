@@ -763,13 +763,6 @@ QActor waiter context ctxtearoom{
 	Goto reqHandler
 	
 	
-	State servingDrinkToClient {
-		println("[WAITER] Serving the drink")
-		forward resourcemodel -m taskDone : taskDone($WhatImDoing,0)
-	}
-	Goto reqHandler
-	
-	
 	State handlePayment {
 		onMsg(payment : payment( ID, MONEY )){
 			forward timersmanager -m cancelTimer : cancelTimer($ActiveTimer)
@@ -869,6 +862,13 @@ QActor waiter context ctxtearoom{
 					forward resourcemodel -m unlockClient : unlockClient($TeatableNumber)
 				}
 			[# }
+				"collectingDrink" ->  {
+			#] 
+				if [#Col==5 && Row==0#] {
+					forward waiter -m listenRequests : listenRequests(1)
+					forward resourcemodel -m taskDone : taskDone($WhatImDoing,$Misc)
+				}
+			[# }
 				"bringingDrinkToClient" ->  {
 			#] 
 				if [#(Col==2 && Row==2) || (Col==4 && Row==2)#] {
@@ -909,7 +909,6 @@ QActor waiter context ctxtearoom{
 		}
 	}	Transition t1 	whenMsg moveTo -> movementHelper  
 						whenMsg order -> takingOrder
-						//whenMsg takeDrink -> servingDrinkToClient
 						whenMsg payment -> handlePayment
 						whenMsg cleanTable -> cleaningTable
 						whenMsg listenRequests -> reqHandler
