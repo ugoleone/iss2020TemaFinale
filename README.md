@@ -65,7 +65,7 @@ node main 8999
 ./robotWeb2020-boot-1.0/bin/robotWeb2020
 ```
 
-8) Buon divertimento!
+9) Buon divertimento!
 
 ## Piano di lavoro
 
