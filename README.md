@@ -9,8 +9,6 @@ Esame di Ingegneria dei Sistemi Software A.A. 2019/2020
 
 [**Requisiti**](https://ugoleone.github.io/iss2020TemaFinale/Requisiti/Requisiti.html)
 
-
-
 Il *manager* di una sala da the (*tearoom*) vorrebbe regolare l'accesso al servizio impiegando un DDR robot (*waiter*).
 
 La *tearoom* è una stanza rettangolare che include:
@@ -35,77 +33,89 @@ Il *manager* deve poter visualizzare lo stato corrente (*current state*) della *
 | <img src="docs/Sprint4/img/mbot1.png" alt="mbot" style="zoom: 45%;" /> | <img src="docs/Sprint4/img/ubot2.jpeg" alt="ubot" style="zoom: 45%;" /> |
 
 
+
 ## Deployment su robot virtuale locale (UNIX)
 
-1) Scaricare il *deployment.zip* più recente al link <a href="https://github.com/ugoleone/iss2020TemaFinale/releases">releases</a>
+1. Scaricare il *deployment.zip* più recente al link [releases](https://github.com/ugoleone/iss2020TemaFinale/releases)
 
-2) Estrarre la cartella *deployment*
+2. Estrarre la cartella `deployment`
 
-3) Entrare nella cartella *deployment*
+3. Entrare nella cartella `deployment`
 
-4) Se si ha una versione vecchia di basicrobot, potrebbe essere necessario cambiare il seguente file di configurazione:
-    - All'interno di *it.unibo.trc19.sprint4.tearoom-1.0/bin/tearoom.pl* sostituire la seconda riga con la riga *context(ctxbasicrobot, "localhost",  "TCP", "PORT").*, dove PORT è la porta del basicrobot (default = 8020)
+4.  Controllare il seguente file di configurazione:
 
-5) Aprire un terminale all'interno della cartella *deployment*
+   - All'interno di `it.unibo.trc19.sprint4.tearoom-1.0/bin/tearoom.pl` sostituire la seconda riga con la riga `context(ctxbasicrobot, "localhost",  "TCP", "PORT").`, dove `PORT` è la porta del *basicrobot* (default = 8020)
 
-6) Digitare nel terminale ed inviare il seguente comando (Avvio del robot virtuale) 
-```shell
-cd it.unibo.virtualRobot2020/node/WEnv/server/src
-node main 8999
-``` 
+5. Aprire un terminale all'interno della cartella `deployment`
 
-7) Aprire un secondo terminale all'interno della cartella *deployment*, digitare nel terminale ed inviare il seguente comando (Avvio della pagina web con Spring)  
-```shell
-./robotWeb2020-boot-1.0/bin/robotWeb2020
-```
+6. Digitare nel terminale ed inviare i seguenti comandi (**Avvio del robot virtuale**) 
 
-8) Aprire un terzo terminale all'interno della cartella *deployment*, digitare nel terminale ed inviare il seguente comando (Avvio del basicrobot) 
-```shell
-./it.unibo.qak20.basicrobot-1.0/bin/it.unibo.qak20.basicrobot
-```
+   ```shell
+   cd it.unibo.virtualRobot2020/node/WEnv/server/src
+   node main 8999
+   ```
 
-9) Aprire un quarto terminale all'interno della cartella *deployment*, digitare nel terminale ed inviare il seguente comando (Avvio della tearoom) 
-```shell
-./it.unibo.trc19.sprint4.tearoom-1.0/bin/it.unibo.trc19.sprint4.tearoom
-```
+7. Aprire un secondo terminale all'interno della cartella `deployment`, digitare nel terminale ed inviare il seguente comando (**Avvio della pagina web con Spring**)  
 
-10) Buon divertimento!
+   ```shell
+   ./robotWeb2020-boot-1.0/bin/robotWeb2020
+   ```
+
+8. Aprire un terzo terminale all'interno della cartella `deployment`, digitare nel terminale ed inviare il seguente comando (**Avvio del basicrobot**) 
+
+   ```shell
+   ./it.unibo.qak20.basicrobot-1.0/bin/it.unibo.qak20.basicrobot
+   ```
+
+9.  Aprire un quarto terminale all'interno della cartella `deployment`, digitare nel terminale ed inviare il seguente comando (**Avvio della tearoom**) 
+
+   ```shell
+   ./it.unibo.trc19.sprint4.tearoom-1.0/bin/it.unibo.trc19.sprint4.tearoom
+   ```
+
+10. Buon divertimento!
 
 ## Deployment su robot fisico (UNIX)
 
-1) Scaricare il *deployment.zip* più recente al link <a href="https://github.com/ugoleone/iss2020TemaFinale/releases">releases</a> su PC
+1. Scaricare il *deployment.zip* più recente al link [releases](https://github.com/ugoleone/iss2020TemaFinale/releases) su PC
 
-2) Estrarre la cartella *deployment* su PC
+2. Estrarre la cartella `deployment` su PC
 
-3) Entrare nella cartella *deployment* su PC
+3. Entrare nella cartella `deployment` su PC
 
-4) Cambiare i seguenti file di configurazione:
-    - All' interno di *it.unibo.qak20.basicrobot-1.0/bin/basicrobotConfig.json*, sostituire la prima riga con la riga *{"type":"realmbot", "port":"/dev/ttyUSB0", "host":"localhost"}* se si sta usando MBOT
-    - All' interno di *it.unibo.qak20.basicrobot-1.0/bin/basicrobotConfig.json*, sostituire la prima riga con la riga *{"type":"realnano", "port":"", "host":"localhost"}* se si sta usando un robot fisico artigianale
-    - All'interno di *it.unibo.trc19.sprint4.tearoom-1.0/bin/tearoom.pl* sostituire la seconda riga con la riga *context(ctxbasicrobot, "IP",  "TCP", "PORT").*, dove IP è l'IP del Raspberry e PORT è la porta del basicrobot (default:8020)
+4. Cambiare i seguenti file di configurazione:
 
-5) Copiare la cartella *it.unibo.qak20.basicrobot-1.0* nel filesystem del Raspberry che controlla il robot fisico
+   - All'interno di `it.unibo.qak20.basicrobot-1.0/bin/basicrobotConfig.json`, sostituire la prima riga con la riga `{"type":"realmbot", "port":"/dev/ttyUSB0", "host":"localhost"}` se si sta usando MBOT
+   - All'interno di `it.unibo.qak20.basicrobot-1.0/bin/basicrobotConfig.json`, sostituire la prima riga con la riga `{"type":"realnano", "port":"", "host":"localhost"}` se si sta usando invece un robot di tipo "nanoBot"
+   - All'interno di `it.unibo.trc19.sprint4.tearoom-1.0/bin/tearoom.pl` sostituire la seconda riga con la riga `context(ctxbasicrobot, "IP",  "TCP", "PORT").`, dove `IP` è l'IP del RaspberryPi in uso e `PORT` è la porta del basicrobot (default = 8020)
 
-6) Aprire un terminale all'interno della cartella *deployment* su PC
+5. Copiare la cartella `it.unibo.qak20.basicrobot-1.0` nel filesystem del Raspberry che controlla il robot fisico
 
-7) Digitare nel terminale ed inviare il seguente comando (Avvio della pagina web con Spring)  
-```shell
-./robotWeb2020-boot-1.0/bin/robotWeb2020
-```
+6. Aprire un terminale all'interno della cartella `deployment` su PC
 
-9) Aprire un terminale all'interno della cartella *it.unibo.qak20.basicrobot-1.0* su Raspberry
+7. Digitare nel terminale ed inviare il seguente comando (**Avvio della pagina web con Spring**)  
 
-10) Digitare nel terminale ed inviare il seguente comando (Avvio del basicrobot) 
-```shell
-./it.unibo.qak20.basicrobot-1.0/bin/it.unibo.qak20.basicrobot
-```
+   ```shell
+   ./robotWeb2020-boot-1.0/bin/robotWeb2020
+   ```
 
-10) Aprire un secondo terminale all'interno della cartella *deployment* su PC, digitare nel terminale ed inviare il seguente comando (Avvio della tearoom) 
-```shell
-./it.unibo.trc19.sprint4.tearoom-1.0/bin/it.unibo.trc19.sprint4.tearoom
-```
+8. Aprire un terminale all'interno della cartella `it.unibo.qak20.basicrobot-1.0` su Raspberry
 
-11) Buon divertimento!
+9. Digitare nel terminale ed inviare il seguente comando (**Avvio del basicrobot**) 
+
+   ```shell
+   ./it.unibo.qak20.basicrobot-1.0/bin/it.unibo.qak20.basicrobot
+   ```
+
+10. Aprire un secondo terminale all'interno della cartella `deployment` su PC, digitare nel terminale ed inviare il seguente comando (**Avvio della tearoom**) 
+
+    ```shell
+    ./it.unibo.trc19.sprint4.tearoom-1.0/bin/it.unibo.trc19.sprint4.tearoom
+    ```
+
+11. Buon divertimento!
+
+
 
 ## Piano di lavoro
 
