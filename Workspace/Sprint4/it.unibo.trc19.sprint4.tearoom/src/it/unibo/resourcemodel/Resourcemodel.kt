@@ -17,14 +17,14 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
-				val MAXSTAYTIME = 600000
-				val MAXWAITINGTIME = 600000
-				var RaspIP = ""
-				var TeatableNumber = ""
+				val MAXSTAYTIME = 600000 // quanto può stare al massimo un cliente
+				val MAXWAITINGTIME = 600000 // quanto aspetterà max un cliente in attesa
+				var RaspIP = "" // IP dove è in esecuzione il basicrobot (ha signficato solo se è su raspberry)
+				var TeatableNumber = "" 
 				var Teatable = ""
-				var busy = false
+				var busy = false // indica se il waiter è intento ad eseguire un task
 				var Task = ""
-				var ID = ""
+				var ID = "" // ID del cliente
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -91,7 +91,7 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								
 												ID = payloadArg(0)
-												val CS = payloadArg(1)
+												val CS = payloadArg(1) // nuovo stato
 												when(CS) {
 													"ordering" -> { 
 								solve("updateClientState($ID,$CS,true)","") //set resVar	
@@ -161,7 +161,7 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								 }
 								}
 								else
-								{println("[RESOURCE MODEL] Order is ready for client $ID but is gone")
+								{println("[RESOURCE MODEL] Order is ready for client $ID but he is gone")
 								solve("updateBarmanState(idle)","") //set resVar	
 								solve("deleteOrder($ID)","") //set resVar	
 								}
@@ -239,6 +239,7 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								 } 
 												"collectingDrink" ->  {
 								 ID = payloadArg(1)  
+								solve("deleteOrder($ID)","") //set resVar	
 								solve("teatableClientID(TeatableNumber,$ID)","") //set resVar	
 								 TeatableNumber = getCurSol("TeatableNumber").toString()  
 								solve("updateBarmanState(idle)","") //set resVar	
@@ -247,7 +248,6 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								 } 
 												"bringingDrinkToClient" ->  {
 								 TeatableNumber = payloadArg(1)  
-								solve("deleteOrder($ID)","") //set resVar	
 								solve("teatableClientID($TeatableNumber,ID)","") //set resVar	
 								 ID = getCurSol("ID").toString()  
 								solve("updateClientState($ID,drinking,false)","") //set resVar	
@@ -482,7 +482,6 @@ class Resourcemodel ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 								 
 												var RemainingTime = payloadArg(0) 
 												TeatableNumber = payloadArg(1)
-												println(TeatableNumber)
 								solve("replaceRule(teatable($TeatableNumber,_,_,CS),teatable($TeatableNumber,dirty,$RemainingTime,CS))","") //set resVar	
 						}
 						if( checkMsgContent( Term.createTerm("timeoutClient(T,X)"), Term.createTerm("timeoutClient(T,X)"), 

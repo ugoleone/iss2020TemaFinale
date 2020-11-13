@@ -144,6 +144,10 @@ client(1,waiting).
 
 clientsIDs([1]).
                 </pre>
+                <p>
+                Inoltre è stata aggiunta nel codice una variabile <em>busy</em> per sapere se il <bc>waiter</bc> sia impegnato ad eseguire un task. In caso affermativo, il nuovo task da eseguire viene aggiunto ad una coda di <em>pendingTask</em>
+                in base di conoscenza. Quando il <bc>waiter</bc> finisce di eseguire un task, controlla se siano presenti task in sospeso in questa coda.
+                </p>
                 <p>Per una visione più approfondita si rimanda a <a href="https://raw.githubusercontent.com/ugoleone/iss2020TemaFinale/master/Workspace/Sprint3/it.unibo.trc19.sprint3.tearoom/tearoomkb.pl">tearoomkb.pl</a>.</p>
 
                 <h5><b>Gestione del tempo</b></h5>

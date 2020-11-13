@@ -17,18 +17,18 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		 
-				var WhatImDoing = "athome" 
+				var WhatImDoing = "athome" // cosa sto facendo
 				var TeatableNumber = ""
 				var Teatable = ""
-				var Misc = ""
-				var StartCleaning = 0L
-				var CleaningTime = 0L
-				var RemainingTime = 0L
-				var ActiveTimer = 0L
-				var ReturningHome = false
+				var Misc = "" // payload
+				var StartCleaning = 0L // quando ho iniziato a pulire
+				var CleaningTime = 0L // quanto ho pulito
+				var RemainingTime = 0L // quanto manca da pulire
+				var ActiveTimer = 0L // ID del timer attivo
+				var ReturningHome = false // indicazione se sto tornando a casa
 				var TeatableToClean = ""
 				var TeatableNumberToClean = ""
-				var WasCleaning = false
+				var WasCleaning = false // indicazione se sto pulendo
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -51,10 +51,8 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								if(  ReturningHome  
 								 ){forward("stopTask", "stopTask(0)" ,"planner" ) 
+								 ReturningHome = false  
 								}
-								else
-								 { ReturningHome = false  
-								 }
 								
 								 			if(WasCleaning) {
 												CleaningTime = System.currentTimeMillis() - StartCleaning
@@ -68,6 +66,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 												}
 											}
 								 
+								 			// aggiorno cosa sto facendo
 											WhatImDoing = payloadArg(0)
 											Misc = payloadArg(1)
 											if(Misc == "1" || Misc == "2") {
@@ -137,7 +136,6 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								 var ID = payloadArg(0) 
 												var O = payloadArg(1)
 								forward("orderReq", "orderReq($ID,$O)" ,"resourcemodel" ) 
-								println("[WAITER] I'm transmitting the order to the barman")
 								forward("taskDone", "taskDone($WhatImDoing,0)" ,"resourcemodel" ) 
 						}
 					}
@@ -281,6 +279,7 @@ class Waiter ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								}
 												
 												"returnHome" -> {
+													// sono a casa
 												ReturningHome = false  
 								forward("listenRequests", "listenRequests(1)" ,"waiter" ) 
 								forward("taskDone", "taskDone($WhatImDoing,$Misc)" ,"resourcemodel" ) 

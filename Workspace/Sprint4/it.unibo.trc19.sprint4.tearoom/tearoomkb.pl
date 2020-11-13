@@ -46,9 +46,6 @@ pendingTasks([]).
 addTask(T,P) :- pendingTasks(L), append(L,[[T,P]],R), replaceRule(pendingTasks(_),pendingTasks(R)).
 getTask(T,P) :- pendingTasks([[T,P]|L]), replaceRule(pendingTasks(_), pendingTasks(L)).
 
-waitingClients([]).
-addWaitingClient(ID) :- waitingClients(L), append(L,[ID],R), replaceRule(waitingClients(_),waitingClients(R)).
-getWaitingClient(ID) :- waitingClients([ID|L]), replaceRule(waitingClients(_), waitingClients(L)).
 
 %% ------------------------------------------ 
 %% Teatables
@@ -75,7 +72,13 @@ tableCleaned(T) :- replaceRule(teatable( T, _, _, _), teatable( T, available, 0,
 %% ------------------------------------------ 
 %% Clients State
 %% ------------------------------------------ 
+%% 		  ID, Stato, Lock => Lock si riferisce se il bottone "next state" nella pagina web è "lock" o no
 %% client(1,waiting, true).
+
+waitingClients([]).
+addWaitingClient(ID) :- waitingClients(L), append(L,[ID],R), replaceRule(waitingClients(_),waitingClients(R)).
+getWaitingClient(ID) :- waitingClients([ID|L]), replaceRule(waitingClients(_), waitingClients(L)).
+
 
 nextState(waiting,entering).
 nextState(entering,ordering).
@@ -89,7 +92,7 @@ nextState(gone,none).
 updateClientState(ID, S, L) :- replaceRule(client(ID,_,_),client(ID,S,L)).
 
 unlockClient(ID) :- replaceRule(client(ID,S,_),client(ID,S,false)).
-loclClient(ID) :- replaceRule(client(ID,S,_),client(ID,S,true)).
+lockClient(ID) :- replaceRule(client(ID,S,_),client(ID,S,true)).
 
 clientsIDs([]).
 addClient(X) :- clientsIDs(L),append(L,[X],R),replaceRule(clientsIDs(_),clientsIDs(R)),addRule(client(X,waiting,true)).

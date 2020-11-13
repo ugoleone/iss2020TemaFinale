@@ -28,8 +28,8 @@ class Timersmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 					action { //it:State
 						println("[TIMERS MANAGER] Waiting for new requests")
 					}
-					 transition(edgeName="t054",targetState="timer",cond=whenDispatch("startTimer"))
-					transition(edgeName="t055",targetState="timer",cond=whenDispatch("cancelTimer"))
+					 transition(edgeName="t052",targetState="timer",cond=whenDispatch("startTimer"))
+					transition(edgeName="t053",targetState="timer",cond=whenDispatch("cancelTimer"))
 				}	 
 				state("timer") { //this:State
 					action { //it:State
@@ -42,6 +42,7 @@ class Timersmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( na
 												var Message = payloadArg(2)
 												var Payload = payloadArg(3)
 												var Time = payloadArg(4).toLong()
+												// se ID arrivato è uguale a 0, lo creo io
 												if(ID == "0") {
 													ID = Math.random().toString()
 												}

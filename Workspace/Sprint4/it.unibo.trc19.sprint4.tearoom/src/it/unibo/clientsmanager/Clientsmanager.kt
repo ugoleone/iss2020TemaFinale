@@ -52,7 +52,7 @@ class Clientsmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 								 
 												var ID = payloadArg(0)
 												var CurrentState = payloadArg(1) 
-												if(CurrentState == "waiting"){
+												if(CurrentState == "waiting"){ // solo se il cliente sta ancora aspettando lo faccio andare via
 													println("[CLIENT $ID] Bye!")
 								forward("updateClientState", "updateClientState($ID,withdraw)" ,"resourcemodel" ) 
 								
@@ -117,7 +117,7 @@ class Clientsmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("nextState(ID)"), Term.createTerm("nextState(ID)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 var ID = payloadArg(0)  
+								 ID = payloadArg(0)  
 								request("clientStateReq", "clientStateReq($ID)" ,"resourcemodel" )  
 						}
 					}
@@ -137,6 +137,7 @@ class Clientsmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 														println("[CLIENT $ID] I want to order!")
 													}
 													"ordering" -> {
+														// ordino
 								forward("order", "order($ID,tea)" ,"waiter" ) 
 								
 														NextState = "waitingtea"
@@ -151,6 +152,7 @@ class Clientsmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 														println("[CLIENT $ID] I want to pay!")
 													}
 													"paying" -> {
+														// pago
 								forward("payment", "payment($ID,10)" ,"waiter" ) 
 								
 														NextState = "exiting"
@@ -169,16 +171,6 @@ class Clientsmanager ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( n
 						}
 					}
 					 transition( edgeName="goto",targetState="waitingMsg", cond=doswitch() )
-				}	 
-				state("makeOrder") { //this:State
-					action { //it:State
-					}
-					 transition(edgeName="t052",targetState="progressClientState",cond=whenEvent("nextState"))
-				}	 
-				state("pay") { //this:State
-					action { //it:State
-					}
-					 transition(edgeName="t053",targetState="progressClientState",cond=whenEvent("nextState"))
 				}	 
 				state("exit") { //this:State
 					action { //it:State
